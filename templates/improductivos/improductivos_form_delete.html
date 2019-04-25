@@ -1,0 +1,49 @@
+{% extends "base/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="lemon text-center col-md-12 con-sm-12 col-xs-12" id="">
+            <h3>
+                ¿Desea eliminar el siguiente improductivo?
+            </h3>
+        </div>
+    </div>
+    <div class="row ">
+        <form method="post" class=" lemon " id="form_3">
+            {% csrf_token %}
+            <div class="text-center form-group col-md-12 con-sm-12 col-xs-12" id="table_improductivos_delete">
+                <table style="width: 100%">
+                    <thead>
+                        <tr>
+                           <!-- <th>#</th>-->
+                            <th>Problema</th>
+                            <th>Tipo de Problema</th>
+                            <th>Fecha</th>
+                            <th>Comentario</th>
+                            <th>Hora del problema</th>
+                            <th>Hora de la solución</th>
+                            <th>Tiempo Improductivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <!--<td>{{object.id}}</td> -->
+                            <td>{{object.problema | title}}</td>
+                            <td>{{object.tipo_problema |title}}</td>
+                            <td>{{object.fecha}}</td>
+                            <td>{{object.comentario}}</td>
+                            <td>{{object.hora_problema}}</td>
+                            <td>{{object.hora_solucion}}</td>
+                            <td>{{object.tiempo_improductivo}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center col-md-12 con-sm-12 col-xs-12">
+                <button type="submit" class="btn btn-danger" title="Eliminar">Si, Eliminar</button>
+                <a href="{%url 'improductivos:improductivos_list'%}" class="btn btn-primary" title="Cancelar">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,54 @@
+{% extends "base/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class=" col-sm-3 col-lg-4">
+        </div>
+        <div class=" col-sm-6 col-lg-4">
+            <div class="panel panel-primary" style="margin-top:50px;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Zona usuario
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            {{ form.non_field_errors }}
+                            <div class="form-group ">
+                                <label class="required" for="{{form.username.name}}">
+                                    Usuario
+                                </label>
+                                <input autofocus="autofocus" class="form-control " id="username" name="username" type="text">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required" for="{{form.password.name}}">
+                                    Contraseña
+                                </label>
+                                <input class="form-control " id="password" name="password" type="password">
+                            </div>
+                        </div>
+                        <div class="submit-row">
+                            <div class="form-group">
+                                <button class="btn btn-primary btn-block" type="submit">
+                                    Iniciar sesión
+                                </button>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <a class="" href="{% url 'usuario:password_reset'  %}" title="Olvide mi contraseña">
+                                Olvide mi contraseña
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class=" col-sm-3 col-lg-4">
+        </div>
+    </div>
+</div>
+{% endblock content %}

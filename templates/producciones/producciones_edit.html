@@ -1,0 +1,111 @@
+{% extends "base/base.html" %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class=" col-sm-3 col-lg-3">
+        </div>
+        <div class=" col-sm-6 col-lg-6">
+            <div class="panel panel-info" style="margin-top:50px;">
+                <div class="panel-heading">
+                    Datos de producción
+                </div>
+                <div class="panel-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        <div class="form-row">
+                            <div class="form-group ">
+                                <label class="required" for="{{form.orden_produccion.id_for_label}}">
+                                    Codigo de orden de producción
+                                </label>
+                                {{form.orden_produccion.errors}}
+                                <div>
+                                    {{form.orden_produccion}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required" for="{{form.minera.id_for_label }}">
+                                    Nombre de la minera
+                                </label>
+                                {{form.minera.errors}}
+                                <div style="color:black">
+                                    {{form.minera}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="" for="{{form.comentario.id_for_label}}">
+                                    Comentario
+                                </label>
+                                {{form.comentario.errors}}
+                                <div>
+                                    {{form.comentario}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="" for="{{form.fecha_inicio.id_for_label}}">
+                                    Fecha de inicio de la producción
+                                </label>
+                                {{form.fecha_inicio.errors}}
+                                <div>
+                                    {{form.fecha_inicio}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="" for="{{form.hora_inicio.id_for_label}}">
+                                    Hora de inicio de la producción <span>(HH:MM:SS)</span>
+                                </label>
+                                {{form.hora_inicio.errors}}
+                                <div>
+                                    {{form.hora_inicio}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="" for="{{form.fecha_finalizacion.id_for_label}}">
+                                    Fecha de finalización de la producción
+                                </label>
+                                {{form.fecha_finalizacion.errors}}
+                                <div>
+                                    {{form.fecha_finalizacion}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="" for="{{form.hora_finalizacion.id_for_label}}">
+                                    Hora de finalización de la producción <span>(HH:MM:SS)</span>
+                                </label>
+                                {{form.hora_finalizacion.errors}}
+                                <div>
+                                    {{form.hora_finalizacion}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="submit-row">
+                            <div class="form-group">
+                                <button class="btn btn-success" type="submit">
+                                    Guardar
+                                </button>
+                                <a class="btn btn-info margin-btn" href="{% url 'producciones:producciones_list' %}" title="volver">
+                                    Volver
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class=" col-sm-3 col-lg-4">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

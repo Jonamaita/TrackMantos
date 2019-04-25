@@ -1,0 +1,136 @@
+{% extends "base/base.html" %}
+{%block content%}
+<script type="text/javascript">
+var i = 0;
+
+function autofocus(id) {
+
+    if (i == 0) {
+        var element = document.getElementById(id)
+        element.setAttribute("autofocus", "autofocus");
+        if (id != 'username') {
+            element = document.getElementById("username")
+            element.removeAttribute('autofocus')
+        }
+
+        i = 1;
+    }
+
+
+}
+</script>
+<div class="container">
+    <div class="row">
+        <div class=" col-sm-3 col-lg-4">
+        </div>
+        <div class=" col-sm-6 col-lg-4">
+            <div class="panel panel-primary" style="margin-top:50px;">
+                <div class="panel-heading">
+                    Crear cuenta
+                </div>
+                <div class="panel-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        <div class="form-row">
+                            <div class="form-group ">
+                                <label class="required" for="{{form.username.name}}">
+                                    Usuario
+                                </label>
+                                {{form.username.errors}}
+                                <div>
+                                    {{form.username}}
+                                </div>
+                                {% if form.username.errors %}
+                                <script type="text/javascript">
+                                autofocus('username');
+                                </script>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required" for="{{form.first_name.name}}">
+                                    Nombre
+                                </label>
+                                {{form.first_name.errors}}
+                                <div style="color:black">
+                                    {{form.first_name}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required" for="{{form.last_name.name}}">
+                                    Apellido
+                                </label>
+                                {{form.last_name.errors}}
+                                <div>
+                                    {{form.last_name}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required" for="{{form.email.name}}">
+                                    Email
+                                </label>
+                                {{form.email.errors}}
+                                <div>
+                                    {{form.email}}
+                                </div>
+                                {% if form.email.errors %}
+                                <script type="text/javascript">
+                                autofocus('email');
+                                </script>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required" for="password1">
+                                    Contraseña
+                                </label>
+                                {{form.password1.errors}}
+                                <div>
+                                    {{form.password1}}
+                                </div>
+                                {% if form.password1.errors %}
+                                <script type="text/javascript">
+                                autofocus('password1');
+                                </script>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required" for="password2">
+                                    Confirme su contraseña
+                                </label>
+                                {{form.password2.errors}}
+                                <div style="color:black">
+                                    {{form.password2}}
+                                </div>
+                                {% if form.password2.errors %}
+                                <script type="text/javascript">
+                                autofocus('password1');
+                                </script>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="submit-row">
+                            <div class="form-group">
+                                <button class="btn btn-primary" type="submit">
+                                    Guardar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class=" col-sm-3 col-lg-4">
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock content%}

@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+            <meta content="IE=edge" http-equiv="X-UA-Compatible">
+                <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+                <title>
+                    {% block title %} Track_Mantos{% endblock title %}
+                </title>
+                <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+                <link href="{% static 'css/main.css' %} " rel="stylesheet"/>
+                <link href="{% static 'css/animate.css' %}" rel="stylesheet"/>
+                <link href="https://fonts.googleapis.com/css?family=Oswald:400,500,600" rel="stylesheet"/>
+                <link href="{% static 'imgs/logo_mantos.png'%}" rel="icon" type="image/png"/>
+            </meta>
+        </meta>
+    </head>
+    <body>
+        {% block header %}
+        <!--  <div class="container-fluid" id="head">
+        <div class="row">
+            <div class="col-md-1 col-sm-1 col-xs-12 text-center">
+                <img class="logo" height="100" src="{% static 'imgs/logo-blanco.svg'%}" width="100"/>
+                </div>
+                <div class="text-center col-md-10 col-sm-10 col-xs-12">
+                    <h1 class="lemon">
+                        <strong>
+                            Track Producción
+                        </strong>
+                        <hr/>
+                    </h1>
+                </div>
+            </div>
+    </div>
+    !-->
+        <nav class="navbar navbar-inverse" id="navbar">
+            <div class="container-fluid">
+                <div class="navbar-header text-center">
+                    <a class="navbar-brand" href="{% url 'improductivos:improductivos_form' %}">
+                        <img alt="Brand" class="logo" height="35" src="{% static 'imgs/logo-blanco.svg'%}" width=""/>
+                    </a>
+                </div>
+                {% if user.is_authenticated %}
+                <ul class="nav navbar-nav">
+                    
+                    <li class="active">
+                        <a href="{% url 'improductivos:improductivos_form' %}">
+                        Formulario
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'improductivos:improductivos_list' %}">
+                        Improductivos
+                        </a>
+                    </li>
+                     <li>
+                        <a href="{% url 'improductivos:improductivos_list_solve' %}">
+                        Resolver Improductivos
+                        </a>
+                    </li>
+                   <li class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#">Producción <span class="caret"></span></a>
+                         <ul class="dropdown-menu">
+                            <li><a href="{% url 'producciones:produccion_form' %}">Agregar OP</a></li>
+                             <li><a href="{% url 'producciones:producciones_list' %}">Listas de OP</a></li>
+                            <li><a href="{% url 'producciones:producciones_list_init_closed' %}">Abrir / Cerrar OP</a></li>
+                        </ul>
+                 </li>
+                    
+                      
+                </ul>
+                {% endif %}
+
+                <ul class="nav navbar-nav navbar-right">
+                    <!--
+                    <li>
+                        <a href="#">
+                            <span class="glyphicon glyphicon-user">
+                            </span>
+                            Sign Up
+                        </a>
+                    </li>
+                -->
+                    {% if user.is_authenticated %}
+                    <li>
+                        <a >
+                            <span class="glyphicon glyphicon-user">
+                            
+                        </span>
+                        Bienvenido {{user.username}}
+                        </a>
+                        
+                    </li>
+                    <li>
+                        <a href="{% url 'usuario:logout' %}">
+                            <span class="glyphicon glyphicon-log-out">
+                            </span>
+                            Logout
+                        </a>
+                    </li>
+                    {%else%}
+                    <li>
+                        <a href="{% url 'usuario:login' %}">
+                            <span class="glyphicon glyphicon-log-in">
+                            </span>
+                            Login
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                </ul>
+            </div>
+        </nav>
+        
+        <div class="container" id="head">
+            <div class="row">
+                <div class="text-center col-md-12 col-sm-12 col-xs-12">
+                    <h1 class="lemon">
+                        <strong>
+                            {% block title_page %}
+                            Track Producción
+                            {% endblock title_page %}
+                        </strong>
+                    </h1>
+                </div>
+            </div>
+        </div>
+
+        {% endblock header %}
+    {% block content %}
+    {% endblock content %}
+        {% block footer %}
+        <footer>
+            <div class="container lemon">
+                <hr/>
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-6 text-left">
+                        2018
+                        <li class="fa fa-copyright">
+                        </li>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+                        <p>
+                            Desarrollado by Operaciones Mantos Group.
+                            <br/>
+                            Todos los derechos reservado.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        {% endblock footer %}
+        <script src="https://use.fontawesome.com/66786629b2.js">
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+        </script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        {% block extrajs %}
+          
+         
+     
+        {% endblock extrajs %}
+    </body>
+</html>

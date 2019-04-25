@@ -1,0 +1,47 @@
+{% extends "base/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="lemon text-center col-md-12 con-sm-12 col-xs-12" id="">
+            <h3>
+                ¿Desea eliminar la siguiente orden de producción?
+            </h3>
+        </div>
+    </div>
+    <div class="row ">
+        <form method="post" class=" lemon " id="form_3">
+            {% csrf_token %}
+            <div class="text-center form-group col-md-12 con-sm-12 col-xs-12" id="table_improductivos_delete">
+                <table style="width: 100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Problema</th>
+                            <th>Fecha</th>
+                            <th>Comentario</th>
+                            <th>Hora del problema</th>
+                            <th>Hora de la solución</th>
+                            <th>Tiempo Improductivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{object.orden_produccion}}</td>
+                            <td>{{object.minera}}</td>
+                            <td>{{object.comentario}}</td>
+                            <td>{{object.fecha_inicio}}</td>
+                            <td>{{object.hora_inicio}}</td>
+                            <td>{{object.fecha_finalizacion}}</td>
+                            <td>{{object.hora_finalizacion}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center col-md-12 con-sm-12 col-xs-12">
+                <button type="submit" class="btn btn-danger" title="Eliminar">Si, Eliminar</button>
+                <a href="{%url 'producciones:producciones_list'%}" class="btn btn-primary" title="Cancelar">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

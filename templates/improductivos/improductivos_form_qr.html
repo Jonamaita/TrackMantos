@@ -1,0 +1,62 @@
+{% extends "base/base.html" %}
+{%block content%}
+<div class="container">
+    <div class="row">
+        <div class=" col-sm-3 col-lg-4">
+        </div>
+        <div class=" col-sm-6 col-lg-4">
+            <div class="panel panel-info" style="margin-top:50px;">
+                <div class="panel-heading text-center">
+                    Agregar Improductivo
+                </div>
+                <div class="panel-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        <div class="form-row">
+                            <div class="form-group text-center">
+                                <label class="required" for="{{form.orden_produccion.name}}">
+                                    Seleccione una orden de producción
+                                </label>
+                                <div>
+                                    {{form.produccion}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group text-center">
+                                <label class="required" for="{{form.orden_produccion.name}}">
+                                    Agregue un comentario
+                                </label>
+                                <div>
+                                    {{form.comentario}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <!-- se pasa por la url-->
+                            <div class="form-group text-center">
+                                <label class="required" for="{{form.orden_produccion.name}}">
+                                    Problema
+                                </label>
+                                <div>
+                                    {{form.problema}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="submit-row">
+                            <div class="form-group text-center">
+                                <button class="btn btn-primary" type="submit">
+                                    Enviar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class=" col-sm-3 col-lg-4">
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock content%}

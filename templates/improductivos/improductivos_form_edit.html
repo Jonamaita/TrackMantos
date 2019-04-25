@@ -1,0 +1,148 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="lemon text-center col-md-12 con-sm-12 col-xs-12" id="">
+            <h3>
+                Editar Formulario Para Trazabilidad
+            </h3>
+        </div>
+    </div>
+    <div class="row ">
+        <form class=" lemon " id="form_2" method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-row">
+                <div class="text-center col-md-8 col-md-offset-2" id="select_box">
+                    <div class="form-group">
+                        <label>
+                            <h4>
+                                Seleccione el Problema
+                            </h4>
+                        </label>
+                        <div>
+                            {{form.problema}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="text-center col-md-8 col-md-offset-2" id="select_box">
+                    <div class="form-group">
+                        <label>
+                            <h4>
+                                Seleccione el tipo de problema
+                            </h4>
+                        </label>
+                        <div>
+                            {{form.tipo_problema}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
+                    <div class="form-group">
+                        <label for="{{form.comentario.name}}">
+                            <h4>
+                                Escriba un comentario sobre el problema
+                            </h4>
+                        </label>
+                        <div>
+                            {{form.comentario}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
+                    <div class="form-group">
+                        <label for="">
+                            <h4>
+                                Fecha del problema
+                            </h4>
+                        </label>
+                        {{form.fecha}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
+                    <div class="form-group">
+                        <label for="{{form.hora_problema.name}}">
+                            <h4>
+                                Hora del problema
+                            </h4>
+                            <span>(HH:MM:SS)</span>
+                            <div style="color:red;">
+                                {{form.hora_problema.errors}}
+                            </div>
+                        </label>
+                        {{form.hora_problema}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
+                    <div class="form-group">
+                        <label for="{{form.hora_solucion.name}}">
+                            <h4>
+                                Hora de la solución
+                            </h4>
+                            <span>(HH:MM:SS)</span>
+                            <div style="color:red;">
+                                {{form.hora_solucion.errors}}
+                            </div>
+                        </label>
+                        {{form.hora_solucion}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
+                    <div class="form-group">
+                        <label for="{{form.tiempo_improductivo.name}}">
+                            <h4>
+                                Tiempo Improductivo
+                            </h4>
+                            <span>(HH:MM:SS)</span>
+                            <div style="color:red;">
+                                {{form.tiempo_improductivo.errors}}
+                            </div>
+                        </label>
+                        {{form.tiempo_improductivo}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
+                    <div class="form-group">
+                        <label for="{{form.tiempo_improductivo.name}}">
+                            <h4>
+                                Orden de producción asociado
+                            </h4>
+                            <div style="color:red;">
+                                {{form.produccion.errors}}
+                            </div>
+                        </label>
+                        {{form.produccion}}
+                    </div>
+                </div>
+            </div>
+            <div class="submit-row">
+                <div class="text-center col-md-8 col-md-offset-2">
+                    <div class="form-group">
+                        <button class="btn btn-success margin-btn" type="submit">
+                            Guardar
+                        </button>
+                        <a class="btn btn-info margin-btn" href="{% url 'improductivos:improductivos_list' %}" title="volver">
+                            Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

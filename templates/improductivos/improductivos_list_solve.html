@@ -1,0 +1,100 @@
+{% extends "base/base.html" %}
+{% block content %}
+<div class="container">
+    <div>
+        <h2 class="text-center lemon">
+            Improductivos
+        </h2>
+    </div>
+    <div class="lemon text-center">
+        <table class="" style="width: 100%">
+            <thead class="">
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Problema
+                    </th>
+                    <th>
+                        comentario
+                    </th>
+                    <th>
+                        Fecha
+                    </th>
+                    <th>
+                        Hora Del Problema
+                    </th>
+                    <th>
+                        Hora De Solución
+                    </th>
+                    <th>
+                        Tiempo Improductivo
+                    </th>
+                    <th>
+                        Producción
+                    </th>
+                    <th>
+                        Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if object_list %}
+                <!--si fuera vista basada en función se pasa en el if el contexto "improductivos", el cual se recibe de las vistas-->
+                {% for imp in object_list %}
+                <!--si fuera vista basada en función se pasa en el if el contexto improductivos, el cual se recibe de las vistas-->
+                <tr>
+                    <td>
+                        {{imp.id}}
+                    </td>
+                    <td>
+                        {{imp.problema}}
+                    </td>
+                    <td>
+                        {{imp.comentario}}
+                    </td>
+                    <td>
+                        {{imp.fecha}}
+                    </td>
+                    <td>
+                        {{imp.hora_problema}}
+                    </td>
+                    <td>
+                        {{imp.hora_solucion}}
+                    </td>
+                    <td>
+                        {{imp.tiempo_improductivo}}
+                    </td>
+                    <td>
+                        {{imp.produccion}}
+                    </td>
+                    <td>
+                        <a class="btn btn-success margin-btn" href="{% url 'improductivos:improductivo_solve' imp.id %}" title="Resolver">
+                            Resolver
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <h3 style="color:orange">
+                    No hay problemas por resolver
+                </h3>
+                {% endif %}
+            </tbody>
+        </table>
+        <ul class="pager">
+            <li>
+                {% if page_obj.has_previous %}
+                <a class="" href="?page={{ page_obj.previous_page_number }}">Atras</a>
+                {% endif %}
+            </li>
+            <li>
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock content %}

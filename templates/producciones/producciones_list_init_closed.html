@@ -1,0 +1,96 @@
+{% extends "base/base.html" %}
+{% block content %}
+{% block title_page %}
+Lista de Ordenes de Producción a Iniciar o Cerrar
+{% endblock title_page %}
+<div class="container">
+    <div class="lemon text-center">
+        <table class="" style="width: 100%">
+            <thead class="">
+                <tr>
+                    <th>
+                        Orden de producción
+                    </th>
+                    <th>
+                        Minera
+                    </th>
+                    <th>
+                        Comentario
+                    </th>
+                    <th>
+                        Fecha de inicio
+                    </th>
+                    <th>
+                        Hora de inicio
+                    </th>
+                    <th>
+                        Fecha de finalización
+                    </th>
+                    <th>
+                        Hora de finalización
+                    </th>
+                    <th>
+                        Acción
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if object_list %}
+                {% for producciones in object_list %}
+                <tr>
+                    <td>
+                        {{producciones.orden_produccion}}
+                    </td>
+                    <td>
+                        {{producciones.minera | title}}
+                    </td>
+                    <td>
+                        {{producciones.comentario}}
+                    </td>
+                    <td>
+                        {{producciones.fecha_inicio}}
+                    </td>
+                    <td>
+                        {{producciones.hora_inicio}}
+                    </td>
+                    <td>
+                        {{producciones.fecha_finalizacion}}
+                    </td>
+                    <td>
+                        {{producciones.hora_finalizacion}}
+                    </td>
+                    <td>
+                        {% if producciones.fecha_inicio %}
+                        <a class="btn btn-danger margin-btn" href="{% url 'producciones:cerrar_produccion' producciones.orden_produccion %}" title="Iniciar Orden">
+                            Cerrar Orden
+                        </a>
+                        {% else %}
+                        <a class="btn btn-success margin-btn" href="{% url 'producciones:iniciar_produccion' producciones.orden_produccion %}" title="Iniciar Orden">
+                            Iniciar Orden
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <h4>
+                    No hay registros
+                </h4>
+                {% endif %}
+            </tbody>
+        </table>
+        <ul class="pager">
+            <li>
+                {% if page_obj.has_previous %}
+                <a class="" href="?page={{ page_obj.previous_page_number }}">Atras</a>
+                {% endif %}
+            </li>
+            <li>
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,94 @@
+{% extends "base/base.html" %}
+{%block content%}
+<script type="text/javascript">
+//Para ubicar el cursor en el dato que falta
+var i = 0;
+
+function autofocus(id) {
+
+    if (i == 0) {
+        var element = document.getElementById(id)
+        element.setAttribute("autofocus", "autofocus");
+        if (id != 'orden_produccion') {
+            element = document.getElementById("orden_produccion")
+            element.removeAttribute('autofocus')
+        }
+
+        i = 1;
+    }
+
+
+}
+</script>
+<div class="container">
+    <div class="row">
+        <div class=" col-sm-3 col-lg-4">
+        </div>
+        <div class=" col-sm-6 col-lg-4">
+            <div class="panel panel-info" style="margin-top:50px;">
+                <div class="panel-heading">
+                    Datos de producción
+                </div>
+                <div class="panel-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        <div class="form-row">
+                            <div class="form-group ">
+                                <label class="required" for="{{form.orden_produccion.name}}">
+                                    Codigo de orden de producción
+                                </label>
+                                {{form.orden_produccion.errors}}
+                                <div>
+                                    {{form.orden_produccion}}
+                                </div>
+                                {% if form.orden_produccion.errors %}
+                                <script type="text/javascript">
+                                autofocus('orden_produccion');
+                                </script>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required" for="{{form.minera.name}}">
+                                    Nombre de la minera
+                                </label>
+                                {{form.minera.errors}}
+                                <div style="color:black">
+                                    {{form.minera}}
+                                </div>
+                                {% if form.minera.errors %}
+                                <script type="text/javascript">
+                                autofocus('minera');
+                                </script>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="" for="{{form.comentario.name}}">
+                                    Comentario
+                                </label>
+                                {{form.comentario.errors}}
+                                <div>
+                                    {{form.comentario}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="submit-row">
+                            <div class="form-group">
+                                <button class="btn btn-primary" type="submit">
+                                    Guardar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class=" col-sm-3 col-lg-4">
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock content%}
