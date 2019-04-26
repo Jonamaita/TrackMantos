@@ -1,7 +1,6 @@
 from django.urls import path,re_path,include
 from django.contrib.auth.decorators import login_required
 from apps.producciones.views import produccion_form,ProduccionesList, ProduccionesUpdate,ProduccionesDelete,ProduccionesListIinitClosed,iniciar_produccion,cerrar_produccion
-from django_filters.views import FilterView
 app_name="producciones"
 
 urlpatterns = [

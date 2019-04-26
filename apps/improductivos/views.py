@@ -191,14 +191,6 @@ class ImproductivosList(ListView):
                     context = urllib.parse.urlencode(dic_url)
             return context
 
-        # Contexto filtro_fecha_query_string, para filtrar por fecha, fecha y
-        # problema
-
-        # Si en la url no hay la variable problema, le pasa a la variable filtro_fecha_query_string en el html "?", para cuando el usuario
-        # busque por fecha, busque para todos los problemas (electrico, mecanico , etc). Si en la url identifica la variable problema
-        # se le asigna la variable filter_3 el problema, para cuando busque por fecha solo se filtre las fecha de ese problema
-        # Nota: En el html se realiza un append en javascript de toda la
-        # petición del form
         # Si hay un request y que sea valida la petición solicitada se envia en
         # el contexto los filtros correspondientes
         if self.request.GET and self.context_url:
