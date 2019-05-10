@@ -17,7 +17,8 @@ from django.core.mail import send_mail
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 #BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
 
 
 # Quick-start development settings - unsuitable for production
@@ -65,8 +66,9 @@ ROOT_URLCONF = 'noob.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR),'templates'],# Busca el template el archivo raiz del proyecto
-        'APP_DIRS': True, #Busca el template dentro de cada una aplicación
+        # Busca el template el archivo raiz del proyecto
+        'DIRS': [os.path.join(BASE_DIR), 'templates'],
+        'APP_DIRS': True,  # Busca el template dentro de cada una aplicación
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -128,22 +130,25 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/static/'  # la url de los archivos estaticos
 STATICFILES_DIRS = (
+    # path del directorio de los archivos estaticos del proyecto
     os.path.join(BASE_DIR, 'static'),
 )
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR),'static')
+# path del directorio donde se van a colectar los archivos estaticos para ser servido
+# por Nginx
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
 
 ###################
 LOGIN_URL = reverse_lazy('usuario:login')
-LOGOUT_URL= reverse_lazy('admin/logout')
+LOGOUT_URL = reverse_lazy('admin/logout')
 LOGIN_REDIRECT_URL = reverse_lazy('improductivos:improductivos_list')
 #LOGOUT_REDIRECT_URL = reverse_lazy('usuario:login')
 
-#Settings para enviar correos
-EMAIL_USE_TLS=True
-EMAIL_HOST=os.environ.get('EMAIL_HOST')
-EMAIL_PORT=os.environ.get('EMAIL_PORT')
-EMAIL_HOST_USER=os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+# Settings para enviar correos
+EMAIL_USE_TLS = True
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

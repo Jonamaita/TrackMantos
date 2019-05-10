@@ -148,21 +148,21 @@ Lista de Improductivos
                     <ul>
                         <li class="selected"><a href="?" title="Todo">Todo</a></li>
                         {% for tipo_problema in context_tipo_problema %}
-                        <li><a href="?{{filtro_tipo_problema}}&tipo_problema={{ tipo_problema.tipo_problema }}">{{ tipo_problema.tipo_problema | title}}</a></li>
+                        <li><a href="?{{filtro_tipo_problema}}&amp;tipo_problema={{ tipo_problema.tipo_problema }}">{{ tipo_problema.tipo_problema | title}}</a></li>
                         {% endfor %}
                     </ul>
                     <p>Por problema</p>
                     <ul>
                         <li class="selected"><a href="?" title="Todo">Todo</a></li>
                         {% for problemas in context_problema %}
-                        <li><a href="?{{filtro_problema}}&problema={{ problemas.problema }}">{{problemas.problema | title}}</a></li>
+                        <li><a href="?{{filtro_problema}}&amp;problema={{ problemas.problema }}">{{problemas.problema | title}}</a></li>
                         {% endfor %}
                     </ul>
                     <p>Por orden producción</p>
                     <ul>
                         <li class="selected"><a href="?" title="Todo">Todo</a></li>
                         {% for producciones in context_produccion %}
-                        <li><a href="?{{filtro_produccion}}&produccion={{ producciones.produccion }}">{{producciones.produccion}}</a></li>
+                        <li><a href="?{{filtro_produccion}}&amp;produccion={{ producciones.produccion }}">{{producciones.produccion}}</a></li>
                         {% endfor %}
                     </ul>
                 </div>

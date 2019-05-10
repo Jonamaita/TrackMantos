@@ -12,7 +12,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'mantos.db'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'mantos',
+        'USER': os.environ.get('USER_DB'),
+        'PASSWORD': os.environ.get('PASSWORD_DB'),
+        'HOST': 'localhost',
+        'PORT': '',                      # Set to empty string for default.
     }
 }
