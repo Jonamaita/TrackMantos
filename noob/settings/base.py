@@ -118,7 +118,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-ch'
 
-TIME_ZONE = 'UTC'
+# Se recomineda UTC en caso de que el proecto, tenga que manejar horas a
+# nivel mundial. En este caso, solo se manejara hora de Chile.
+TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
 
