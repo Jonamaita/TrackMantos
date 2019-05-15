@@ -52,13 +52,13 @@ Lista de ordenes de producción
                             {{producciones.fecha_inicio}}
                         </td>
                         <td>
-                            {{producciones.hora_inicio}}
+                            {{producciones.hora_inicio|time:"H:i:s"}}
                         </td>
                         <td>
                             {{producciones.fecha_finalizacion}}
                         </td>
                         <td>
-                            {{producciones.hora_finalizacion}}
+                            {{producciones.hora_finalizacion|time:"H:i:s"}}
                         </td>
                         <td>
                             <a class="btn btn-primary margin-btn" href="{% url 'producciones:producciones_edit' producciones.orden_produccion %}" title="Editar">

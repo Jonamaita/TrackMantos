@@ -32,9 +32,9 @@
                             <td>{{object.tipo_problema |title}}</td>
                             <td>{{object.fecha}}</td>
                             <td>{{object.comentario}}</td>
-                            <td>{{object.hora_problema}}</td>
-                            <td>{{object.hora_solucion}}</td>
-                            <td>{{object.tiempo_improductivo}}</td>
+                            <td>{{object.hora_problema|time:"H:i:s"}}</td>
+                            <td>{{object.hora_solucion|time:"H:i:s"}}</td>
+                            <td>{{object.tiempo_improductivo|time:"H:i:s"}}</td>
                         </tr>
                     </tbody>
                 </table>

@@ -51,13 +51,13 @@ Lista de Ordenes de Producción a Iniciar o Cerrar
                         {{producciones.fecha_inicio}}
                     </td>
                     <td>
-                        {{producciones.hora_inicio}}
+                        {{producciones.hora_inicio|time:"H:i:s"}}
                     </td>
                     <td>
                         {{producciones.fecha_finalizacion}}
                     </td>
                     <td>
-                        {{producciones.hora_finalizacion}}
+                        {{producciones.hora_finalizacion|time:"H:i:s"}}
                     </td>
                     <td>
                         {% if producciones.fecha_inicio %}

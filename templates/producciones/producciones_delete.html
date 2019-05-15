@@ -30,9 +30,9 @@
                             <td>{{object.minera}}</td>
                             <td>{{object.comentario}}</td>
                             <td>{{object.fecha_inicio}}</td>
-                            <td>{{object.hora_inicio}}</td>
+                            <td>{{object.hora_inicio|time:"H:i:s"}}</td>
                             <td>{{object.fecha_finalizacion}}</td>
-                            <td>{{object.hora_finalizacion}}</td>
+                            <td>{{object.hora_finalizacion|time:"H:i:s"}}</td>
                         </tr>
                     </tbody>
                 </table>
