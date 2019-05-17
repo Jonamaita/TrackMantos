@@ -1,7 +1,7 @@
 #Settings para producción
 from .base import *
 DEBUG= False
-CSRF_COOKIE_SECURE=True
+#CSRF_COOKIE_SECURE=True # Solo permite enviar CSRF a traves de conexión HTTPS
 X_FRAME_OPTIONS='DENY'
 SECURE_CONTENT_TYPE_NOSNIFF=True
 SECURE_BROWSER_XSS_FILTER=True
