@@ -60,9 +60,11 @@
                 </li>
                 <li class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#">Producción <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="{% url 'producciones:produccion_form' %}">Agregar OP</a></li>
                         <li><a href="{% url 'producciones:producciones_list' %}">Listas de OP</a></li>
+                        {% if user.is_staff%}
+                        <li><a href="{% url 'producciones:produccion_form' %}">Agregar OP</a></li>
                         <li><a href="{% url 'producciones:producciones_list_init_closed' %}">Abrir / Cerrar OP</a></li>
+                        {% endif %}
                     </ul>
                 </li>
             </ul>
@@ -82,7 +84,11 @@
                     <a>
                         <span class="glyphicon glyphicon-user">
                         </span>
+                        {%if user.get_full_name%}
+                        Bienvenido {{user.get_full_name}}
+                        {%else%}
                         Bienvenido {{user.username}}
+                        {% endif %}
                     </a>
                 </li>
                 <li>

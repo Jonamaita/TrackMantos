@@ -30,9 +30,11 @@ Lista de ordenes de producción
                         <th>
                             Hora de finalización
                         </th>
+                        {% if user.is_staff %}
                         <th>
                             Acciones
                         </th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -60,6 +62,7 @@ Lista de ordenes de producción
                         <td>
                             {{producciones.hora_finalizacion|time:"H:i:s"}}
                         </td>
+                        {% if user.is_staff %}
                         <td>
                             <a class="btn btn-primary margin-btn" href="{% url 'producciones:producciones_edit' producciones.orden_produccion %}" title="Editar">
                                 Editar
@@ -68,6 +71,7 @@ Lista de ordenes de producción
                                 Eliminar
                             </a>
                         </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                     {% else %}
