@@ -1,14 +1,19 @@
 {% extends "base/base.html" %}
 {% block content %}
+<br>
 <div class="container">
     <div class="row">
-        <div class="lemon text-center col-md-8 col-md-offset-2" id="">
+       
+        <div class=" col-sm-12 col-lg-12">
+    <div class="panel panel-success ">
+    
+        <div class="text-center panel-heading" id="">
             <h3>
                 Llenar Formulario Para Trazabilidad
             </h3>
         </div>
-    </div>
-    <form class=" lemon " id="form_1" method="post">
+   <div class="panel-body">
+    <form class=" lemon " id="form_1" method="post" style="color:black !important">
         {% csrf_token %}
         {{ form.non_field_errors }}
         <div class="form-row">
@@ -16,13 +21,14 @@
                 <div class="form-group">
                     <label>
                         <h4>
-                            Seleccione el tipo de problema
+                            Seleccione El Tipo De Problema
                         </h4>
                     </label>
                     <div class="">
                         {{form.problema}}
                     </div>
                 </div>
+                <hr>
             </div>
         </div>
         <div class="form-row">
@@ -37,6 +43,8 @@
                         {{form.comentario}}
                     </div>
                 </div>
+                <br>
+                <hr>
             </div>
         </div>
         <div class="form-row">
@@ -46,7 +54,7 @@
                         <h4>
                             Orden de producción
                             <br>
-                            <span> Nota: Si no hay orden de producción debe iniciar una </span>
+                            <small style="color:#ff3333"> Nota: Si no hay orden de producción debe iniciar una </small>
                             {{form.produccion.errors}}
                         </h4>
                     </label>
@@ -66,5 +74,9 @@
             </div>
         </div>
     </form>
+</div>
+</div>
+</div>
+</div>
 </div>
 {% endblock content %}

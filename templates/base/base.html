@@ -7,7 +7,7 @@
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>
-        {% block title %} Track_Mantos{% endblock title %}
+        {% block title %} Track Mantos{% endblock title %}
     </title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="{% static 'css/main.css' %} " rel="stylesheet" />
@@ -85,7 +85,7 @@
                         <span class="glyphicon glyphicon-user">
                         </span>
                         {%if user.get_full_name%}
-                        Bienvenido {{user.get_full_name}}
+                        Bienvenido {{user.get_short_name}}
                         {%else%}
                         Bienvenido {{user.username}}
                         {% endif %}

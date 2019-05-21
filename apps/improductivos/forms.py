@@ -13,7 +13,7 @@ TIPO_PROBLEMA = (('mantenimiento', 'Mantenimiento'),
 class ImproductivosForm(forms.ModelForm):
 
     produccion = forms.ModelChoiceField(queryset=Producciones.objects.filter(fecha_finalizacion=None).exclude(
-        fecha_inicio=None), widget=forms.Select(attrs={'class': 'form-control', 'style': 'color:black', 'id': 'producciones', 'required': False}))
+        fecha_inicio=None), empty_label=None,widget=forms.Select(attrs={'class': 'form-control', 'style': 'color:black', 'id': 'producciones', 'required': False}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
