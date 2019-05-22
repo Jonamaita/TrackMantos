@@ -25,7 +25,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('improductivos/', include('apps.improductivos.urls',namespace="improductivos")),#Renderiza al index de improductivos
+    path('', include('apps.improductivos.urls',namespace="improductivos")),#Renderiza al index de improductivos
     path('usuario/',include('apps.usuario.urls',namespace='usuario')), 
     path('producciones/',include('apps.producciones.urls',namespace='producciones')),
     #path('sync_google_sheet/',include('apps.sync_google_sheet.urls',namespace='sync_google_sheet')),
