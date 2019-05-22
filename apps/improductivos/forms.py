@@ -3,7 +3,7 @@ from apps.improductivos.models import MantosImp
 from apps.producciones.models import Producciones
 
 PROBLEMA_PRODUCCION_CHOICES = (
-    ('ruedas', 'Ruedas'), ('goteros', 'Goteros'), ('troquelado', 'Troquelado'), ('film', 'Film'))
+    ('ruedas', 'Ruedas'), ('goteros', 'Goteros'), ('troquelado', 'Troquelado'), ('film', 'Film'),('regulaciones','Regulaciones'))
 PROBLEMAS_CHOICES = (('electrico', 'Eléctrico',), ('mecanico',
                                                    'Mecánico',), ('PRODUCCIÓN', PROBLEMA_PRODUCCION_CHOICES))
 TIPO_PROBLEMA = (('mantenimiento', 'Mantenimiento'),
