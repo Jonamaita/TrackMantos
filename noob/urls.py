@@ -20,19 +20,18 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
-
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('apps.improductivos.urls',namespace="improductivos")),#Renderiza al index de improductivos
-    path('usuario/',include('apps.usuario.urls',namespace='usuario')), 
-    path('producciones/',include('apps.producciones.urls',namespace='producciones')),
-    #path('sync_google_sheet/',include('apps.sync_google_sheet.urls',namespace='sync_google_sheet')),
+    # Renderiza al index de improductivos
+    path('', include('apps.improductivos.urls', namespace="improductivos")),
+    path('usuario/', include('apps.usuario.urls', namespace='usuario')),
+    path('producciones/', include('apps.producciones.urls', namespace='producciones')),
+    # path('sync_google_sheet/',include('apps.sync_google_sheet.urls',namespace='sync_google_sheet')),
 
 ]
 
-if settings.DEBUG:
-    urlpatterns+=static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# if settings.DEBUG:
+#    urlpatterns += static(settings.STATIC_URL,
+#                          document_root=settings.STATIC_ROOT)
 #handler404 = improductivos.views.handler404
 #handler500 = improductivos.views.handler500
