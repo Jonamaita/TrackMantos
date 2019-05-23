@@ -78,14 +78,12 @@ Lista de Improductivos
                         </td>
                         {% if user.is_staff %}
                         <td>
-                            
                             <a class="btn btn-primary margin-btn" href="{% url 'improductivos:improductivos_edit' imp.id %}" title="Editar">
                                 Editar
                             </a>
                             <a class="btn btn-danger" href="{% url 'improductivos:improductivos_delete' imp.id %}" title="Eliminar">
                                 Eliminar
                             </a>
-                            
                         </td>
                         {% endif %}
                     </tr>
