@@ -78,7 +78,7 @@ class ImproductivosFormQr(forms.ModelForm):
     # produccion, realiza un queryset, el cual, trae todas la producciones que
     # no sean finalizados y que se hallan iniciado (exclude fehca_inicio=None)
     produccion = forms.ModelChoiceField(queryset=Producciones.objects.filter(fecha_finalizacion=None).exclude(
-        fecha_inicio=None), empty_label=None, widget=forms.Select(attrs={'class': 'form-control', 'style': 'color:black', 'id': 'producciones', 'required': False}))
+        fecha_inicio=None), empty_label=None, widget=forms.Select(attrs={'class': 'form-control', 'style': 'color:black', 'id': 'producciones', 'required': True}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
