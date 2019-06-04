@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from apps.producciones.forms import ProduccionesForm, ProduccionesFormEdit
+from apps.producciones.forms import ProduccionesForm, ProduccionesFormEdit,DeleteConfirmForm
+from django.contrib.auth import authenticate
 from datetime import datetime,timedelta  # importar time
 from django.views.generic import ListView, UpdateView, DeleteView
 from apps.producciones.models import Producciones
@@ -104,7 +105,19 @@ class ProduccionesUpdate(UpdateView):
     template_name = 'producciones/producciones_edit.html'
     success_url = reverse_lazy('producciones:producciones_list')
 
-# Eliminar
+# Eliminar con contraseña
+def produccion_delete(request, pk):
+    produccion_delete = Producciones.objects.get(pk=pk) # Objeto a borrar
+    if request.method == "POST":
+        form=DeleteConfirmForm(request.POST,request=request) # llamo al formulario de confirmación con el parametro request. (la validación esta realizada en el form)
+        if form.is_valid(): # Si el usuario y el password esta OK, procede a borrar el objeto. La logica se realizó de forma manual en el form
+            produccion_delete.delete()
+            return redirect('producciones:producciones_list')
+        #return render(request, 'producciones/producciones_delete.html', {'produccion': produccion_delete,'produccion_delete_confirm':form})
+    else:
+        form = DeleteConfirmForm()
+    return render(request, 'producciones/producciones_delete.html', {'produccion': produccion_delete,'produccion_delete_confirm':form})
+
 class ProduccionesDelete(DeleteView):
     model = Producciones
     template_name = 'producciones/producciones_delete.html'

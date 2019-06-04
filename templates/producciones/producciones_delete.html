@@ -1,16 +1,27 @@
 {% extends "base/base.html" %}
+{% block extrajs %}
+<script type="text/javascript">
+function error(id) {
+    var element = document.getElementById(id);
+    element.classList.add("has-error");
+
+
+}
+</script>
+{% endblock extrajs %}
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="lemon text-center col-md-12 con-sm-12 col-xs-12" id="">
             <h3>
-                ¿Desea eliminar la siguiente orden de producción?
+                ¿ {{user.get_short_name}} Desea eliminar la siguiente orden de producción ?
             </h3>
         </div>
     </div>
     <div class="row ">
         <form method="post" class=" lemon " id="form_3">
             {% csrf_token %}
+            {{ produccion_delete_confirm.non_field_errors }}
             <div class="text-center form-group col-md-12 con-sm-12 col-xs-12" id="table_improductivos_delete">
                 <table style="width: 100%">
                     <thead>
@@ -40,16 +51,35 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{object.orden_produccion}}</td>
-                            <td>{{object.minera}}</td>
-                            <td>{{object.comentario}}</td>
-                            <td>{{object.fecha_inicio}}</td>
-                            <td>{{object.hora_inicio|time:"H:i:s"}}</td>
-                            <td>{{object.fecha_finalizacion}}</td>
-                            <td>{{object.hora_finalizacion|time:"H:i:s"}}</td>
+                            <td>{{produccion.orden_produccion}}</td>
+                            <td>{{produccion.minera}}</td>
+                            <td>{{produccion.comentario}}</td>
+                            <td>{{produccion.fecha_inicio}}</td>
+                            <td>{{produccion.hora_inicio|time:"H:i:s"}}</td>
+                            <td>{{produccion.fecha_finalizacion}}</td>
+                            <td>{{produccion.hora_finalizacion|time:"H:i:s"}}</td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4 col-sm-4">
+                </div>
+                <div class="col-md-4 col-sm-4 text-center">
+                    <label class="required" for="password_confirm">
+                        Introduzca su contraseña
+                    </label>
+                    <div id="div_password_confirm" class="form-group has-feedback">
+                        {{produccion_delete_confirm.password}}
+                        <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                        <label class="control-label">{{produccion_delete_confirm.password.errors}}</label>
+                    </div>
+                    {% if produccion_delete_confirm.password.errors %}
+                    <script type="text/javascript">
+                    error('div_password_confirm')
+                    </script>
+                    {% endif %}
+                </div>
             </div>
             <div class="text-center col-md-12 con-sm-12 col-xs-12">
                 <button type="submit" class="btn btn-danger" title="Eliminar">Si, Eliminar</button>

@@ -1,5 +1,6 @@
 from django import forms
 from apps.producciones.models import Producciones
+from django.contrib.auth import authenticate
 
 
 class ProduccionesForm(forms.ModelForm):
@@ -35,3 +36,27 @@ class ProduccionesFormEdit(forms.ModelForm):
         model = Producciones
         fields = ['orden_produccion', 'minera', 'comentario', 'fecha_inicio',
                   'hora_inicio', 'fecha_finalizacion', 'hora_finalizacion']
+
+
+#Formulario para eliminar producción con contraseña
+class DeleteConfirmForm(forms.Form):
+    password = forms.CharField(label='password', widget=forms.PasswordInput(attrs={'class': 'form-control is-invalid', 'id': 'password_confirm', 'style': 'color:black', 'autocomplete': 'password_confirm'}))
+  
+    
+    def __init__(self, *args, **kwargs): # sobre escribir el metodo init para tomar las palabras claves y tomar el request
+        self.request = kwargs.pop('request', None) # se debe pasar el request cuando se llama el  form. form=DeleteConfirmForm(request.POST,request=request)
+        super(DeleteConfirmForm, self).__init__(*args, **kwargs) # 
+             
+
+    def clean(self):
+        password = self.cleaned_data.get('password')
+        if self.request.user.is_authenticated: # Indentifico el usuario que esta en la sesión
+                username=self.request.user.username
+        else:
+            username=None
+        user = authenticate(username=username, password=password)
+        if user == None:
+            self._errors['password'] = 'Clave Invalida'
+        elif not self.request.user.is_active:
+             self._errors['password'] = 'Usuario Inactivo'
+        return self.cleaned_data

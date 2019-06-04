@@ -15,8 +15,10 @@
     <link href="https://fonts.googleapis.com/css?family=Oswald:400,500,600" rel="stylesheet" />
     <link href="{% static 'imgs/logo_mantos.png'%}" rel="icon" type="image/png" />
 </head>
-
+{% block extrajs %}
+{% endblock extrajs %}
 <body>
+
     {% block header %}
     <!--  <div class="container-fluid" id="head">
         <div class="row">
@@ -152,8 +154,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
     </script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    {% block extrajs %}
-    {% endblock extrajs %}
+    
 </body>
 
 </html>
