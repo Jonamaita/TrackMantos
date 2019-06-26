@@ -9,37 +9,19 @@ Lista de Improductivos
             <table class="" style="width: 100%">
                 <thead class="">
                     <tr>
-                        <!-- <th>
-                            #
-                        </th>-->
-                        <th>
-                            Problema
-                        </th>
-                        <th>
-                            Tipo de Problema
-                        </th>
-                        <th>
-                            Comentario
-                        </th>
-                        <th>
-                            Fecha
-                        </th>
-                        <th>
-                            Hora Del Problema
-                        </th>
-                        <th>
-                            Hora De Solución
-                        </th>
-                        <th>
-                            Tiempo Improductivo
-                        </th>
-                        <th>
-                            Producción
-                        </th>
+                        <th>ID</th>
+                        <th>Problema</th>
+                        <th>Tipo de Problema</th>
+                        <th>Comentario</th>
+                        <th>Numero Manto</th>
+                        <th>Lineas</th>
+                        <th>Fecha</th>
+                        <th>Hora Del Problema</th>
+                        <th>Hora De Solución</th>
+                        <th>Tiempo Improductivo</th>
+                        <th>Producción</th>
                         {% if user.is_staff %}
-                        <th>
-                            Acciones
-                        </th>
+                        <th>Acciones</th>
                         {% endif %}
                     </tr>
                 </thead>
@@ -49,33 +31,20 @@ Lista de Improductivos
                     {% for imp in object_list %}
                     <!--si fuera vista basada en función se pasa en el if el contexto improductivos, el cual se recibe de las vistas-->
                     <tr>
-                        <!--<td>
-                            {{imp.id}}
-                        </td>-->
-                        <td>
-                            {{imp.problema | title}}
+                        <td>{{imp.id}}</td>
+                        <td>{{imp.problema | title}}</td>
+                        <td>{{imp.tipo_problema | title}}</td>
+                        <td>{{imp.comentario}}</td>
+                        <td>{{imp.numero_manto}}</td>
+                        <td>{% for lineas in imp.numero_linea.all %}
+                            {{ lineas.linea|add:","}}
+                            {% endfor %}
                         </td>
-                        <td>
-                            {{imp.tipo_problema | title}}
-                        </td>
-                        <td>
-                            {{imp.comentario}}
-                        </td>
-                        <td>
-                            {{imp.fecha}}
-                        </td>
-                        <td>
-                            {{imp.hora_problema|time:"H:i:s"}}
-                        </td>
-                        <td>
-                            {{imp.hora_solucion|time:"H:i:s"}}
-                        </td>
-                        <td>
-                            {{imp.tiempo_improductivo|time:"H:i:s"}}
-                        </td>
-                        <td>
-                            {{imp.produccion}}
-                        </td>
+                        <td>{{imp.fecha}}</td>
+                        <td>{{imp.hora_problema|time:"H:i:s"}}</td>
+                        <td>{{imp.hora_solucion|time:"H:i:s"}}</td>
+                        <td>{{imp.tiempo_improductivo|time:"H:i:s"}}</td>
+                        <td>{{imp.produccion}}</td>
                         {% if user.is_staff %}
                         <td>
                             <a class="btn btn-primary margin-btn" href="{% url 'improductivos:improductivos_edit' imp.id %}" title="Editar">

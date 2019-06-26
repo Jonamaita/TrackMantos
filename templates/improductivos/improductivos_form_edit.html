@@ -56,6 +56,41 @@
                 </div>
             </div>
             <div class="form-row">
+                <div class="text-center col-md-8 col-md-offset-2" id="div_numero_manto">
+                    <div class="form-group">
+                        <label for="{{form.numero_manto.name}}">
+                            <h4>
+                                Indique el numero de manto
+                            </h4>
+                        </label>
+                        <div>
+                            {{form.numero_manto}}
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="text-center col-md-8 col-md-offset-2" id="select_lineas">
+                    <div class="form-group">
+                        <label>
+                            <h4>
+                                Seleccione lineas afectadas
+                            </h4>
+                            <small style="color:red;"> {{form.numero_linea.errors}}</small>
+                        </label>
+                        <div>
+                            {% for linea in form.numero_linea %}
+                            <label for="{{ linea.id_for_label }}" class="checkbox">
+                                {{ linea.tag }}
+                                <span>{{ linea.choice_label }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
                 <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
                     <div class="form-group">
                         <label for="">
@@ -146,3 +181,32 @@
     </div>
 </div>
 {% endblock content %}
+{% block extrajs %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#id_numero_linea_13").click(function() {
+        disable_box("id_numero_linea_13")
+    });
+    $("#id_numero_linea_14").click(function() {
+        disable_box("id_numero_linea_14")
+    });
+});
+
+function disable_box(id) {
+    var checked = document.getElementById(id);
+    if (checked.checked == true) {
+        for (var i = 0; i <= 14; i++) {
+            if ("id_numero_linea_" + i == id) {
+                $("#id_numero_linea_" + i).attr("disabled", false);
+            } else {
+                $("#id_numero_linea_" + i).attr("disabled", true);
+            }
+        }
+    } else {
+        for (var i = 0; i <= 14; i++) {
+            $("#id_numero_linea_" + i).attr("disabled", false);
+        }
+    }
+}
+</script>
+{% endblock extrajs %}

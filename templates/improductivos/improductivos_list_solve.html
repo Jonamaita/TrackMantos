@@ -10,33 +10,17 @@
         <table class="" style="width: 100%">
             <thead class="">
                 <tr>
-                    <th>
-                        #
-                    </th>
-                    <th>
-                        Problema
-                    </th>
-                    <th>
-                        comentario
-                    </th>
-                    <th>
-                        Fecha
-                    </th>
-                    <th>
-                        Hora Del Problema
-                    </th>
-                    <th>
-                        Hora De Solución
-                    </th>
-                    <th>
-                        Tiempo Improductivo
-                    </th>
-                    <th>
-                        Producción
-                    </th>
-                    <th>
-                        Acciones
-                    </th>
+                    <th>ID</th>
+                    <th>Problema</th>
+                    <th>comentario</th>
+                    <th>Numero de Manto</th>
+                    <th>Lineas</th>
+                    <th>Fecha</th>
+                    <th>Hora Del Problema</th>
+                    <th>Hora De Solución</th>
+                    <th>Tiempo Improductivo</th>
+                    <th>Producción</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,30 +29,19 @@
                 {% for imp in object_list %}
                 <!--si fuera vista basada en función se pasa en el if el contexto improductivos, el cual se recibe de las vistas-->
                 <tr>
-                    <td>
-                        {{imp.id}}
+                    <td>{{imp.id}}</td>
+                    <td>{{imp.problema}}</td>
+                    <td>{{imp.comentario}}</td>
+                    <td>{{imp.numero_manto}}</td>
+                    <td>{% for lineas in imp.numero_linea.all %}
+                        {{ lineas.linea|add:"," }}
+                        {% endfor %}
                     </td>
-                    <td>
-                        {{imp.problema}}
-                    </td>
-                    <td>
-                        {{imp.comentario}}
-                    </td>
-                    <td>
-                        {{imp.fecha}}
-                    </td>
-                    <td>
-                        {{imp.hora_problema|time:"H:i:s"}}
-                    </td>
-                    <td>
-                        {{imp.hora_solucion|time:"H:i:s"}}
-                    </td>
-                    <td>
-                        {{imp.tiempo_improductivo|time:"H:i:s"}}
-                    </td>
-                    <td>
-                        {{imp.produccion}}
-                    </td>
+                    <td>{{imp.fecha}}</td>
+                    <td>{{imp.hora_problema|time:"H:i:s"}}</td>
+                    <td>{{imp.hora_solucion|time:"H:i:s"}}</td>
+                    <td>{{imp.tiempo_improductivo|time:"H:i:s"}}</td>
+                    <td>{{imp.produccion}}</td>
                     <td>
                         <a class="btn btn-success margin-btn" href="{% url 'improductivos:improductivo_solve' imp.id %}" title="Resolver">
                             Resolver

@@ -41,6 +41,51 @@ html {
 
   
 }
+.checkbox{
+   display: inline-block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 11px;
+    color:#59514C;
+    cursor: pointer;
+    font-size: 15px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* hide the browser's default checkbox */
+.checkbox input {
+    position: absolute;
+    cursor: pointer;
+
+}
+
+
+/* on mouse-over, add border color */
+.checkbox:hover    {
+      color:orange !important;
+
+}
+/* add background color when the checkbox is checked */
+.checkbox input[type="checkbox"]:checked +span
+{ 
+    
+    color: red !important;
+    transition: 0.3s;
+    font-size: 16px;
+   }
+.checkbox input[type="checkbox"]:not(checked) +span
+{ 
+    
+   
+    transition: 0.3s;
+    
+   }
+
+
+
 footer{
 
   position: absolute;

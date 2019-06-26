@@ -15,11 +15,13 @@
                 <table style="width: 100%">
                     <thead>
                         <tr>
-                            <!-- <th>#</th>-->
+                            <th>ID</th>
                             <th>Problema</th>
                             <th>Tipo de Problema</th>
                             <th>Fecha</th>
                             <th>Comentario</th>
+                            <th>Numero de Manto</th>
+                            <th>Lineas</th>
                             <th>Hora del problema</th>
                             <th>Hora de la solución</th>
                             <th>Tiempo Improductivo</th>
@@ -27,11 +29,16 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <!--<td>{{object.id}}</td> -->
+                            <td>{{object.id}}</td>
                             <td>{{object.problema | title}}</td>
                             <td>{{object.tipo_problema |title}}</td>
                             <td>{{object.fecha}}</td>
                             <td>{{object.comentario}}</td>
+                            <td>{{object.numero_manto}}</td>
+                            <td>{% for lineas in object.numero_linea.all %}
+                                {{ lineas.linea|add:","}}
+                                {% endfor %}
+                            </td>
                             <td>{{object.hora_problema|time:"H:i:s"}}</td>
                             <td>{{object.hora_solucion|time:"H:i:s"}}</td>
                             <td>{{object.tiempo_improductivo|time:"H:i:s"}}</td>

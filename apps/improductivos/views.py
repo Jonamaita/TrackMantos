@@ -37,6 +37,10 @@ def improductivos_form(request):
             formulario.tipo_problema = tipo_problema
             formulario.fecha = fecha
             formulario.hora_problema = time
+            """lineas = ChoicesLinea.objects.filter(lineas__in=numero_linea) # Otra Manera de guardar campos ManyToMany
+            #formulario = form.save(commit=True)
+            #formulario.numero_linea.set(lineas)"""
+            formulario = form.save(commit=True)  # Se prepara el formulario para ser guardado
             formulario.save()
             # le paso el nombre de la app y el name de la url
             return redirect('improductivos:improductivos_form')
@@ -65,6 +69,7 @@ def improductivos_qr(request):  # por codigo QR
             formulario.tipo_problema = tipo_problema
             formulario.fecha = fecha
             formulario.hora_problema = time
+            formulario = form.save(commit=True)
             formulario.save()
             # le paso el nombre de la app y el name de la url
             return redirect('improductivos:improductivos_list')

@@ -34,6 +34,31 @@
                             </div>
                         </div>
                         <div class="form-row">
+                            <div class="form-group text-center">
+                                <label class="required" for="{{form.numero_manto.name}}">
+                                    indique el numero de manto
+                                </label>
+                                <div>
+                                    {{form.numero_manto}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group text-center">
+                                <label class="required" for="{{form.numero_linea.name}}">
+                                    Seleccione lineas afectadas
+                                </label>
+                                <div>
+                                    {% for linea in form.numero_linea %}
+                                    <label for="{{ linea.id_for_label }}" class="checkbox">
+                                        {{ linea.tag }}
+                                        <span>{{ linea.choice_label }}</span>
+                                    </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
                             <!-- se pasa por la url-->
                             <div class="form-group text-center">
                                 <label class="required" for="{{form.orden_produccion.name}}">
@@ -60,3 +85,32 @@
     </div>
 </div>
 {%endblock content%}
+{% block extrajs %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#id_numero_linea_13").click(function() {
+        disable_box("id_numero_linea_13")
+    });
+    $("#id_numero_linea_14").click(function() {
+        disable_box("id_numero_linea_14")
+    });
+});
+
+function disable_box(id) {
+    var checked = document.getElementById(id);
+    if (checked.checked == true) {
+        for (var i = 0; i <= 14; i++) {
+            if ("id_numero_linea_" + i == id) {
+                $("#id_numero_linea_" + i).attr("disabled", false);
+            } else {
+                $("#id_numero_linea_" + i).attr("disabled", true);
+            }
+        }
+    } else {
+        for (var i = 0; i <= 14; i++) {
+            $("#id_numero_linea_" + i).attr("disabled", false);
+        }
+    }
+}
+</script>
+{% endblock extrajs %}

@@ -15,8 +15,6 @@
     <link href="https://fonts.googleapis.com/css?family=Oswald:400,500,600" rel="stylesheet" />
     <link href="{% static 'imgs/logo_mantos.png'%}" rel="icon" type="image/png" />
 </head>
-{% block extrajs %}
-{% endblock extrajs %}
 <body>
 
     {% block header %}
@@ -151,10 +149,11 @@
     {% endblock footer %}
     <script src="https://use.fontawesome.com/66786629b2.js">
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
     </script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    
+    {% block extrajs %}
+    {% endblock extrajs %}
 </body>
 
 </html>
