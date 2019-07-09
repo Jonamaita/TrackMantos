@@ -1,10 +1,19 @@
 from django import forms
 from apps.producciones.models import Producciones
 from django.contrib.auth import authenticate
+import re
+from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
+
+
+def validate_orden_produccio(value):
+    val = RegexValidator(
+        regex=r'^[\w-]+$', message='Ingrese una OC valida, solo con el siguiente caracter especial valido "-" y sin espacios.')
+    val(value)
 
 
 class ProduccionesForm(forms.ModelForm):
-    orden_produccion = forms.CharField(label='orden_produccion', max_length=20, required=True, widget=forms.TextInput(
+    orden_produccion = forms.CharField(validators=[validate_orden_produccio], label='orden_produccion', max_length=20, required=True, widget=forms.TextInput(
         attrs={'class': 'form-control', 'id': 'orden_produccion', 'style': 'color:black', 'autocomplete': 'off', 'autofocus': '', 'placeholder': 'OC1234'}))
     minera = forms.CharField(label='minera', max_length=20, required=True, widget=forms.TextInput(attrs={
                              'class': 'form-control', 'id': 'minera', 'style': 'color:black', 'autocomplete': 'on', 'placeholder': 'Escondida'}))
@@ -17,7 +26,7 @@ class ProduccionesForm(forms.ModelForm):
 
 
 class ProduccionesFormEdit(forms.ModelForm):
-    orden_produccion = forms.CharField(label='orden_produccion', max_length=20, required=True, widget=forms.TextInput(
+    orden_produccion = forms.CharField(validators=[validate_orden_produccio], label='orden_produccion', max_length=20, required=True, widget=forms.TextInput(
         attrs={'class': 'form-control', 'id': 'orden_produccion_producciones', 'style': 'color:black', 'autocomplete': 'off', 'autofocus': '', 'placeholder': 'OC1234'}))
     minera = forms.CharField(label='minera', max_length=20, required=True, widget=forms.TextInput(attrs={
         'class': 'form-control', 'id': 'minera_producciones', 'style': 'color:black', 'autocomplete': 'on', 'placeholder': 'Escondida'}))
@@ -38,25 +47,26 @@ class ProduccionesFormEdit(forms.ModelForm):
                   'hora_inicio', 'fecha_finalizacion', 'hora_finalizacion']
 
 
-#Formulario para eliminar producción con contraseña
+# Formulario para eliminar producción con contraseña
 class DeleteConfirmForm(forms.Form):
-    password = forms.CharField(label='password', widget=forms.PasswordInput(attrs={'class': 'form-control is-invalid', 'id': 'password_confirm', 'style': 'color:black', 'autocomplete': 'password_confirm'}))
-  
-    
-    def __init__(self, *args, **kwargs): # sobre escribir el metodo init para tomar las palabras claves y tomar el request
-        self.request = kwargs.pop('request', None) # se debe pasar el request cuando se llama el  form. form=DeleteConfirmForm(request.POST,request=request)
-        super(DeleteConfirmForm, self).__init__(*args, **kwargs) # 
-             
+    password = forms.CharField(label='password', widget=forms.PasswordInput(
+        attrs={'class': 'form-control is-invalid', 'id': 'password_confirm', 'style': 'color:black', 'autocomplete': 'password_confirm'}))
+
+    def __init__(self, *args, **kwargs):  # sobre escribir el metodo init para tomar las palabras claves y tomar el request
+        # se debe pasar el request cuando se llama el  form.
+        # form=DeleteConfirmForm(request.POST,request=request)
+        self.request = kwargs.pop('request', None)
+        super(DeleteConfirmForm, self).__init__(*args, **kwargs)
 
     def clean(self):
         password = self.cleaned_data.get('password')
-        if self.request.user.is_authenticated: # Indentifico el usuario que esta en la sesión
-                username=self.request.user.username
+        if self.request.user.is_authenticated:  # Indentifico el usuario que esta en la sesión
+            username = self.request.user.username
         else:
-            username=None
+            username = None
         user = authenticate(username=username, password=password)
         if user == None:
             self._errors['password'] = 'Clave Invalida'
         elif not self.request.user.is_active:
-             self._errors['password'] = 'Usuario Inactivo'
+            self._errors['password'] = 'Usuario Inactivo'
         return self.cleaned_data

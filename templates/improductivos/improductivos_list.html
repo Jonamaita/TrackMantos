@@ -135,7 +135,7 @@ Lista de Improductivos
                     <ul>
                         <li class="selected"><a href="?" title="Todo">Todo</a></li>
                         {% for producciones in context_produccion %}
-                        <li><a href="?{{filtro_produccion}}&amp;produccion={{ producciones.produccion }}">{{producciones.produccion}}</a></li>
+                        <li><a href="?{{filtro_produccion}}&amp;produccion={{ producciones.produccion_id }}">{{producciones.produccion}}</a></li>
                         {% endfor %}
                     </ul>
                 </div>

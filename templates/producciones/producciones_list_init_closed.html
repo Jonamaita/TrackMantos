@@ -61,11 +61,11 @@ Lista de Ordenes de Producción a Iniciar o Cerrar
                     </td>
                     <td>
                         {% if producciones.fecha_inicio %}
-                        <a class="btn btn-danger margin-btn" href="{% url 'producciones:cerrar_produccion' producciones.orden_produccion %}" title="Iniciar Orden">
+                        <a class="btn btn-danger margin-btn" href="{% url 'producciones:cerrar_produccion' producciones.id %}" title="Iniciar Orden">
                             Cerrar Orden
                         </a>
                         {% else %}
-                        <a class="btn btn-success margin-btn" href="{% url 'producciones:iniciar_produccion' producciones.orden_produccion %}" title="Iniciar Orden">
+                        <a class="btn btn-success margin-btn" href="{% url 'producciones:iniciar_produccion' producciones.id %}" title="Iniciar Orden">
                             Iniciar Orden
                         </a>
                         {% endif %}

@@ -25,6 +25,7 @@
                             <th>Hora del problema</th>
                             <th>Hora de la solución</th>
                             <th>Tiempo Improductivo</th>
+                            <th>Producción</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,6 +43,7 @@
                             <td>{{object.hora_problema|time:"H:i:s"}}</td>
                             <td>{{object.hora_solucion|time:"H:i:s"}}</td>
                             <td>{{object.tiempo_improductivo|time:"H:i:s"}}</td>
+                            <td>{{object.produccion}}</td>
                         </tr>
                     </tbody>
                 </table>

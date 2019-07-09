@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from apps.improductivos.forms import ImproductivosForm, ImproductivosFormEdit, ImproductivosFormQr
 from datetime import datetime  # importar time
 from apps.improductivos.models import MantosImp
+from apps.producciones.models import Producciones
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 import datetime as tiempo
 import urllib.parse
@@ -82,26 +83,27 @@ def improductivos_qr(request):  # por codigo QR
 
 def improductivo_solve(request, id_imp):
     now = datetime.now()
-    fecha = now.strftime("%Y-%m-%d")
+    fecha = now.date()
     time = now.strftime("%H:%M:%S")
     improductivo_solve = MantosImp.objects.filter(
         id=id_imp)  # Filtrar el improductivo resuelto
-    # Obtener la hora de dicho problema para calcular el improductivo
+    # Obtener la fecha,hora de dicho problema para calcular el improductivo
     hora_problema = MantosImp.objects.get(id=id_imp).hora_problema
-    # Pasar improductivo al formato str horas, minutos y segundos
-    hora_problema = hora_problema.strftime("%H:%M:%S")
-    # pasar time a objeto, para luego ser restado
-    h1 = datetime.strptime(time, "%H:%M:%S")
-    # pasar hora del problema a objeto, para luego realizar la operación de
-    # resta
-    h2 = datetime.strptime(hora_problema, "%H:%M:%S")
-    tiempo_improductivo = h1 - h2
-    # pasar el improductivo a string, ya que, esta en forma datetime
-    tiempo_improductivo = str(tiempo_improductivo)
-    # Asignarle el tiempo a la hora de solución
-    if improductivo_solve.update(hora_solucion=time, tiempo_improductivo=tiempo_improductivo):
+    fecha_problema = MantosImp.objects.get(id=id_imp).fecha
+    # Combinar fecha y hora, obtenida de la base de datos
+    fecha_hora_problema = datetime.combine(fecha_problema, hora_problema)
+    improductivo = now - fecha_hora_problema  # Calculo del improductivo
+    improductivo_H = (improductivo.days * 24 + improductivo.seconds //
+                      3600)  # Calculo de hora del improductivo
+    improductivo_M = (improductivo.seconds // 60) % 60  # Calculo de los minutos del improductivo
+    improductivo_S = improductivo.seconds % 60  # Calculo de los segundos del improductivo
+    # Concatenar el total del improductivo
+    improductivo_total = '{}:{}:{}'.format(improductivo_H, improductivo_M, improductivo_S)
+    try:
+        improductivo_solve.update(hora_solucion=time, tiempo_improductivo=improductivo_total)
         return redirect('improductivos:improductivos_list_solve')
-    else:
+    except Exception as err:
+        print(err)
         return redirect('improductivos:improductivos_list_solve')
     # Otra forma de actualizar
     # improductivo_solve=MantosImp.objects.get(id=id_imp)
@@ -164,8 +166,7 @@ class ImproductivosList(ListView):
             'problema').distinct()
         # Enviar en el contexto todas las producciones que estan en la base de
         # datos
-        context['context_produccion'] = MantosImp.objects.values(
-            'produccion').distinct()
+        context['context_produccion'] = MantosImp.objects.all().distinct('produccion')
         # Enviar en el contexto los tipos de problemas que estan en la base de
         # datos
         context['context_tipo_problema'] = MantosImp.objects.values(

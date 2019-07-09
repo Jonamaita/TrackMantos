@@ -64,7 +64,7 @@ Lista de ordenes de producción
                         </td>
                         {% if user.is_staff %}
                         <td>
-                            <a class="btn btn-primary margin-btn" href="{% url 'producciones:producciones_edit' producciones.orden_produccion %}" title="Editar">
+                            <a class="btn btn-primary margin-btn" href="{% url 'producciones:producciones_edit' producciones.id %}" title="Editar">
                                 Editar
                             </a>
                             <!-- <a class="btn btn-danger" href="{}" title="Eliminar">
