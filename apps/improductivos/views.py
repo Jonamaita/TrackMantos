@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.urls import reverse_lazy
-# Importar formulario
-from apps.improductivos.forms import ImproductivosForm, ImproductivosFormEdit, ImproductivosFormQr
+from apps.improductivos.forms import ImproductivosForm, ImproductivosFormEdit, ImproductivosFormQr, ImproductivosFormReport  # Importar formulario
 from datetime import datetime  # importar time
 from apps.improductivos.models import MantosImp
 from apps.producciones.models import Producciones
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
+from noob.utils import render_to_pdf  # imp
 import datetime as tiempo
 import urllib.parse
 
@@ -243,6 +244,82 @@ class ImproductivosDelete(DeleteView):
     model = MantosImp
     template_name = 'improductivos/improductivos_form_delete.html'
     success_url = reverse_lazy('improductivos:improductivos_list')
+
+
+# Generar Reporte PDF xhtml2PDF
+def improductivos_report_pdf(request):
+
+    def get_improductivo(tiempo_improductivo):
+        segundos = 0
+        for x in tiempo_improductivo:
+            segundos += (int(x.tiempo_improductivo.hour) * 3600) + \
+                (int(x.tiempo_improductivo.minute) * 60) + int(x.tiempo_improductivo.second)
+
+        horas = (segundos // 3600)  # Calculo de hora del improductivo
+        minutos = (segundos // 60) % 60  # Calculo de los minutos del improductivo
+        segundos = segundos % 60  # Calculo de los segundos del improductivo
+        return ('{}:{}:{}'.format(horas, minutos, segundos))
+
+    if request.method == "POST":
+        form = ImproductivosFormReport(request.POST)
+        if form.is_valid():
+            op = (form.cleaned_data['produccion'])
+            fecha_gte = (form.cleaned_data['fecha_gte'])
+            fecha_lte = (form.cleaned_data['fecha_lte'])
+            usuario = request.user.get_full_name
+            # Query Sets
+            query_imp_ruedas = MantosImp.objects.filter(
+                problema='ruedas', produccion__orden_produccion=op)
+            query_imp_goteros = MantosImp.objects.filter(
+                problema='goteros', produccion__orden_produccion=op)
+            query_imp_troquelado = MantosImp.objects.filter(
+                problema='troquelado', produccion__orden_produccion=op)
+            query_imp_film = MantosImp.objects.filter(
+                problema='film', produccion__orden_produccion=op)
+            query_imp_regulaciones = MantosImp.objects.filter(
+                problema='regulaciones', produccion__orden_produccion=op)
+            query_imp_electrico = MantosImp.objects.filter(
+                problema='electrico', produccion__orden_produccion=op)
+            query_imp_mecanico = MantosImp.objects.filter(
+                problema='mecanico', produccion__orden_produccion=op)
+            # calculos de improductivos
+            improductivo_ruedas = get_improductivo(query_imp_ruedas)
+            improductivo_goteros = get_improductivo(query_imp_goteros)
+            improductivo_troquelado = get_improductivo(query_imp_troquelado)
+            improductivo_film = get_improductivo(query_imp_film)
+            improductivo_regulaciones = get_improductivo(query_imp_regulaciones)
+            improductivo_electrico = get_improductivo(query_imp_electrico)
+            improductivo_mecanico = get_improductivo(query_imp_mecanico)
+
+            # Contexto al HTML
+            data = {
+                'today': datetime.now(),
+                'usuario': usuario,
+                'orden_produccion': op,
+                'improductivo_ruedas': improductivo_ruedas,
+                'improductivo_goteros': improductivo_goteros,
+                'improductivo_troquelado': improductivo_troquelado,
+                'improductivo_film': improductivo_film,
+                'improductivo_regulaciones': improductivo_regulaciones,
+                'improductivo_electrico': improductivo_electrico,
+                'improductivo_mecanico': improductivo_mecanico,
+
+            }
+            pdf = render_to_pdf('improductivos/improductivos_report_pdf.html', data)
+            if pdf:
+                response = HttpResponse(pdf, content_type='application/pdf')
+                filename = "Reporte_improductivo_%s_%s.pdf" %(op,datetime.now())
+                content = "attachment; filename=%s" %(filename)
+                response['Content-Disposition'] = content
+            return response
+
+
+            return HttpResponse("Error! =(")
+    else:
+        form = ImproductivosFormReport()
+
+    return render(request, 'improductivos/improductivos_form_report.html', {'form': form})
+
 
 #################################################################
 

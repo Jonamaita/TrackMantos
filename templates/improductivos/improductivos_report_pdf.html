@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    
+    <title>Reporte de improductivos</title>
+    <style type="text/css">
+    body {
+        font-weight: 200;
+        font-size: 14px;
+    }
+
+    .header {
+        font-size: 20px;
+        font-weight: 100;
+        text-align: center;
+        color: #007cae;
+    }
+
+    .title {
+        font-size: 22px;
+        font-weight: 100;
+        /* text-align: right;*/
+        padding: 10px 20px 0px 20px;
+    }
+
+    .title span {
+        color: #007cae;
+    }
+
+    .details {
+        padding: 10px 20px 0px 20px;
+        text-align: left !important;
+        /*margin-left: 40%;*/
+    }
+
+    .hrItem {
+        border: none;
+        height: 1px;
+        /* Set the hr color */
+        color: #333;
+        /* old IE */
+        background-color: #fff;
+        /* Modern Browsers */
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        text-align: center;
+        padding: 4px 0px 0px 0px;
+    }
+
+    .head_table {
+        color: #007cae;
+    }
+    
+    
+    
+    </style>
+</head>
+
+<body>
+    
+    <div class="container">
+        <!-- Encabezado -->
+        <div class="row">
+            <div class='wrapper'>
+                
+                    
+               
+                   
+                
+                <div class='header'>
+                     <img  height="35" src="{% static 'imgs/logo_mantos.png'%}" width="">
+                    <p class='title'>Reporte de Improductivos</p>
+
+                </div>
+                <div class='details'>
+                    <span style="font-weight: bold">Fecha: {{today}}</span> <br />
+                    <span style="font-weight: bold">Solicitado por {{usuario}}</span> <br />
+                    <span style="font-weight: bold">Orden de producción : {{orden_produccion}}</span>
+                    <hr class='hrItem' />
+                </div>
+            </div>
+        </div>
+        <!-- Tabla Imp Producciones-->
+        <br>
+        <div class="row">
+            <div class="col-md-9 lemon text-center">
+                <table class="" style="width: 100%">
+                    <thead class="">
+                        <tr>
+                            <th colspan="2" class="head_table">
+                                Improductivos de Producción
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span style="font-weight: bold"> Ruedas </span>
+                            </td>
+                            <td>
+                                {{improductivo_ruedas}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span style="font-weight: bold"> Goteros </span>
+                            </td>
+                            <td>
+                                {{improductivo_goteros}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span style="font-weight: bold"> Troquelado </span>
+                            </td>
+                            <td>
+                                {{improductivo_troquelado}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span style="font-weight: bold"> Film </span>
+                            </td>
+                            <td>
+                                {{improductivo_film}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span style="font-weight: bold"> Regulaciones </span>
+                            </td>
+                            <td>
+                                {{improductivo_film}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+               <!-- <pdf:nextpage-->
+                <table class="" style="width: 100%">
+                    <thead class="">
+                        <tr>
+                            <th colspan="2" class="head_table">
+                                Improductivos de Mantenimiento
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span style="font-weight: bold"> Eléctrico </span>
+                            </td>
+                            <td>
+                                {{improductivo_electrico}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span style="font-weight: bold"> Mecánico </span>
+                            </td>
+                            <td>
+                                {{improductivo_mecanico}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

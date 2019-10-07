@@ -118,3 +118,17 @@ class ImproductivosFormQr(forms.ModelForm):
         widgets = {'comentario': forms.Textarea(attrs={'class': 'form-control', 'title': 'Escriba un comentario', 'rows': '3', 'style': 'color:black', 'id': 'comentario'}),
                    'numero_linea': forms.CheckboxSelectMultiple(attrs={'title': 'Indique lineas afectadas', }),
                    'problema': forms.Select(choices=PROBLEMAS_CHOICES, attrs={'class': 'form-control', 'title': 'Seleccione un problema', 'style': 'color:black', 'required': True}), }
+
+
+class ImproductivosFormReport(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['produccion'].queryset
+
+    produccion = forms.ModelChoiceField(queryset=Producciones.objects.all(), empty_label=None, widget=forms.Select(
+        attrs={'class': 'form-control', 'style': 'color:black', 'id': 'producciones', 'required': True}))
+    fecha_gte = forms.DateField(input_formats=['%d-%m-%Y'], widget=forms.DateInput(
+        attrs={'class': 'form-control', 'data-target': '#datepicker1', 'title': 'Indique fecha', 'style': 'color:black', 'id': 'fecha_gte', 'placeholder': 'introduzca fecha dd-mm-yyyy'}))
+    fecha_lte = forms.DateField(input_formats=['%d-%m-%Y'], widget=forms.DateInput(
+        attrs={'class': 'form-control', 'data-target': '#datepicker1', 'title': 'Indique fecha', 'style': 'color:black', 'id': 'fecha_lte', 'placeholder': 'introduzca fecha dd-mm-yyyy'}))

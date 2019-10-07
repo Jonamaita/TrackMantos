@@ -1,0 +1,83 @@
+{% extends "base/base.html" %}
+{% block head %}
+<link href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css' rel='stylesheet' type='text/css'>
+{% endblock head %}
+{%block content%}
+<div class="container">
+    <div class="row">
+        <div class=" col-sm-3 col-lg-4">
+        </div>
+        <div class=" col-sm-6 col-lg-4">
+            <div class="panel panel-info" style="margin-top:50px;">
+                <div class="panel-heading text-center">
+                    Generar Reporte
+                </div>
+                <div class="panel-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        <div class="form-row">
+                            <div class="form-group text-center">
+                                <label class="required" for="producciones">
+                                    Seleccione una OP
+                                </label>
+                                <div>
+                                    {{form.produccion}}
+                                </div>
+                                {{form.produccion.errors}}
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group text-center ">
+                                <label class="required" for="fecha_gte">
+                                    Desde
+                                </label>
+                                <div class="input-group date" id="datepicker_gte" data-target-input="nearest">
+                                    {{ form.fecha_gte }}
+                                    <div class="input-group-addon" data-target="#datepicker_gte" data-toggle="datepicker_gte">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                                {{form.fecha_gte.errors}}
+                            </div>
+                        </div>
+                          <div class="form-row">
+                            <div class="form-group text-center ">
+                                <label class="required" for="fecha_lte">
+                                    Hasta
+                                </label>
+                                <div class="input-group date" id="datepicker_lte" data-target-input="nearest">
+                                    {{ form.fecha_lte }}
+                                    <div class="input-group-addon" data-target="#datepicker_lte" data-toggle="datepicker_lte">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                                {{form.fecha_lte.errors}}
+                            </div>
+                        </div>
+                        <div class="submit-row">
+                            <div class="form-group text-center">
+                                <button class="btn btn-primary" type="submit">
+                                    Enviar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class=" col-sm-3 col-lg-4">
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock content%}
+{% block extrajs %}
+<script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js' type='text/javascript'></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#datepicker_gte,#datepicker_lte').datepicker({
+        "format": "dd-mm-yyyy",
+    });
+});
+</script>
+{% endblock extrajs %}
