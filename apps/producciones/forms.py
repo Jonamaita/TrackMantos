@@ -6,14 +6,14 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 
 
-def validate_orden_produccio(value):
+def validate_orden_produccion(value):
     val = RegexValidator(
         regex=r'^[\w-]+$', message='Ingrese una OC valida, solo con el siguiente caracter especial valido "-" y sin espacios.')
     val(value)
 
 
 class ProduccionesForm(forms.ModelForm):
-    orden_produccion = forms.CharField(validators=[validate_orden_produccio], label='orden_produccion', max_length=20, required=True, widget=forms.TextInput(
+    orden_produccion = forms.CharField(validators=[validate_orden_produccion], label='orden_produccion', max_length=20, required=True, widget=forms.TextInput(
         attrs={'class': 'form-control', 'id': 'orden_produccion', 'style': 'color:black', 'autocomplete': 'off', 'autofocus': '', 'placeholder': 'OC1234'}))
     minera = forms.CharField(label='minera', max_length=20, required=True, widget=forms.TextInput(attrs={
                              'class': 'form-control', 'id': 'minera', 'style': 'color:black', 'autocomplete': 'on', 'placeholder': 'Escondida'}))
@@ -26,7 +26,7 @@ class ProduccionesForm(forms.ModelForm):
 
 
 class ProduccionesFormEdit(forms.ModelForm):
-    orden_produccion = forms.CharField(validators=[validate_orden_produccio], label='orden_produccion', max_length=20, required=True, widget=forms.TextInput(
+    orden_produccion = forms.CharField(validators=[validate_orden_produccion], label='orden_produccion', max_length=20, required=True, widget=forms.TextInput(
         attrs={'class': 'form-control', 'id': 'orden_produccion_producciones', 'style': 'color:black', 'autocomplete': 'off', 'autofocus': '', 'placeholder': 'OC1234'}))
     minera = forms.CharField(label='minera', max_length=20, required=True, widget=forms.TextInput(attrs={
         'class': 'form-control', 'id': 'minera_producciones', 'style': 'color:black', 'autocomplete': 'on', 'placeholder': 'Escondida'}))

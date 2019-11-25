@@ -173,4 +173,22 @@ hr {
     font-size: 20px;
 
 }
+.importante{
+  color: #E93613;
+  font-weight: bold;
+}
 
+.hint{
+
+  visibility: visible;
+  opacity: 1;
+  max-height: 30px;
+  transition: visibility 0s, opacity 1s, max-height 0.3s linear;
+}
+
+.ocultar {
+  visibility: hidden;
+  opacity: 0;
+  max-height: 0px;
+  transition: max-height 1s, opacity 0.3s, visibility 0.3s linear;
+}

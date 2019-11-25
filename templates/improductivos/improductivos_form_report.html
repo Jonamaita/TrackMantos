@@ -38,6 +38,7 @@
                                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                     </div>
                                 </div>
+                                <p id="nota_fecha_gte" class="importante hint"></p>
                                 {{form.fecha_gte.errors}}
                             </div>
                         </div>
@@ -48,10 +49,12 @@
                                 </label>
                                 <div class="input-group date" id="datepicker_lte" data-target-input="nearest">
                                     {{ form.fecha_lte }}
+                                    
                                     <div class="input-group-addon" data-target="#datepicker_lte" data-toggle="datepicker_lte">
                                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                     </div>
                                 </div>
+                                <p id="nota_fecha_lte" class="importante hint"></p>
                                 {{form.fecha_lte.errors}}
                             </div>
                         </div>
@@ -60,7 +63,9 @@
                                 <button class="btn btn-primary" type="submit">
                                     Enviar
                                 </button>
+                            
                             </div>
+                            
                         </div>
                     </form>
                 </div>
@@ -74,10 +79,73 @@
 {% block extrajs %}
 <script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js' type='text/javascript'></script>
 <script type="text/javascript">
-$(document).ready(function() {
+
+    
+
+   $(document).ready(function() {
+    var op_select=$("#producciones").val(); //Obtener valor de op seleccionada por defecto al cargar el html
+    var data_op=""
+    $.get('producciones/producciones_json',function(data){ //obtiene el json de las producciones al cargar el html
+            data_op=data
+            fechas_op(data_op,op_select) // función para obtener las fecha de inicio y finalización de la op selecionada por defecto 
+            
+    });  
+    
     $('#datepicker_gte,#datepicker_lte').datepicker({
         "format": "dd-mm-yyyy",
     });
+    $('#producciones').change(function(){ // obtiene el valor de la op seleccionada
+        op_select=$("#producciones").val();
+        fechas_op(data_op,op_select)
+       
+    });
+
+    
+
+
 });
+   function convertDateFormat(fecha) { // convierte el formato YY-MM-DD a DD-MM-YY
+        if (fecha!=null){
+            var fecha_format = fecha.split('-').reverse().join('-');
+            return fecha_format;
+        }else{
+            return null
+        }
+        
+        
+   }
+   function fechas_op(data,op)
+   {
+    for (x in data)
+    {
+        console.log(data)
+        if (data[x].pk==op)
+        {
+            fecha_gte = convertDateFormat(data[x].fields['fecha_inicio']); // convertir formao de fecha
+            fecha_lte = convertDateFormat(data[x].fields['fecha_finalizacion']);
+            document.getElementById("fecha_gte").value = fecha_gte // Asignar el valor de la fecha de inicio de la OP seleccionada automaticamente
+            document.getElementById("fecha_lte").value = fecha_lte
+            if (data[x].fields['fecha_finalizacion']==null) // Si no tiene fecha de finalización muestra una nota al usuario
+            {
+                document.getElementById("nota_fecha_lte").classList.remove('ocultar');
+                document.getElementById("nota_fecha_lte").innerText = 'La OP "'+ data[x].fields['orden_produccion'] +'" no tiene fecha de finalización, elija una fecha mayor o igual a la fecha de inicio.';
+            }else{
+                 document.getElementById("nota_fecha_lte").classList.add('ocultar');
+                 }
+            if (data[x].fields['fecha_inicio']==null) // Si no tiene fecha de inicio muestra una nota al usuartio
+            {
+                document.getElementById("nota_fecha_gte").classList.remove('ocultar');
+                document.getElementById("nota_fecha_gte").innerText = 'La OP "'+ data[x].fields['orden_produccion'] +'" no tiene fecha de inicio, debe iniciar la OP.';
+            }else{
+                 document.getElementById("nota_fecha_gte").classList.add('ocultar');
+                 }
+           
+        }
+    }
+
+
+   }
+
+  
 </script>
 {% endblock extrajs %}

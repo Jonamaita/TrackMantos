@@ -1,3 +1,5 @@
+from django.core import serializers
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from apps.producciones.forms import ProduccionesForm, ProduccionesFormEdit, DeleteConfirmForm
@@ -6,6 +8,7 @@ from datetime import datetime, timedelta  # importar time
 from django.views.generic import ListView, UpdateView, DeleteView
 from apps.producciones.models import Producciones
 import urllib.parse
+
 
 
 # Create your views here.
@@ -173,3 +176,9 @@ def cerrar_produccion(request, pk):
         return redirect('producciones:producciones_list')
     else:
         return redirect('producciones:producciones_list_init_closed')
+
+#Json de producciones
+
+def producciones_json(request):
+    data = serializers.serialize("json", Producciones.objects.all(),fields=['orden_produccion','pk','fecha_inicio','fecha_finalizacion'])
+    return HttpResponse (data, content_type='application/json')

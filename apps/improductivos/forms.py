@@ -1,6 +1,7 @@
 from django import forms
 from apps.improductivos.models import MantosImp
 from apps.producciones.models import Producciones
+from django.core.exceptions import ValidationError
 
 PROBLEMA_PRODUCCION_CHOICES = (
     ('ruedas', 'Ruedas'), ('goteros', 'Goteros'), ('troquelado', 'Troquelado'), ('film', 'Film'), ('regulaciones', 'Regulaciones'))
@@ -8,6 +9,16 @@ PROBLEMAS_CHOICES = (('electrico', 'Eléctrico',), ('mecanico',
                                                    'Mecánico',), ('PRODUCCIÓN', PROBLEMA_PRODUCCION_CHOICES))
 TIPO_PROBLEMA = (('mantenimiento', 'Mantenimiento'),
                  ('produccion', 'Producción'))
+
+
+def validate_fecha_gte(data):
+
+    print(data)
+    op_select = Producciones.objects.filter(orden_produccion=data['orden_produccion'])
+    for x in op_select:
+        fecha_inicio = x.fecha_inicio
+    if data['fecha_gte'] <= fecha_inicio:
+        raise ValidationError('La fecha de inicio seleccionada es menor a la de inico')
 
 
 class ImproductivosForm(forms.ModelForm):
@@ -132,3 +143,20 @@ class ImproductivosFormReport(forms.Form):
         attrs={'class': 'form-control', 'data-target': '#datepicker1', 'title': 'Indique fecha', 'style': 'color:black', 'id': 'fecha_gte', 'placeholder': 'introduzca fecha dd-mm-yyyy'}))
     fecha_lte = forms.DateField(input_formats=['%d-%m-%Y'], widget=forms.DateInput(
         attrs={'class': 'form-control', 'data-target': '#datepicker1', 'title': 'Indique fecha', 'style': 'color:black', 'id': 'fecha_lte', 'placeholder': 'introduzca fecha dd-mm-yyyy'}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_gte_ingresada = cleaned_data.get("fecha_gte")  # Fecha seleccionada por el usuario
+        fecha_lte_ingresada = cleaned_data.get("fecha_lte")
+        orden_produccion = cleaned_data.get('produccion')
+        op_select = Producciones.objects.filter(
+            orden_produccion=orden_produccion)
+        for x in op_select:
+            fecha_inicio_op_select = x.fecha_inicio  # Fecha de inicio de la op seleccionada por el usuario
+            fecha_finalizacion_op_select = x.fecha_finalizacion
+        if fecha_inicio_op_select != None:
+            if fecha_gte_ingresada < fecha_inicio_op_select:
+                raise ValidationError(
+                    'La fecha de inicio ingresada, es menor a la fecha de inicio que contiene la OP')
+        else:
+            raise ValidationError('La OP seleccionada no tiene fecha de inicio')
