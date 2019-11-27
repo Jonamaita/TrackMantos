@@ -517,6 +517,7 @@ def improductivos_report(request):
         # bc.strokeColor = colors.black # Dibuja un borde alrededor del grafico
         # bc.fillColor = colors.green # Fondo del grafico
         # bc.groupSpacing = 10  # Espaciado entre grupos de barras
+        bc.valueAxis.valueMin = 0
         bc.valueAxis.rangeRound = 'both'
         bc.valueAxis.valueMax = None  # Valor maximo del eje
         #bc.valueAxis.valueStep = 5
@@ -563,6 +564,7 @@ def improductivos_report(request):
         # bc.strokeColor = colors.black # Dibuja un borde alrededor del grafico
         # bc.fillColor = colors.green # Fondo del grafico
         # bc.groupSpacing = 10  # Espaciado entre grupos de barras
+        bc.valueAxis.valueMin = 0
         bc.valueAxis.rangeRound = 'both'
         bc.valueAxis.valueMax = None  # Valor maximo del eje
         #bc.valueAxis.valueStep = 5
