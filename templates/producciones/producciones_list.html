@@ -4,157 +4,194 @@
 Lista de ordenes de producción
 {% endblock title_page %}
 <div class="container">
-    <div class="row">
-        <div class="col-md-9 lemon text-center">
-            <table class="" style="width: 100%">
-                <thead class="">
-                    <tr>
-                        <th>
-                            Orden de producción
-                        </th>
-                        <th>
-                            Minera
-                        </th>
-                        <th>
-                            Comentario
-                        </th>
-                        <th>
-                            Fecha de inicio
-                        </th>
-                        <th>
-                            Hora de inicio
-                        </th>
-                        <th>
-                            Fecha de finalización
-                        </th>
-                        <th>
-                            Hora de finalización
-                        </th>
-                        {% if user.is_staff %}
-                        <th>
-                            Acciones
-                        </th>
-                        {% endif %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if object_list %}
-                    {% for producciones in object_list %}
-                    <tr>
-                        <td>
-                            {{producciones.orden_produccion}}
-                        </td>
-                        <td>
-                            {{producciones.minera | title}}
-                        </td>
-                        <td>
-                            {{producciones.comentario}}
-                        </td>
-                        <td>
-                            {{producciones.fecha_inicio}}
-                        </td>
-                        <td>
-                            {{producciones.hora_inicio|time:"H:i:s"}}
-                        </td>
-                        <td>
-                            {{producciones.fecha_finalizacion}}
-                        </td>
-                        <td>
-                            {{producciones.hora_finalizacion|time:"H:i:s"}}
-                        </td>
-                        {% if user.is_staff %}
-                        <td>
-                            <a class="btn btn-primary margin-btn" href="{% url 'producciones:producciones_edit' producciones.id %}" title="Editar">
-                                Editar
-                            </a>
-                            <!-- <a class="btn btn-danger" href="{}" title="Eliminar">
-                                Eliminar
-                            </a>-->
-                        </td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                    {% else %}
-                    <h4>
-                        No hay registro de ordenes de producción
-                    </h4>
-                    {% endif %}
-                </tbody>
-            </table>
-            <ul class="pager">
-                <li>
-                    {% if page_obj.has_previous %}
-                    <a class="" href="?page={{ page_obj.previous_page_number }}">Atras</a>
-                    {% endif %}
-                </li>
-                <li>
-                    {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
-                    {% endif %}
-                </li>
-            </ul>
-        </div>
-        <div class="col-md-3">
-            <div class="panel panel-primary ">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                        Filtro
-                    </h3>
-                </div>
-                <div class="panel-body">
-                    <p>
-                        Por fecha
-                    </p>
-                    <form method="get" action="{% url 'producciones:producciones_list' %}" id="filtro_fecha_producciones">
-                        <div class="form-row">
-                            <div class="form-group ">
-                                <label class="" for="date_since">
-                                    Desde
-                                </label>
-                                <input class="form-control" type="date" value="{{context_fecha_gte}}" name="fecha_inicio__gte" id="date_since_producciones">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group ">
-                                <label class="" for="date_until">
-                                    Hasta
-                                </label>
-                                <input class="form-control" type="date" value="{{context_fecha_lte}}" name="fecha_inicio__lte" id="date_until_producciones">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group ">
-                                <input type="hidden" value="?{{filtro_fecha_query_string}}" id="fecha_query_string_producciones">
-                            </div>
-                        </div>
-                        <div class="submit-row">
-                            <div class="form-group">
-                                <input class="btn btn-primary btn-block" type="submit" onclick="datefilter_apply(event, 'fecha_query_string_producciones', 'filtro_fecha_producciones')" value="Buscar">
-                            </div>
-                        </div>
-                    </form>
-                    <hr>
-                    <p>Por mineras</p>
-                    <ul>
-                        <li class="selected"><a href="?" title="Todo">Todos</a></li>
-                        {% for minera in context_minera %}
-                        <li><a href="?{{filtro_minera}}minera={{ minera.minera }}">{{minera.minera}}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="row">
+		<div class="col-md-9 lemon text-center">
+			<table class="" style="width: 100%">
+				<thead class="">
+					<tr>
+						<th>
+							Orden de producción
+						</th>
+						<th>
+							Minera
+						</th>
+						<th>
+							Cantidad de mantos a fabricar
+						</th>
+						<th>
+							Fecha de inicio
+						</th>
+						<th>
+							Hora de inicio
+						</th>
+						<th>
+							Fecha de finalización
+						</th>
+						<th>
+							Hora de finalización
+						</th>
+						<th>
+							Tope improductivo producción
+						</th>
+						<th>
+							Tope improductivo mantenimiento
+						</th>
+						<th>
+							Comentario
+						</th>
+						{% if user.is_staff %}
+						<th>
+							Acciones
+						</th>
+						{% endif %}
+					</tr>
+				</thead>
+				<tbody>
+					{% if object_list %}
+					{% for producciones in object_list %}
+					<tr>
+						<td>
+							{{producciones.orden_produccion}}
+						</td>
+						<td>
+							{{producciones.minera | title}}
+						</td>
+						<td>
+							{{producciones.cantidad_mantos}}
+						</td>
+						<td>
+							{{producciones.fecha_inicio}}
+						</td>
+						<td>
+							{{producciones.hora_inicio|time:"H:i:s"}}
+						</td>
+						<td>
+							{{producciones.fecha_finalizacion}}
+						</td>
+						<td>
+							{{producciones.hora_finalizacion|time:"H:i:s"}}
+						</td>
+						<td>
+							{{producciones.tope_improductivo_produccion}}
+						</td>
+						<td>
+							{{producciones.tope_improductivo_mantenimiento}}
+						</td>
+						<td>
+							{{producciones.comentario}}
+						</td>
+						{% if user.is_staff %}
+						<td>
+							<a class="btn btn-primary margin-btn" href="{% url 'producciones:producciones_edit' producciones.id %}" title="Editar">
+								Editar
+							</a>
+							<!-- <a class="btn btn-danger" href="{}" title="Eliminar">
+								Eliminar
+							</a>-->
+						</td>
+						{% endif %}
+					</tr>
+					{% endfor %}
+					{% else %}
+					<h4>
+						No hay registro de ordenes de producción
+					</h4>
+					{% endif %}
+				</tbody>
+			</table>
+			<ul class="pager">
+				<li>
+					{% if page_obj.has_previous %}
+					<a class="" href="?page={{ page_obj.previous_page_number }}">
+						Atras
+					</a>
+					{% endif %}
+				</li>
+				<li>
+					{% if page_obj.has_next %}
+					<a href="?page={{ page_obj.next_page_number }}">
+						Siguiente
+					</a>
+					{% endif %}
+				</li>
+			</ul>
+		</div>
+		<div class="col-md-3">
+			<div class="panel panel-primary ">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Filtro
+					</h3>
+				</div>
+				<div class="panel-body">
+					<p>
+						Por fecha
+					</p>
+					<form action="{% url 'producciones:producciones_list' %}" id="filtro_fecha_producciones" method="get">
+						<div class="form-row">
+							<div class="form-group ">
+								<label class="" for="date_since">
+									Desde
+								</label>
+								<input class="form-control" id="date_since_producciones" name="fecha_inicio__gte" type="date" value="{{context_fecha_gte}}">
+								</input>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group ">
+								<label class="" for="date_until">
+									Hasta
+								</label>
+								<input class="form-control" id="date_until_producciones" name="fecha_inicio__lte" type="date" value="{{context_fecha_lte}}">
+								</input>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group ">
+								<input id="fecha_query_string_producciones" type="hidden" value="?{{filtro_fecha_query_string}}">
+								</input>
+							</div>
+						</div>
+						<div class="submit-row">
+							<div class="form-group">
+								<input class="btn btn-primary btn-block" onclick="datefilter_apply(event, 'fecha_query_string_producciones', 'filtro_fecha_producciones')" type="submit" value="Buscar">
+								</input>
+							</div>
+						</div>
+					</form>
+					<hr>
+						<p>
+							Por mineras
+						</p>
+						<ul>
+							<li class="selected">
+								<a href="?" title="Todo">
+									Todos
+								</a>
+							</li>
+							{% for minera in context_minera %}
+							<li>
+								<a href="?{{filtro_minera}}minera={{ minera.minera }}">
+									{{minera.minera}}
+								</a>
+							</li>
+							{% endfor %}
+						</ul>
+					</hr>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock content %}
 {% block extrajs %}
 <script type="text/javascript">
-// script para unir la petición del filtro
+	// script para unir la petición del filtro
 function datefilter_apply(event, qs_name, form_name) {
-    event.preventDefault();
-    var query_string = $('#' + qs_name).val();
-    var form_data = $('#' + form_name).serialize();
-    window.location = window.location.pathname + query_string + '&' + form_data;
+	event.preventDefault();
+	var query_string = $('#' + qs_name).val();
+	var form_data = $('#' + form_name).serialize();
+	window.location = window.location.pathname + query_string + '&' + form_data;
 
 }
 </script>

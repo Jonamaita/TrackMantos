@@ -10,7 +10,6 @@ from apps.producciones.models import Producciones
 import urllib.parse
 
 
-
 # Create your views here.
 
 # Agregar datos de producción
@@ -25,19 +24,23 @@ def produccion_form(request):
         if form.is_valid():
             # Pasamos form.save(commit=False), con esto le decimos que no
             # queremos guardar el formulario aún,  pasando el formulario a otra
-            # variable podemos agregar la fecha
+            # variable podemos llenar otros campos del formulario
             orden_produccion = form.cleaned_data['orden_produccion']
             orden_produccion = orden_produccion.replace(" ", "").replace("/", "-")
+            orden_produccion = orden_produccion.upper()  # Llevar el numero de orden produccion a mayuscula
             minera = form.cleaned_data['minera']
             minera = minera.replace(" ", "")
-            # Llevar el numero de orden produccion a mayuscula
-            orden_produccion = orden_produccion.upper()
             minera = minera.title()  # Llevar el nombre de la minera a tipo titulo
+            # Calculo de meta improductivo producción y mantenimiento
+            cantidad_mantos = form.cleaned_data['cantidad_mantos']
+            tope_improductivo_produccion = round((cantidad_mantos * 0.82) / 60)  # formula KPI produccón
+            tope_improductivo_mantenimiento = round((cantidad_mantos * 0.30) / 60)  # formula KPI mantenimiento
             formulario = form.save(commit=False)
             formulario.orden_produccion = orden_produccion
             formulario.minera = minera
-            #formulario.fecha_inicio = fecha
-            #formulario.hora_inicio = time
+            formulario.tope_improductivo_produccion = tope_improductivo_produccion
+            formulario.tope_improductivo_mantenimiento = tope_improductivo_mantenimiento
+            formulario = form.save(commit=True)
             formulario.save()
             return redirect('producciones:produccion_form')
         else:
@@ -177,8 +180,10 @@ def cerrar_produccion(request, pk):
     else:
         return redirect('producciones:producciones_list_init_closed')
 
-#Json de producciones
+# Json de producciones
+
 
 def producciones_json(request):
-    data = serializers.serialize("json", Producciones.objects.all(),fields=['orden_produccion','pk','fecha_inicio','fecha_finalizacion'])
-    return HttpResponse (data, content_type='application/json')
+    data = serializers.serialize("json", Producciones.objects.all(), fields=[
+                                 'orden_produccion', 'pk', 'fecha_inicio', 'fecha_finalizacion'])
+    return HttpResponse(data, content_type='application/json')
