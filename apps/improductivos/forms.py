@@ -137,7 +137,7 @@ class ImproductivosFormReport(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['produccion'].queryset
 
-    produccion = forms.ModelChoiceField(queryset=Producciones.objects.all(), empty_label=None, widget=forms.Select(
+    produccion = forms.ModelChoiceField(queryset=Producciones.objects.all().order_by('-orden_produccion'), empty_label=None, widget=forms.Select(
         attrs={'class': 'form-control', 'style': 'color:black', 'id': 'producciones', 'required': True}))
     fecha_gte = forms.DateField(input_formats=['%d-%m-%Y'], widget=forms.DateInput(
         attrs={'class': 'form-control', 'data-target': '#datepicker1', 'title': 'Indique fecha', 'style': 'color:black', 'id': 'fecha_gte', 'placeholder': 'introduzca fecha dd-mm-yyyy'}))
