@@ -87,7 +87,7 @@ class ImproductivoReportPDF:
 		canvas.drawString(75, 730, str(time))
 		canvas.drawString(145, 715, str(self.op))
 		canvas.line(40, 700, 555, 700)
-		return canvas
+		#return canvas
 
 	def cabecera_contenido(self,canvas, doc):
 		now = datetime.now()
@@ -107,7 +107,7 @@ class ImproductivoReportPDF:
 		canvas.drawString(75, 775, str(time))
 		canvas.drawString(145, 760, str(self.op))
 		canvas.line(40, 750, 555, 750)
-		return canvas
+		#return canvas
 
 	def pie_pagina(self,canvas, doc):
 		canvas.setFont("Helvetica-Bold", 8)
