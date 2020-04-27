@@ -1,5 +1,5 @@
 from django.urls import path,re_path,include
-from apps.improductivos.views import index,improductivos_form,ImproductivosList,ImproductivosListSolve,ImproductivosUpdate,ImproductivosDelete,improductivos_report,improductivos_qr,improductivo_solve#,improductivos_report_pdf
+from apps.improductivos.views import index,improductivos_form,ImproductivosList,ImproductivosListSolve,ImproductivosUpdate,ImproductivosDelete,ImproductivosReport,improductivos_qr,improductivo_solve#,improductivos_report_pdf
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required # Solo entra las persona que son parte del staff
 app_name="improductivos" # Esto es para darle un nombre a la vista de la amplicación y manejar las rutas desde python a apartir de nombres
@@ -14,5 +14,5 @@ urlpatterns = [
    	path('improductivos_list_solve/',login_required(ImproductivosListSolve.as_view()),name="improductivos_list_solve"),
    	path('improductivo_solve/<int:id_imp>/',login_required(improductivo_solve),name="improductivo_solve"), # En la vista recibe id_imp, en la vista debe tener el mismo nombre de variable
    	#path('improductivos_report_pdf',login_required(improductivos_report_pdf),name="improductivos_report_pdf"),# Generar reporte
-   	path('improductivos_report',login_required(improductivos_report),name="improductivos_report"),
+   	path('improductivos_report',login_required(ImproductivosReport.as_view()),name="improductivos_report"),
 ]
