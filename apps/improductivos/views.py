@@ -255,7 +255,6 @@ class ImproductivosReport(View):
 			fecha_gte = (form.cleaned_data['fecha_gte'])
 			fecha_lte = (form.cleaned_data['fecha_lte'])
 			usuario = str(request.user.first_name + " " + request.user.last_name)
-			print(usuario)
 			improductivos_report = ImproductivoReportPDF(op=op,fecha_gte=fecha_gte,fecha_lte=fecha_lte,usuario=usuario)
 			pdf = improductivos_report.make_report()
 			if pdf:
@@ -269,11 +268,6 @@ class ImproductivosReport(View):
 			else:
 				return HttpResponse("Error! =(")
 			
-	
-
-
-
-
 #################################################################
 
 
