@@ -26,7 +26,7 @@ class ImproductivoReportPDF:
 		self.fecha_gte = fecha_gte
 		self.fecha_lte = fecha_lte
 		self.usuario = usuario
-		self.query_data(op=self.op,fecha_gte=self.fecha_gte,fecha_lte=self.fecha_lte)
+		
 
 
 	# Función para colorear todas las barras de diferentes colores (colores
@@ -426,6 +426,8 @@ class ImproductivoReportPDF:
 
 
 	def make_report(self) -> object:
+			# ejecuando el query para obtener los datos.
+			self.query_data(op=self.op,fecha_gte=self.fecha_gte,fecha_lte=self.fecha_lte)
 			# La clase io.BytesIO permite tratar un array de bytes como un fichero
 			# binario, se utiliza como almacenamiento temporal dentro de python, para luego ser descargado todo el dato como pdf
 			# Se debe pasar el pdf_buffer al BaseDocTemplate
