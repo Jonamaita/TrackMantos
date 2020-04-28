@@ -31,7 +31,7 @@ class ImproductivoReportPDF:
 
 	# Función para colorear todas las barras de diferentes colores (colores
 	# definidos en chart_colors)
-	def set_colors_bars(self,n, obj, attr, values):
+	def _set_colors_bars(self,n, obj, attr, values):
 		m = len(values)  # Calcula el largo del arreglo chart_colors
 		# Divide el largo del arreglo chart_colors entre la cantidad de barras a
 		# graficar, para luego usarlo en el seteo de colores "values[j*i % m]" y
@@ -44,7 +44,7 @@ class ImproductivoReportPDF:
 
 	# Función para colorear barra de improductivo total con respecto al
 	# promedio, solo retorna el color que va tomar la barra
-	def color_bar_imp_total(self,promedio):
+	def _color_bar_imp_total(self,promedio):
 
 		if promedio < 70:
 			return '#32a836'
@@ -58,10 +58,10 @@ class ImproductivoReportPDF:
 
 	"""Los metodos de cabecera y pie de pagina, son metodos llamado en el parametro onpage y endpage. Estos metodos se llaman especificamente desde
 	doc.addPageTemplates, implicitamente los parametros canvas y doc son pasados al metodo, por ende, cuando se llama el metodo no se envía los parametros, pero,
-	en el metodo se deben recibir los parametros. Es decr en "OnPage = cabecera_1" no se pasan los parametros canvas, doc. Pero en se deben recibir donde
+	en el metodo se deben recibir los parametros. Es decr en "OnPage = _cabecera_1" no se pasan los parametros canvas, doc. Pero en se deben recibir donde
 	se defina el metodo o función.
 	"""
-	def cabecera_1(self,canvas, doc):
+	def _cabecera_1(self,canvas, doc):
 		now = datetime.now()
 		fecha = now.strftime("%Y-%m-%d")
 		time = now.strftime("%H:%M:%S")
@@ -89,7 +89,7 @@ class ImproductivoReportPDF:
 		canvas.line(40, 700, 555, 700)
 		#return canvas
 
-	def cabecera_contenido(self,canvas, doc):
+	def _cabecera_contenido(self,canvas, doc):
 		now = datetime.now()
 		fecha = now.strftime("%Y-%m-%d")
 		time = now.strftime("%H:%M:%S")
@@ -109,23 +109,23 @@ class ImproductivoReportPDF:
 		canvas.line(40, 750, 555, 750)
 		#return canvas
 
-	def pie_pagina(self,canvas, doc):
+	def _pie_pagina(self,canvas, doc):
 		canvas.setFont("Helvetica-Bold", 8)
 		canvas.line(40, 40, 555, 40)
 		canvas.drawString(280, 20, u"Página %d" % doc.page)
 
 	# Tabla de improductivos de producción modular
-	def tabla_produccion(self):
+	def _tabla_produccion(self):
 		# Datos
-		improductivo_ruedas = self.get_improductivo(self.query_imp_ruedas, True)
-		improductivo_goteros = self.get_improductivo(self.query_imp_goteros, True)
-		improductivo_troquelado = self.get_improductivo(self.query_imp_troquelado, True)
-		improductivo_film = self.get_improductivo(self.query_imp_film, True)
-		improductivo_regulaciones = self.get_improductivo(self.query_imp_regulaciones, True)
-		improductivo_total = self.get_improductivo(self.query_imp_ruedas, False) + \
-			self.get_improductivo(self.query_imp_goteros, False) + self.get_improductivo(self.query_imp_troquelado, False) + \
-			self.get_improductivo(self.query_imp_film, False) + \
-			self.get_improductivo(self.query_imp_regulaciones, False)
+		improductivo_ruedas = self._get_improductivo(self.query_imp_ruedas, True)
+		improductivo_goteros = self._get_improductivo(self.query_imp_goteros, True)
+		improductivo_troquelado = self._get_improductivo(self.query_imp_troquelado, True)
+		improductivo_film = self._get_improductivo(self.query_imp_film, True)
+		improductivo_regulaciones = self._get_improductivo(self.query_imp_regulaciones, True)
+		improductivo_total = self._get_improductivo(self.query_imp_ruedas, False) + \
+			self._get_improductivo(self.query_imp_goteros, False) + self._get_improductivo(self.query_imp_troquelado, False) + \
+			self._get_improductivo(self.query_imp_film, False) + \
+			self._get_improductivo(self.query_imp_regulaciones, False)
 		improductivo_total = '%.3f hrs' % improductivo_total
 		# Creamos una lista de tuplas que van a contener los improductivos
 		datos = [["Ruedas", improductivo_ruedas], ["Goteros", improductivo_goteros], ["Troquelado", improductivo_troquelado],
@@ -146,12 +146,12 @@ class ImproductivoReportPDF:
 		))
 		return tabla
 
-	def tabla_mantenimiento(self):
+	def _tabla_mantenimiento(self):
 		# Datos
-		improductivo_mecanico = self.get_improductivo(self.query_imp_mecanico, True)
-		improductivo_electrico = self.get_improductivo(self.query_imp_electrico, True)
-		improductivo_total = self.get_improductivo(self.query_imp_electrico, False) + \
-			self.get_improductivo(self.query_imp_mecanico, False)
+		improductivo_mecanico = self._get_improductivo(self.query_imp_mecanico, True)
+		improductivo_electrico = self._get_improductivo(self.query_imp_electrico, True)
+		improductivo_total = self._get_improductivo(self.query_imp_electrico, False) + \
+			self._get_improductivo(self.query_imp_mecanico, False)
 		improductivo_total = '%.3f hrs' % improductivo_total
 		# Creamos una lista de tuplas que van a contener los improductivos
 		datos = [["Mecánico", improductivo_mecanico], ["Eléctrico",
@@ -174,13 +174,13 @@ class ImproductivoReportPDF:
 		return tabla
 
 	# Grafica de improductivos de producción
-	def grafica_produccion(self):
+	def _grafica_produccion(self):
 		# Datos de improductivos para graficar
-		ruedas = self.get_improductivo(self.query_imp_ruedas, False)
-		goteros = self.get_improductivo(self.query_imp_goteros, False)
-		troquelado = self.get_improductivo(self.query_imp_troquelado, False)
-		film = self.get_improductivo(self.query_imp_film, False)
-		regulaciones = self.get_improductivo(self.query_imp_regulaciones, False)
+		ruedas = self._get_improductivo(self.query_imp_ruedas, False)
+		goteros = self._get_improductivo(self.query_imp_goteros, False)
+		troquelado = self._get_improductivo(self.query_imp_troquelado, False)
+		film = self._get_improductivo(self.query_imp_film, False)
+		regulaciones = self._get_improductivo(self.query_imp_regulaciones, False)
 		# Coordenadas para empezar a dibujar el grafico
 		drawing = Drawing(400, 320)
 		# Data para graficar, la data es una lista de tuplas, cada tupla es un grupo de barras o graficas
@@ -220,19 +220,19 @@ class ImproductivoReportPDF:
 		bc.categoryAxis.categoryNames = ['Ruedas', 'Goteros', 'Troquelado',
 										 'Film', 'Regulaciones', ]
 		n = len(bc.data[0])  # Cantidad de barras en el indice '0' o de la tupla del indice '0'
-		self.set_colors_bars(n, bc.bars, 'fillColor', self.chart_colors)
+		self._set_colors_bars(n, bc.bars, 'fillColor', self.chart_colors)
 		# bc.categoryAxis.strokeColor=colors.Color(36/256,41/256,35/256) # Cambiar color eje x
 		drawing.add(bc)  # le paso el objeto a drwaing, definido a inicio de la función
 		return drawing
 
 	# Grafica de producción de los improductivos totalizados
-	def grafica_produccion_total(self):
+	def _grafica_produccion_total(self):
 		# Datos de improductivos para graficar
-		ruedas = self.get_improductivo(self.query_imp_ruedas, False)
-		goteros = self.get_improductivo(self.query_imp_goteros, False)
-		troquelado = self.get_improductivo(self.query_imp_troquelado, False)
-		film = self.get_improductivo(self.query_imp_film, False)
-		regulaciones = self.get_improductivo(self.query_imp_regulaciones, False)
+		ruedas = self._get_improductivo(self.query_imp_ruedas, False)
+		goteros = self._get_improductivo(self.query_imp_goteros, False)
+		troquelado = self._get_improductivo(self.query_imp_troquelado, False)
+		film = self._get_improductivo(self.query_imp_film, False)
+		regulaciones = self._get_improductivo(self.query_imp_regulaciones, False)
 		improductivo_total = ruedas + goteros + troquelado + film + regulaciones
 		tope_improductivo = Producciones.objects.get(
 			orden_produccion=self.op).tope_improductivo_produccion  # Query meta improductivo_produccion
@@ -263,7 +263,7 @@ class ImproductivoReportPDF:
 		# grupo de barras y el indice 'j' la barra de grupo
 		bc.bars[0, 1].fillColor = colors.Color(66 / 256, 99 / 256, 245 / 256)
 		# la función retorna el color dependiendo el promedio del improductivo
-		bc.bars[0, 0].fillColor = HexColor(self.color_bar_imp_total(promedio_improductivo))
+		bc.bars[0, 0].fillColor = HexColor(self._color_bar_imp_total(promedio_improductivo))
 		# bc.strokeColor = colors.black # Dibuja un borde alrededor del grafico
 		# bc.fillColor = colors.green # Fondo del grafico
 		# bc.barSpacing =2.5 # Espacio entre barras
@@ -282,10 +282,10 @@ class ImproductivoReportPDF:
 		return drawing
 
 	# Grafica de improductivos de mantenimiento
-	def grafica_mantenimiento(self):
+	def _grafica_mantenimiento(self):
 		# Datos de improductivos para graficar
-		mecanico = self.get_improductivo(self.query_imp_mecanico, False)
-		electrico = self.get_improductivo(self.query_imp_electrico, False)
+		mecanico = self._get_improductivo(self.query_imp_mecanico, False)
+		electrico = self._get_improductivo(self.query_imp_electrico, False)
 		# Coordenadas para empezar a dibujar el grafico
 		drawing = Drawing(400, 300)
 		data = [
@@ -322,15 +322,15 @@ class ImproductivoReportPDF:
 		bc.categoryAxis.labels.angle = 45
 		bc.categoryAxis.categoryNames = ['Mecánico', 'Eléctrico', ]
 		n = len(bc.data[0])  # Cantidad de barras en el indice '0' o de la tupla del indice '0'
-		self.set_colors_bars(n, bc.bars, 'fillColor', self.chart_colors)
+		self._set_colors_bars(n, bc.bars, 'fillColor', self.chart_colors)
 		# bc.categoryAxis.strokeColor=colors.Color(36/256,41/256,35/256) # Cambiar color eje x
 		drawing.add(bc)
 		return drawing
 
-	def grafica_mantenimiento_total(self):
+	def _grafica_mantenimiento_total(self):
 		# Datos de improductivos para graficar
-		mecanico = self.get_improductivo(self.query_imp_mecanico, False)
-		electrico = self.get_improductivo(self.query_imp_electrico, False)
+		mecanico = self._get_improductivo(self.query_imp_mecanico, False)
+		electrico = self._get_improductivo(self.query_imp_electrico, False)
 		improductivo_total = mecanico + electrico
 		tope_improductivo = Producciones.objects.get(orden_produccion=self.op).tope_improductivo_mantenimiento
 		promedio_improductivo = (improductivo_total * 100) / (tope_improductivo)
@@ -360,7 +360,7 @@ class ImproductivoReportPDF:
 		# grupo de barras y el indice 'j' la barra de grupo
 		bc.bars[0, 1].fillColor = colors.Color(66 / 256, 99 / 256, 245 / 256)
 		# la función retorna el color dependiendo el promedio del improductivo
-		bc.bars[0, 0].fillColor = HexColor(self.color_bar_imp_total(promedio_improductivo))
+		bc.bars[0, 0].fillColor = HexColor(self._color_bar_imp_total(promedio_improductivo))
 		# bc.strokeColor = colors.black # Dibuja un borde alrededor del grafico
 		# bc.fillColor = colors.green # Fondo del grafico
 		# bc.groupSpacing = 10  # Espaciado entre grupos de barras
@@ -379,7 +379,7 @@ class ImproductivoReportPDF:
 
 	# Metodo para calcular el total de improductivos, si hms es True retorna formato Horas Minutos y Segundos en String
 	# si es falso retorna el total en horas
-	def get_improductivo(self,query_imp:object, hms:bool):
+	def _get_improductivo(self,query_imp:object, hms:bool):
 		segundos = 0
 		if hms:
 			for x in query_imp:
@@ -404,7 +404,7 @@ class ImproductivoReportPDF:
 			return (horas)
 
 
-	def query_data(self,op:str,fecha_gte:str,fecha_lte:str):
+	def _query_data(self,op:str,fecha_gte:str,fecha_lte:str):
 		# Query Sets de uso general para Improductivos
 		self.query_imp_ruedas = MantosImp.objects.filter(
 				problema='ruedas', produccion__orden_produccion=op, fecha__gte=fecha_gte, fecha__lte=fecha_lte).exclude(hora_solucion=None)
@@ -421,13 +421,13 @@ class ImproductivoReportPDF:
 		self.query_imp_mecanico = MantosImp.objects.filter(
 				problema='mecanico', produccion__orden_produccion=op, fecha__gte=fecha_gte, fecha__lte=fecha_lte).exclude(hora_solucion=None)
 		# calculos de improductivos
-		#self.improductivo_electrico = self.get_improductivo(query_imp_electrico, True)
-		#self.improductivo_mecanico = self.get_improductivo(query_imp_mecanico, True)
+		#self.improductivo_electrico = self._get_improductivo(query_imp_electrico, True)
+		#self.improductivo_mecanico = self._get_improductivo(query_imp_mecanico, True)
 
 
 	def make_report(self) -> object:
 			# ejecuando el query para obtener los datos.
-			self.query_data(op=self.op,fecha_gte=self.fecha_gte,fecha_lte=self.fecha_lte)
+			self._query_data(op=self.op,fecha_gte=self.fecha_gte,fecha_lte=self.fecha_lte)
 			# La clase io.BytesIO permite tratar un array de bytes como un fichero
 			# binario, se utiliza como almacenamiento temporal dentro de python, para luego ser descargado todo el dato como pdf
 			# Se debe pasar el pdf_buffer al BaseDocTemplate
@@ -440,8 +440,8 @@ class ImproductivoReportPDF:
 			# Plantillas de las hojas, cabecera, pie de pagina, marco de la pagina. Se
 			# puede tener varias plantillas. Siempre partira de la primera plantilla
 			doc.addPageTemplates([PageTemplate(id='primera_hoja', frames=frame0,
-											   onPage=self.cabecera_1, onPageEnd=self.pie_pagina),
-								  PageTemplate(id='contenido', frames=frame0, onPage=self.cabecera_contenido, onPageEnd=self.pie_pagina)])
+											   onPage=self._cabecera_1, onPageEnd=self._pie_pagina),
+								  PageTemplate(id='contenido', frames=frame0, onPage=self._cabecera_contenido, onPageEnd=self._pie_pagina)])
 			# Creamos las hojas de Estilos
 			estilo = getSampleStyleSheet()
 			estilo.add(ParagraphStyle(name="titulo_tablas_graficas",  alignment=TA_CENTER, fontSize=15,
@@ -455,29 +455,29 @@ class ImproductivoReportPDF:
 				u"En la siguiente tabla se presentan los improductivos de producción asociados a la orden de producción " + str(self.op) + ":", estilo['texto'])
 			titulo_tabla_produccion = Paragraph(
 				u"Improductivos de Producción", estilo['titulo_tablas_graficas'])
-			tabla_produccion = self.tabla_produccion()
+			tabla_produccion = self._tabla_produccion()
 			texto_grafica_produccion = Paragraph(
 				u"En la siguientes graficas se presentan los improductivos de producción asociados a la orden de producción " + str(self.op) + ":", estilo['texto'])
 			titulo_grafica_produccion = Paragraph(
 				u"Grafica de Improductivos de Producción", estilo['titulo_tablas_graficas'])
-			grafica_produccion = self.grafica_produccion()
+			grafica_produccion = self._grafica_produccion()
 			titulo_grafica_produccion_total = Paragraph(
 				u"Grafica de improductivos de producción totalizados", estilo['titulo_tablas_graficas'])
-			grafica_produccion_total = self.grafica_produccion_total()
+			grafica_produccion_total = self._grafica_produccion_total()
 			# Texto, tabla y graficas de mantenimiento
 			texto_tabla_mantenimiento = Paragraph(
 				u"En la siguiente tabla se presentan los improductivos de mantenimiento asociados de la orden de producción " + str(self.op) + ":", estilo['texto'])
 			titulo_tabla_mantenimiento = Paragraph(
 				u"Improductivos de Mantenimiento", estilo['titulo_tablas_graficas'])
-			tabla_mantenimiento = self.tabla_mantenimiento()
+			tabla_mantenimiento = self._tabla_mantenimiento()
 			texto_grafica_mantenimiento = Paragraph(
 				u"En la siguientes graficas se presentan los improductivos de mantenimiento asociados a la orden de producción " + str(self.op) + ":", estilo['texto'])
 			titulo_grafica_mantenimiento = Paragraph(
 				u"Grafica de Improductivos de Mantenimiento", estilo['titulo_tablas_graficas'])
-			grafica_mantenimiento = self.grafica_mantenimiento()
+			grafica_mantenimiento = self._grafica_mantenimiento()
 			titulo_grafica_mantenimiento_total = Paragraph(
 				u"Grafica de improductivos de mantenimiento totalizados", estilo['titulo_tablas_graficas'])
-			grafica_mantenimiento_total = self.grafica_mantenimiento_total()
+			grafica_mantenimiento_total = self._grafica_mantenimiento_total()
 			# Construyendo el PDF con los valores antes declarado
 			story.append(Spacer(0, 100))
 			story.append(texto_tabla_produccion)
