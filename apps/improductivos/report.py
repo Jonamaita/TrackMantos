@@ -26,8 +26,6 @@ class ImproductivoReportPDF:
 		self.fecha_gte = fecha_gte
 		self.fecha_lte = fecha_lte
 		self.usuario = usuario
-		
-
 
 	# Función para colorear todas las barras de diferentes colores (colores
 	# definidos en chart_colors)
@@ -54,7 +52,7 @@ class ImproductivoReportPDF:
 		else:
 			return '#ff0000'
 
-	# Metodos parar generar el PDF
+	#-------------------------------------- Metodos parar generar el PDF --------------------------------#
 
 	"""Los metodos de cabecera y pie de pagina, son metodos llamado en el parametro onpage y endpage. Estos metodos se llaman especificamente desde
 	doc.addPageTemplates, implicitamente los parametros canvas y doc son pasados al metodo, por ende, cuando se llama el metodo no se envía los parametros, pero,
@@ -403,7 +401,7 @@ class ImproductivoReportPDF:
 			horas = (segundos) / (3600)
 			return (horas)
 
-
+	# Metodo para obtener todos los datos
 	def _query_data(self,op:str,fecha_gte:str,fecha_lte:str):
 		# Query Sets de uso general para Improductivos
 		self.query_imp_ruedas = MantosImp.objects.filter(
@@ -424,98 +422,129 @@ class ImproductivoReportPDF:
 		#self.improductivo_electrico = self._get_improductivo(query_imp_electrico, True)
 		#self.improductivo_mecanico = self._get_improductivo(query_imp_mecanico, True)
 
+	#---------------------------------- METODOS PARA ARMAR EL PDF ----------------------------------------------#
+
+	#Metodo para hacer las tablas y graficos
+	def _make_table_graphics(self,estilo) -> dict:
+		kargs: Dictionary = dict()
+		# Texto, tabla y graficas de produccion
+		texto_tabla_produccion = Paragraph(
+			u"En la siguiente tabla se presentan los improductivos de producción asociados a la orden de producción " + str(self.op) + ":", estilo['texto'])
+		titulo_tabla_produccion = Paragraph(
+			u"Improductivos de Producción", estilo['titulo_tablas_graficas'])
+		tabla_produccion = self._tabla_produccion()
+		texto_grafica_produccion = Paragraph(
+		u"En la siguientes graficas se presentan los improductivos de producción asociados a la orden de producción " + str(self.op) + ":", estilo['texto'])
+		titulo_grafica_produccion = Paragraph(
+			u"Grafica de Improductivos de Producción", estilo['titulo_tablas_graficas'])
+		grafica_produccion = self._grafica_produccion()
+		titulo_grafica_produccion_total = Paragraph(
+			u"Grafica de improductivos de producción totalizados", estilo['titulo_tablas_graficas'])
+		grafica_produccion_total = self._grafica_produccion_total()
+		# Texto, tabla y graficas de mantenimiento
+		texto_tabla_mantenimiento = Paragraph(
+			u"En la siguiente tabla se presentan los improductivos de mantenimiento asociados de la orden de producción " + str(self.op) + ":", estilo['texto'])
+		titulo_tabla_mantenimiento = Paragraph(
+			u"Improductivos de Mantenimiento", estilo['titulo_tablas_graficas'])
+		tabla_mantenimiento = self._tabla_mantenimiento()
+		texto_grafica_mantenimiento = Paragraph(
+			u"En la siguientes graficas se presentan los improductivos de mantenimiento asociados a la orden de producción " + str(self.op) + ":", estilo['texto'])
+		titulo_grafica_mantenimiento = Paragraph(
+			u"Grafica de Improductivos de Mantenimiento", estilo['titulo_tablas_graficas'])
+		grafica_mantenimiento = self._grafica_mantenimiento()
+		titulo_grafica_mantenimiento_total = Paragraph(
+			u"Grafica de improductivos de mantenimiento totalizados", estilo['titulo_tablas_graficas'])
+		grafica_mantenimiento_total = self._grafica_mantenimiento_total()
+		#Diccionario para pasarla a la función y retorna una lista con la historia
+		kargs ={'texto_tabla_produccion':texto_tabla_produccion,
+				'titulo_tabla_produccion':titulo_tabla_produccion,
+				'tabla_produccion':tabla_produccion,
+				'texto_grafica_produccion':texto_grafica_produccion,
+				'titulo_grafica_produccion':titulo_grafica_produccion,
+				'grafica_produccion':grafica_produccion,
+				'titulo_grafica_produccion_total':titulo_grafica_produccion_total,
+				'grafica_produccion_total':grafica_produccion_total,
+				'texto_tabla_mantenimiento':texto_tabla_mantenimiento,
+				'titulo_tabla_mantenimiento':titulo_tabla_mantenimiento,
+				'tabla_mantenimiento':tabla_mantenimiento,
+				'texto_grafica_mantenimiento':texto_grafica_mantenimiento,
+				'titulo_grafica_mantenimiento':titulo_grafica_mantenimiento,
+				'grafica_mantenimiento':grafica_mantenimiento,
+				'titulo_grafica_mantenimiento_total':titulo_grafica_mantenimiento_total,
+				'grafica_mantenimiento_total':grafica_mantenimiento_total}
+		return kargs
+
+	#Metodo para armar el array que contendra todo el contenido	
+	def _make_story(self,*args,**kargs):
+		# Construyendo el PDF con los valores del diccionario
+		story:List =[]
+		story.append(Spacer(0, 100))
+		story.append(kargs['texto_tabla_produccion'])
+		story.append(Spacer(0, 0.5 * cm))
+		story.append(kargs['titulo_tabla_produccion'])
+		story.append(Spacer(0, 0.5 * cm))
+		story.append(kargs['tabla_produccion'])
+		story.append(Spacer(0, 1 * cm))
+		story.append(kargs['texto_grafica_produccion'])
+		story.append(Spacer(0, 0.5 * cm))
+		story.append(kargs['titulo_grafica_produccion'])
+		story.append(Spacer(0, 0.5 * cm))
+		story.append(kargs['grafica_produccion'])
+		story.append(NextPageTemplate('contenido'))
+		story.append(PageBreak())  # Salto de pagina
+		story.append(Spacer(0, 40))
+		story.append(kargs['titulo_grafica_produccion_total'])
+		story.append(Spacer(0, 0.5 * cm))
+		story.append(kargs['grafica_produccion_total'])
+		story.append(Spacer(0, 0.6 * cm))
+		story.append(kargs['texto_tabla_mantenimiento'])
+		story.append(Spacer(0, 1 * cm))
+		story.append(kargs['titulo_tabla_mantenimiento'])
+		story.append(Spacer(0, 0.6 * cm))
+		story.append(kargs['tabla_mantenimiento'])
+		story.append(PageBreak())
+		story.append(Spacer(0, 40))
+		story.append(kargs['texto_grafica_mantenimiento'])
+		story.append(Spacer(0, 0.5 * cm))
+		story.append(kargs['titulo_grafica_mantenimiento'])
+		story.append(Spacer(0, 0.5 * cm))
+		story.append(kargs['grafica_mantenimiento'])
+		# story.append(Spacer(0,0.3*cm))
+		story.append(kargs['titulo_grafica_mantenimiento_total'])
+		story.append(Spacer(0, 1.5 * cm))
+		story.append(kargs['grafica_mantenimiento_total'])
+		return story
+
+
+	# Metodo para emsamblar el pdf
+	def _make_pdf(self):
+		# La clase io.BytesIO permite tratar un array de bytes como un fichero
+		# binario, se utiliza como almacenamiento temporal dentro de python, para luego ser descargado todo el dato como pdf
+		# Se debe pasar el pdf_buffer al BaseDocTemplate
+		pdf_buffer = BytesIO()
+		#c = canvas.Canvas(buffer)
+		doc = BaseDocTemplate(pdf_buffer, pagesize=A4)
+		frame0 = Frame(doc.leftMargin, doc.bottomMargin,doc.width, doc.height, showBoundary=0, id='normalBorde') # Frames o marcos de la pagina
+		# Plantillas de las hojas, cabecera, pie de pagina, marco de la pagina. Se
+		# puede tener varias plantillas. Siempre partira de la primera plantilla
+		doc.addPageTemplates([PageTemplate(id='primera_hoja', frames=frame0,onPage=self._cabecera_1, onPageEnd=self._pie_pagina),
+							  PageTemplate(id='contenido', frames=frame0, onPage=self._cabecera_contenido, onPageEnd=self._pie_pagina)])
+		# Creamos las hojas de Estilos
+		estilo = getSampleStyleSheet()
+		estilo.add(ParagraphStyle(name="titulo_tablas_graficas",  alignment=TA_CENTER, fontSize=15,
+								  fontName="Helvetica-Bold", textColor=colors.Color(0.0390625, 0.4921875, 0.69140625)))
+		estilo.add(ParagraphStyle(name="texto",  alignment=TA_LEFT, fontSize=12, fontName="Helvetica", textColor=colors.Color(0, 0, 0)))
+		kargs = self._make_table_graphics(estilo) # Dicionario con las tablas y graficas para el story
+		story=self._make_story(**kargs)
+		doc.build(story) # Se construye el pdf con el array story
+		#Descargando todo el buffer
+		pdf = pdf_buffer.getvalue()
+		pdf_buffer.close()
+		return pdf
+
 
 	def make_report(self) -> object:
 			# ejecuando el query para obtener los datos.
 			self._query_data(op=self.op,fecha_gte=self.fecha_gte,fecha_lte=self.fecha_lte)
-			# La clase io.BytesIO permite tratar un array de bytes como un fichero
-			# binario, se utiliza como almacenamiento temporal dentro de python, para luego ser descargado todo el dato como pdf
-			# Se debe pasar el pdf_buffer al BaseDocTemplate
-			pdf_buffer = BytesIO()
-			#c = canvas.Canvas(buffer)
-			doc = BaseDocTemplate(pdf_buffer, pagesize=A4)
-			# Frames o marcos de la pagina
-			frame0 = Frame(doc.leftMargin, doc.bottomMargin,
-						   doc.width, doc.height, showBoundary=0, id='normalBorde')
-			# Plantillas de las hojas, cabecera, pie de pagina, marco de la pagina. Se
-			# puede tener varias plantillas. Siempre partira de la primera plantilla
-			doc.addPageTemplates([PageTemplate(id='primera_hoja', frames=frame0,
-											   onPage=self._cabecera_1, onPageEnd=self._pie_pagina),
-								  PageTemplate(id='contenido', frames=frame0, onPage=self._cabecera_contenido, onPageEnd=self._pie_pagina)])
-			# Creamos las hojas de Estilos
-			estilo = getSampleStyleSheet()
-			estilo.add(ParagraphStyle(name="titulo_tablas_graficas",  alignment=TA_CENTER, fontSize=15,
-									  fontName="Helvetica-Bold", textColor=colors.Color(0.0390625, 0.4921875, 0.69140625)))
-			estilo.add(ParagraphStyle(name="texto",  alignment=TA_LEFT, fontSize=12,
-									  fontName="Helvetica", textColor=colors.Color(0, 0, 0)))
-			# Construimos el pdf
-			story = []  # Se declara el arreglo para construir el pdf
-			# Texto, tabla y graficas de produccion
-			texto_tabla_produccion = Paragraph(
-				u"En la siguiente tabla se presentan los improductivos de producción asociados a la orden de producción " + str(self.op) + ":", estilo['texto'])
-			titulo_tabla_produccion = Paragraph(
-				u"Improductivos de Producción", estilo['titulo_tablas_graficas'])
-			tabla_produccion = self._tabla_produccion()
-			texto_grafica_produccion = Paragraph(
-				u"En la siguientes graficas se presentan los improductivos de producción asociados a la orden de producción " + str(self.op) + ":", estilo['texto'])
-			titulo_grafica_produccion = Paragraph(
-				u"Grafica de Improductivos de Producción", estilo['titulo_tablas_graficas'])
-			grafica_produccion = self._grafica_produccion()
-			titulo_grafica_produccion_total = Paragraph(
-				u"Grafica de improductivos de producción totalizados", estilo['titulo_tablas_graficas'])
-			grafica_produccion_total = self._grafica_produccion_total()
-			# Texto, tabla y graficas de mantenimiento
-			texto_tabla_mantenimiento = Paragraph(
-				u"En la siguiente tabla se presentan los improductivos de mantenimiento asociados de la orden de producción " + str(self.op) + ":", estilo['texto'])
-			titulo_tabla_mantenimiento = Paragraph(
-				u"Improductivos de Mantenimiento", estilo['titulo_tablas_graficas'])
-			tabla_mantenimiento = self._tabla_mantenimiento()
-			texto_grafica_mantenimiento = Paragraph(
-				u"En la siguientes graficas se presentan los improductivos de mantenimiento asociados a la orden de producción " + str(self.op) + ":", estilo['texto'])
-			titulo_grafica_mantenimiento = Paragraph(
-				u"Grafica de Improductivos de Mantenimiento", estilo['titulo_tablas_graficas'])
-			grafica_mantenimiento = self._grafica_mantenimiento()
-			titulo_grafica_mantenimiento_total = Paragraph(
-				u"Grafica de improductivos de mantenimiento totalizados", estilo['titulo_tablas_graficas'])
-			grafica_mantenimiento_total = self._grafica_mantenimiento_total()
-			# Construyendo el PDF con los valores antes declarado
-			story.append(Spacer(0, 100))
-			story.append(texto_tabla_produccion)
-			story.append(Spacer(0, 0.5 * cm))
-			story.append(titulo_tabla_produccion)
-			story.append(Spacer(0, 0.5 * cm))
-			story.append(tabla_produccion)
-			story.append(Spacer(0, 1 * cm))
-			story.append(texto_grafica_produccion)
-			story.append(Spacer(0, 0.5 * cm))
-			story.append(titulo_grafica_produccion)
-			story.append(Spacer(0, 0.5 * cm))
-			story.append(grafica_produccion)
-			story.append(NextPageTemplate('contenido'))
-			story.append(PageBreak())  # Salto de pagina
-			story.append(Spacer(0, 40))
-			story.append(titulo_grafica_produccion_total)
-			story.append(Spacer(0, 0.5 * cm))
-			story.append(grafica_produccion_total)
-			story.append(Spacer(0, 0.6 * cm))
-			story.append(texto_tabla_mantenimiento)
-			story.append(Spacer(0, 1 * cm))
-			story.append(titulo_tabla_mantenimiento)
-			story.append(Spacer(0, 0.6 * cm))
-			story.append(tabla_mantenimiento)
-			story.append(PageBreak())
-			story.append(Spacer(0, 40))
-			story.append(texto_grafica_mantenimiento)
-			story.append(Spacer(0, 0.5 * cm))
-			story.append(titulo_grafica_mantenimiento)
-			story.append(Spacer(0, 0.5 * cm))
-			story.append(grafica_mantenimiento)
-			# story.append(Spacer(0,0.3*cm))
-			story.append(titulo_grafica_mantenimiento_total)
-			story.append(Spacer(0, 1.5 * cm))
-			story.append(grafica_mantenimiento_total)
-			doc.build(story)
-			pdf = pdf_buffer.getvalue()
-			pdf_buffer.close()
-			return pdf
-		
+			pdf = self._make_pdf()
+			return pdf	
