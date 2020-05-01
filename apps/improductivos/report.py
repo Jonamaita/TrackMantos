@@ -17,6 +17,23 @@ from reportlab.lib.colors import HexColor
 
 
 class ImproductivoReportPDF:
+	"""
+	ImproductivoReportPDF crea un pdf con graficos y tablas de los improductivos
+	de un op especifica y entre las fechas especificadas.
+
+	To initialize:
+	:param op: codigo de orden de producción
+	:param fecha_gte: Desde que fecha quieres el reporte
+	:param fecha_lte: Hasta que fecha quieres el reporte
+	:param usuario: Usuario que pide el reporte
+
+	USAGE:
+	>>> reporte_improductivo = ImproductivoReportPDF(op="OP02-20",fecha_gte="29-04-2020",fecha_lte="30-04-2020")
+	>>> reporte_improductivo.make_report()
+
+	return pdf
+	"""
+
 	# Colores para las barras de los graficos
 	chart_colors = [HexColor("#0000e5"), HexColor("#246de3"), HexColor(
 		"#9898fa"), HexColor("#fa7f7f"), HexColor("#f54545"), HexColor("#f20f0f"), ]
@@ -26,40 +43,71 @@ class ImproductivoReportPDF:
 		self.fecha_gte = fecha_gte
 		self.fecha_lte = fecha_lte
 		self.usuario = usuario
+	
+	def _set_colors_bars(self,len_bars:int, bars: object, attr:str, colors:list):
+		""" 
+		Colorea todas las barras de diferentes colores 
+		(colores definidos en la variable de clase chart_colors).
+		Puede usarse para distinto atributos de la barra.
 
-	# Función para colorear todas las barras de diferentes colores (colores
-	# definidos en chart_colors)
-	def _set_colors_bars(self,n, obj, attr, values):
-		m = len(values)  # Calcula el largo del arreglo chart_colors
-		# Divide el largo del arreglo chart_colors entre la cantidad de barras a
-		# graficar, para luego usarlo en el seteo de colores "values[j*i % m]" y
-		# dependiendo el caloculo de la canitdad de barras se le dara un degradado
-		# o colores diferentes a cada barra
-		i = m // n
-		for j in range(n):
-			# Setea el atributo 'fillColor' al obtejo que "bc.bars"
-			setattr(obj[0, j], attr, values[j * i % m])
+		parameter:
+		:parametro len_bars: Cantidad de barras a colorear
+		:parametro bars: grafica de barra de reportlab
+		:parametro attr: atributo de la barra a cambiar
+		:parametro colors: Una lista de colores
 
-	# Función para colorear barra de improductivo total con respecto al
-	# promedio, solo retorna el color que va tomar la barra
-	def _color_bar_imp_total(self,promedio):
+		USAGE:
+		>>> _set_colors_bars(len_bars=10,bars=bc.bars,attr='fillcolor')
 
+		return None
+		"""
+		len_colors = len(colors)  # Calcula el largo del arreglo chart_colors
+		for j in range(len_bars):
+			index_color = j % len_colors
+			setattr(bars[0, j], attr, colors[index_color])# Setea el atributo 'fillColor' al obtejo bars que es "bc.bars"
+
+	def _color_bar_imp_total(self,promedio: float):
+		""" 
+		Colorea la barra de improductivo total con respecto al promedio.
+		Menor a 70 verde, entre 70 y 99 naranja y mayor a 100 rojo.
+
+		parameters:
+		:parametro promedio: Promedio para comparar y colorear la barra
+
+		return color		
+		"""
+
+		color=''
 		if promedio < 70:
-			return '#32a836'
+			color = '#32a836'
+			return color
 
 		elif promedio > 69 and promedio < 100:
-			return '#ff7f24'
+			color = '#ff7f24'
+			return color
 		else:
-			return '#ff0000'
+			color = '#ff0000'
+			return color
 
 	#-------------------------------------- Metodos parar generar el PDF --------------------------------#
 
-	"""Los metodos de cabecera y pie de pagina, son metodos llamado en el parametro onpage y endpage. Estos metodos se llaman especificamente desde
-	doc.addPageTemplates, implicitamente los parametros canvas y doc son pasados al metodo, por ende, cuando se llama el metodo no se envía los parametros, pero,
-	en el metodo se deben recibir los parametros. Es decr en "OnPage = _cabecera_1" no se pasan los parametros canvas, doc. Pero en se deben recibir donde
-	se defina el metodo o función.
-	"""
 	def _cabecera_1(self,canvas, doc):
+		"""
+		Dibuja la cabecera de la pagina 1 del pdf.
+
+		parameters:
+		Estos dos parametros, deben ser pasados obligatoriamente, ya que, el manejador que toma este metodo
+		necesita estos dos parametros para ser ejecutados. El manejador decora este metodo.
+		
+		:param canvas:
+		:param doc:
+
+		USAGE:
+		El metodo se pasa en el parametro OnPage del metodo addPageTemplates,  es decir, se pasa el metodo como parametro.
+		>>>doc.addPageTemplates([PageTemplate(id='primera_hoja', frames=frame0,onPage=self._cabecera_1, onPageEnd=self._pie_pagina)])
+
+		return None
+		"""
 		now = datetime.now()
 		fecha = now.strftime("%Y-%m-%d")
 		time = now.strftime("%H:%M:%S")
@@ -88,6 +136,22 @@ class ImproductivoReportPDF:
 		#return canvas
 
 	def _cabecera_contenido(self,canvas, doc):
+		"""
+		Dibuja la cabecera de la pagina 2 en adelante del pdf.
+
+		parameters:
+		Estos dos parametros, deben ser pasados obligatoriamente, ya que, el manejador que toma este metodo
+		necesita estos dos parametros para ser ejecutados. El manejador decora este metodo.
+		
+		:param canvas:
+		:param doc:
+
+		USAGE:
+		El metodo se pasa en el parametro OnPage del metodo addPageTemplates, es decir, se pasa el metodo como parametro.
+		>>>doc.addPageTemplates([PageTemplate(id='primera_hoja', frames=frame0,onPage=self._cabecera_contenido, onPageEnd=self._pie_pagina)])
+
+		return None
+		"""
 		now = datetime.now()
 		fecha = now.strftime("%Y-%m-%d")
 		time = now.strftime("%H:%M:%S")
@@ -108,22 +172,43 @@ class ImproductivoReportPDF:
 		#return canvas
 
 	def _pie_pagina(self,canvas, doc):
+		"""
+		Dibuja el pie de pagina del pdf.
+
+		parameters:
+		Estos dos parametros, deben ser pasados obligatoriamente, ya que, el manejador que toma este metodo
+		necesita estos dos parametros para ser ejecutados. El manejador decora este metodo.
+		
+		:param canvas:
+		:param doc:
+
+		USAGE:
+		El metodo se pasa en el parametro EndPage del metodo addPageTemplates, es decir, se pasa el metodo como parametro.
+		doc.addPageTemplates([PageTemplate(id='primera_hoja', frames=frame0,onPage=self._cabecera_1, onPageEnd=self._pie_pagina)])
+
+		return None
+		"""
+
 		canvas.setFont("Helvetica-Bold", 8)
 		canvas.line(40, 40, 555, 40)
 		canvas.drawString(280, 20, u"Página %d" % doc.page)
 
-	# Tabla de improductivos de producción modular
 	def _tabla_produccion(self):
-		# Datos
+		"""
+		Genera tabla de improductivos de producción.
+
+		return tabla
+		"""
 		improductivo_ruedas = self._get_improductivo(self.query_imp_ruedas, True)
 		improductivo_goteros = self._get_improductivo(self.query_imp_goteros, True)
 		improductivo_troquelado = self._get_improductivo(self.query_imp_troquelado, True)
 		improductivo_film = self._get_improductivo(self.query_imp_film, True)
 		improductivo_regulaciones = self._get_improductivo(self.query_imp_regulaciones, True)
 		improductivo_total = self._get_improductivo(self.query_imp_ruedas, False) + \
-			self._get_improductivo(self.query_imp_goteros, False) + self._get_improductivo(self.query_imp_troquelado, False) + \
-			self._get_improductivo(self.query_imp_film, False) + \
-			self._get_improductivo(self.query_imp_regulaciones, False)
+							self._get_improductivo(self.query_imp_goteros, False) +\
+							self._get_improductivo(self.query_imp_troquelado, False) + \
+							self._get_improductivo(self.query_imp_film, False) + \
+							self._get_improductivo(self.query_imp_regulaciones, False)
 		improductivo_total = '%.3f hrs' % improductivo_total
 		# Creamos una lista de tuplas que van a contener los improductivos
 		datos = [["Ruedas", improductivo_ruedas], ["Goteros", improductivo_goteros], ["Troquelado", improductivo_troquelado],
@@ -145,15 +230,19 @@ class ImproductivoReportPDF:
 		return tabla
 
 	def _tabla_mantenimiento(self):
-		# Datos
+		"""
+		Genera tabla de improductivo de mantenmiento
+
+		return tabla
+		"""
 		improductivo_mecanico = self._get_improductivo(self.query_imp_mecanico, True)
 		improductivo_electrico = self._get_improductivo(self.query_imp_electrico, True)
 		improductivo_total = self._get_improductivo(self.query_imp_electrico, False) + \
 			self._get_improductivo(self.query_imp_mecanico, False)
 		improductivo_total = '%.3f hrs' % improductivo_total
-		# Creamos una lista de tuplas que van a contener los improductivos
-		datos = [["Mecánico", improductivo_mecanico], ["Eléctrico",
-													   improductivo_electrico], ["TOTAL", improductivo_total]]
+		# Creamos una lista que van a contener los improductivos
+		datos = [["Mecánico", improductivo_mecanico], 
+				["Eléctrico", improductivo_electrico], ["TOTAL", improductivo_total]]
 		# Establecemos el tamaño de cada una de las columnas de la tabla alto y ancho
 		tabla = Table(datos, colWidths=[7 * cm, 6 * cm])
 		# Aplicamos estilos a las celdas de la tabla, las cordenadas de las celdas
@@ -171,17 +260,19 @@ class ImproductivoReportPDF:
 		))
 		return tabla
 
-	# Grafica de improductivos de producción
 	def _grafica_produccion(self):
-		# Datos de improductivos para graficar
+		"""
+		Genera grafica de los improductivos de producción
+
+		return drawing
+		"""
 		ruedas = self._get_improductivo(self.query_imp_ruedas, False)
 		goteros = self._get_improductivo(self.query_imp_goteros, False)
 		troquelado = self._get_improductivo(self.query_imp_troquelado, False)
 		film = self._get_improductivo(self.query_imp_film, False)
 		regulaciones = self._get_improductivo(self.query_imp_regulaciones, False)
-		# Coordenadas para empezar a dibujar el grafico
-		drawing = Drawing(400, 320)
-		# Data para graficar, la data es una lista de tuplas, cada tupla es un grupo de barras o graficas
+		drawing = Drawing(400, 320)# Coordenadas para empezar a dibujar el grafico
+		# Data para graficar, es una lista de tuplas, cada tupla es un grupo de barras
 		data = [
 			(ruedas, goteros, troquelado, film, regulaciones),
 
@@ -223,10 +314,13 @@ class ImproductivoReportPDF:
 		drawing.add(bc)  # le paso el objeto a drwaing, definido a inicio de la función
 		return drawing
 
-	# Grafica de producción de los improductivos totalizados
 	def _grafica_produccion_total(self):
-		# Datos de improductivos para graficar
-		ruedas = self._get_improductivo(self.query_imp_ruedas, False)
+		"""
+		Genera la grafica del total de improductivos de producción.
+
+		return drawing
+		"""
+		ruedas = self._get_improductivo(self.query_imp_ruedas, False) # Datos
 		goteros = self._get_improductivo(self.query_imp_goteros, False)
 		troquelado = self._get_improductivo(self.query_imp_troquelado, False)
 		film = self._get_improductivo(self.query_imp_film, False)
@@ -235,8 +329,7 @@ class ImproductivoReportPDF:
 		tope_improductivo = Producciones.objects.get(
 			orden_produccion=self.op).tope_improductivo_produccion  # Query meta improductivo_produccion
 		promedio_improductivo = (improductivo_total * 100) / tope_improductivo
-		# Coordenadas para empezar a dibujar el grafico
-		drawing = Drawing(400, 320)
+		drawing = Drawing(400, 320)#Coordenadas para empezar a dibujar el grafico
 		data = [
 			(improductivo_total, tope_improductivo),
 
@@ -260,7 +353,6 @@ class ImproductivoReportPDF:
 		# Color de fondo de la segunda. el indice [i,j], el indice 'i' indica el
 		# grupo de barras y el indice 'j' la barra de grupo
 		bc.bars[0, 1].fillColor = colors.Color(66 / 256, 99 / 256, 245 / 256)
-		# la función retorna el color dependiendo el promedio del improductivo
 		bc.bars[0, 0].fillColor = HexColor(self._color_bar_imp_total(promedio_improductivo))
 		# bc.strokeColor = colors.black # Dibuja un borde alrededor del grafico
 		# bc.fillColor = colors.green # Fondo del grafico
@@ -279,9 +371,12 @@ class ImproductivoReportPDF:
 		drawing.add(bc)
 		return drawing
 
-	# Grafica de improductivos de mantenimiento
 	def _grafica_mantenimiento(self):
-		# Datos de improductivos para graficar
+		"""
+		Genera la grafica de improductivo de mantenimiento.
+
+		return drawing
+		"""
 		mecanico = self._get_improductivo(self.query_imp_mecanico, False)
 		electrico = self._get_improductivo(self.query_imp_electrico, False)
 		# Coordenadas para empezar a dibujar el grafico
@@ -326,7 +421,11 @@ class ImproductivoReportPDF:
 		return drawing
 
 	def _grafica_mantenimiento_total(self):
-		# Datos de improductivos para graficar
+		"""
+		Genera la grafica del total de improductivo de mantenimiento.
+
+		return drawing
+		"""
 		mecanico = self._get_improductivo(self.query_imp_mecanico, False)
 		electrico = self._get_improductivo(self.query_imp_electrico, False)
 		improductivo_total = mecanico + electrico
@@ -357,7 +456,6 @@ class ImproductivoReportPDF:
 		# Color de fondo de la segunda. el indice [i,j], el indice 'i' indica el
 		# grupo de barras y el indice 'j' la barra de grupo
 		bc.bars[0, 1].fillColor = colors.Color(66 / 256, 99 / 256, 245 / 256)
-		# la función retorna el color dependiendo el promedio del improductivo
 		bc.bars[0, 0].fillColor = HexColor(self._color_bar_imp_total(promedio_improductivo))
 		# bc.strokeColor = colors.black # Dibuja un borde alrededor del grafico
 		# bc.fillColor = colors.green # Fondo del grafico
@@ -375,9 +473,27 @@ class ImproductivoReportPDF:
 		drawing.add(bc)
 		return drawing
 
-	# Metodo para calcular el total de improductivos, si hms es True retorna formato Horas Minutos y Segundos en String
-	# si es falso retorna el total en horas
-	def _get_improductivo(self,query_imp:object, hms:bool):
+
+	def _get_improductivo(self,query_imp:object, hms:bool) -> str or float:
+		"""
+		Obtiene el total de improductivo de un query especifico.
+		En HH:MM:SS o el total en horas.
+
+		parameters:
+		:param query_imp: Query del improductivo
+		:param hms: tipo de formato que desea
+
+		USAGE:
+		>>> query_imp_ruedas = MantosImp.objects.filter(
+				problema='ruedas', produccion__orden_produccion=op, fecha__gte=fecha_gte, fecha__lte=fecha_lte).exclude(hora_solucion=None)
+		Obtener el total en formato HH:MM:SS, retorna un string)
+		>>> ruedas = self._get_improductivo(query_imp = query_imp_ruedas, hms = True)
+
+		Obtener el total de improductivo en Horas totales, retorna un float.
+		>>> ruedas = self._get_improductivo(quer_imp = query_imp_ruedas,hms = False)
+
+		return horas
+		"""
 		segundos = 0
 		if hms:
 			for x in query_imp:
@@ -401,9 +517,20 @@ class ImproductivoReportPDF:
 			horas = (segundos) / (3600)
 			return (horas)
 
-	# Metodo para obtener todos los datos
 	def _query_data(self,op:str,fecha_gte:str,fecha_lte:str):
-		# Query Sets de uso general para Improductivos
+		"""
+		Obtiene los datos de los improductivos.
+
+		parameters:
+		:param op: codigo de orden de producción
+		:param fecha_gte: Desde que fecha quieres el reporte
+		:param fecha_lte: Hasta que fecha quieres el reporte
+		
+		USAGE:
+		self._query_data(op='OP02-20',fecha_gte='29-04-2020','fecha_lte='30-04-2020')
+
+		return None
+		"""
 		self.query_imp_ruedas = MantosImp.objects.filter(
 				problema='ruedas', produccion__orden_produccion=op, fecha__gte=fecha_gte, fecha__lte=fecha_lte).exclude(hora_solucion=None)
 		self.query_imp_goteros = MantosImp.objects.filter(
@@ -424,8 +551,21 @@ class ImproductivoReportPDF:
 
 	#---------------------------------- METODOS PARA ARMAR EL PDF ----------------------------------------------#
 
-	#Metodo para hacer las tablas y graficos
-	def _make_table_graphics(self,estilo) -> dict:
+	def _make_table_graphics(self,estilo: object) -> dict:
+		"""
+		Crea un diccionario con los elementos que tendrá el pdf. Titutlos,tablas,graficas,textos,etc.
+
+		parameters:
+		:param estilo: Estilo de la hoja
+
+		USAGE:
+		>>>estilo = getSampleStyleSheet()
+		>>>estilo.add(ParagraphStyle(name="titulo_tablas_graficas",  alignment=TA_CENTER, fontSize=15,
+								  fontName="Helvetica-Bold", textColor=colors.Color(0.0390625, 0.4921875, 0.69140625)))
+		>>>kargs = self._make_table_graphics(estilo)
+
+		return kwargs
+		"""
 		kargs: Dictionary = dict()
 		# Texto, tabla y graficas de produccion
 		texto_tabla_produccion = Paragraph(
@@ -456,7 +596,8 @@ class ImproductivoReportPDF:
 			u"Grafica de improductivos de mantenimiento totalizados", estilo['titulo_tablas_graficas'])
 		grafica_mantenimiento_total = self._grafica_mantenimiento_total()
 		#Diccionario para pasarla a la función y retorna una lista con la historia
-		kargs ={'texto_tabla_produccion':texto_tabla_produccion,
+		kargs ={
+				'texto_tabla_produccion':texto_tabla_produccion,
 				'titulo_tabla_produccion':titulo_tabla_produccion,
 				'tabla_produccion':tabla_produccion,
 				'texto_grafica_produccion':texto_grafica_produccion,
@@ -471,12 +612,25 @@ class ImproductivoReportPDF:
 				'titulo_grafica_mantenimiento':titulo_grafica_mantenimiento,
 				'grafica_mantenimiento':grafica_mantenimiento,
 				'titulo_grafica_mantenimiento_total':titulo_grafica_mantenimiento_total,
-				'grafica_mantenimiento_total':grafica_mantenimiento_total}
+				'grafica_mantenimiento_total':grafica_mantenimiento_total
+				}
 		return kargs
 
-	#Metodo para armar el array que contendra todo el contenido	
-	def _make_story(self,*args,**kargs):
-		# Construyendo el PDF con los valores del diccionario
+
+	def _make_story(self,*args,**kargs) -> list:
+		"""
+		Crea una lista en el orden que se escribirá el contenido del pdf.
+		Con los espacios,salto de paginas, selección de template, etc.
+
+		parameters:
+		:param **kargs: Diccionario con el conetenido del pdf (titulos, tablas, graficas, textos).
+
+		USAGE:
+		>>>kargs = self._make_table_graphics(estilo) # Dicionario con las tablas y graficas para el story
+		>>>story=self._make_story(**kargs)
+
+		return story
+		"""
 		story:List =[]
 		story.append(Spacer(0, 100))
 		story.append(kargs['texto_tabla_produccion'])
@@ -516,14 +670,18 @@ class ImproductivoReportPDF:
 		return story
 
 
-	# Metodo para emsamblar el pdf
-	def _make_pdf(self):
-		# La clase io.BytesIO permite tratar un array de bytes como un fichero
-		# binario, se utiliza como almacenamiento temporal dentro de python, para luego ser descargado todo el dato como pdf
-		# Se debe pasar el pdf_buffer al BaseDocTemplate
+	def _make_pdf(self)-> bytes:
+		"""
+		Crea el pdf a partir de story. Ademas inicializa el doc con los estilo de las hojas y el tamaño.
+
+		return pdf
+		"""
+
+		# La clase io.BytesIO permite tratar un array de bytes como un fichero binario,
+		# se utiliza como almacenamiento temporal dentro de python, para luego ser descargado todo el dato como pdf
 		pdf_buffer = BytesIO()
 		#c = canvas.Canvas(buffer)
-		doc = BaseDocTemplate(pdf_buffer, pagesize=A4)
+		doc = BaseDocTemplate(pdf_buffer, pagesize=A4) # Se pasa el pdf_buffer al BaseDocTemplate
 		frame0 = Frame(doc.leftMargin, doc.bottomMargin,doc.width, doc.height, showBoundary=0, id='normalBorde') # Frames o marcos de la pagina
 		# Plantillas de las hojas, cabecera, pie de pagina, marco de la pagina. Se
 		# puede tener varias plantillas. Siempre partira de la primera plantilla
@@ -543,7 +701,7 @@ class ImproductivoReportPDF:
 		return pdf
 
 
-	def make_report(self) -> object:
+	def make_report(self) -> bytes:
 			# ejecuando el query para obtener los datos.
 			self._query_data(op=self.op,fecha_gte=self.fecha_gte,fecha_lte=self.fecha_lte)
 			pdf = self._make_pdf()
