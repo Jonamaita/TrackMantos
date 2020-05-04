@@ -676,39 +676,32 @@ class ImproductivoReportPDF:
 		return story
 
 
-	def _make_pdf(self)-> bytes:
-		"""
-		Crea el pdf a partir de story. Ademas inicializa el doc con los estilo de las hojas y el tamaño.
-
-		return pdf
-		"""
-
-		# La clase io.BytesIO permite tratar un array de bytes como un fichero binario,
-		# se utiliza como almacenamiento temporal dentro de python, para luego ser descargado todo el dato como pdf
-		pdf_buffer = BytesIO()
-		#c = canvas.Canvas(buffer)
-		doc = BaseDocTemplate(pdf_buffer, pagesize=A4) # Se pasa el pdf_buffer al BaseDocTemplate
-		frame0 = Frame(doc.leftMargin, doc.bottomMargin,doc.width, doc.height, showBoundary=0, id='normalBorde') # Frames o marcos de la pagina
-		# Plantillas de las hojas, cabecera, pie de pagina, marco de la pagina. Se
-		# puede tener varias plantillas. Siempre partira de la primera plantilla
-		doc.addPageTemplates([PageTemplate(id='primera_hoja', frames=frame0,onPage=self._cabecera_1, onPageEnd=self._pie_pagina),
-							  PageTemplate(id='contenido', frames=frame0, onPage=self._cabecera_contenido, onPageEnd=self._pie_pagina)])
-		# Creamos las hojas de Estilos
-		estilo = getSampleStyleSheet()
-		estilo.add(ParagraphStyle(name="titulo_tablas_graficas",  alignment=TA_CENTER, fontSize=15,
-								  fontName="Helvetica-Bold", textColor=colors.Color(0.0390625, 0.4921875, 0.69140625)))
-		estilo.add(ParagraphStyle(name="texto",  alignment=TA_LEFT, fontSize=12, fontName="Helvetica", textColor=colors.Color(0, 0, 0)))
-		kargs = self._make_table_graphics(estilo) # Dicionario con las tablas y graficas para el story
-		story=self._make_story(**kargs)
-		doc.build(story) # Se construye el pdf con el array story
-		#Descargando todo el buffer
-		pdf = pdf_buffer.getvalue()
-		pdf_buffer.close()
-		return pdf
-
-
 	def make_report(self) -> bytes:
-			# ejecuando el query para obtener los datos.
-			self._query_data(op=self.op,fecha_gte=self.fecha_gte,fecha_lte=self.fecha_lte)
-			pdf = self._make_pdf()
-			return pdf	
+			"""
+			Crea el pdf a partir de story. Ademas inicializa el doc con los estilo de las hojas y el tamaño de la hoja.
+
+			return pdf
+			"""
+			
+			self._query_data(op=self.op,fecha_gte=self.fecha_gte,fecha_lte=self.fecha_lte)# Ejecuando el query para obtener los datos.
+			# La clase io.BytesIO permite tratar un array de bytes como un fichero binario,
+			# se utiliza como almacenamiento temporal dentro de python, para luego ser descargado todo el dato como pdf
+			pdf_buffer = BytesIO()
+			#c = canvas.Canvas(buffer)
+			doc = BaseDocTemplate(pdf_buffer, pagesize=A4) # Se pasa el pdf_buffer al BaseDocTemplate
+			frame0 = Frame(doc.leftMargin, doc.bottomMargin,doc.width, doc.height, showBoundary=0, id='normalBorde') # Frames o marcos de la pagina
+			# Plantillas de las hojas, cabecera, pie de pagina, marco de la pagina. Se
+			# puede tener varias plantillas. Siempre partira de la primera plantilla
+			doc.addPageTemplates([PageTemplate(id='primera_hoja', frames=frame0,onPage=self._cabecera_1, onPageEnd=self._pie_pagina),
+							  PageTemplate(id='contenido', frames=frame0, onPage=self._cabecera_contenido, onPageEnd=self._pie_pagina)])
+			estilo = getSampleStyleSheet() # Creamos las hojas de Estilos
+			estilo.add(ParagraphStyle(name="titulo_tablas_graficas",  alignment=TA_CENTER, fontSize=15,
+								  fontName="Helvetica-Bold", textColor=colors.Color(0.0390625, 0.4921875, 0.69140625)))
+			estilo.add(ParagraphStyle(name="texto",  alignment=TA_LEFT, fontSize=12, fontName="Helvetica", textColor=colors.Color(0, 0, 0)))
+			kargs = self._make_table_graphics(estilo) # Dicionario con las tablas y graficas para el story
+			story=self._make_story(**kargs)
+			doc.build(story) # Se construye el pdf con el array story
+			pdf = pdf_buffer.getvalue() # Descargando todo el buffer
+			pdf_buffer.close()
+			return pdf
+				
