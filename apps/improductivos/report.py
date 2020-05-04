@@ -46,9 +46,9 @@ class ImproductivoReportPDF:
 	
 	def _set_colors_bars(self,len_bars:int, bars: object, attr:str, colors:list):
 		""" 
-		Colorea todas las barras de diferentes colores 
-		(colores definidos en la variable de clase chart_colors).
+		Colorea todas las barras de diferentes colores (colores definidos en la variable de clase chart_colors).
 		Puede usarse para distinto atributos de la barra.
+		Si solo son dos barras o menos colorea sin degradado. Si no, colorea con degradado
 
 		parameter:
 		:parametro len_bars: Cantidad de barras a colorear
@@ -61,10 +61,16 @@ class ImproductivoReportPDF:
 
 		return None
 		"""
-		len_colors = len(colors)  # Calcula el largo del arreglo chart_colors
-		for j in range(len_bars):
-			index_color = j % len_colors
-			setattr(bars[0, j], attr, colors[index_color])# Setea el atributo 'fillColor' al obtejo bars que es "bc.bars"
+				
+		if len_bars <= 2:
+			for j in range(len_bars):
+				index_color = j * 3
+				setattr(bars[0, j], attr, colors[index_color])# Setea el atributo 'fillColor' al obtejo bars que es "bc.bars"
+		else:
+			len_colors = len(colors)  # Calcula el largo del arreglo chart_colors
+			for j in range(len_bars):
+				index_color = j % len_colors
+				setattr(bars[0, j], attr, colors[index_color])# Setea el atributo 'fillColor' al obtejo bars que es "bc.bars"
 
 	def _color_bar_imp_total(self,promedio: float):
 		""" 
