@@ -15,6 +15,217 @@ from reportlab.graphics.shapes import Drawing
 from reportlab.graphics.charts.barcharts import VerticalBarChart
 from reportlab.lib.colors import HexColor
 
+class Tabla:
+	"""
+	Crea una tabla a partir de una lista de datos.
+
+	To initialize:
+	:param datos: Una lista de los datos que cotendra la tabla. Lista=['Titulo',valor]
+
+	USAGE:
+
+	>>>tabla = Tabla(['Ruedas','10:00:00'],['Troquelado','1:00:00'])
+	>>>tabla.crear_tabla()
+
+	return tabla
+	"""
+
+	def __init__(self, datos:list, size_celda=[7 * cm, 6 * cm]):
+		self._datos: Lista['Titulo',valor] = datos
+		self._size_celda: Lista[ancho,alto] = size_celda
+		
+
+	def crear_tabla(self):
+		"""
+		Crea la tabla a partir de la lista de datos
+
+		>>> return tabla
+		"""
+		# Establecemos el tamaño de cada una de las columnas de la tabla alto y ancho
+		tabla = Table(self._datos, colWidths=self._size_celda)
+		# Aplicamos estilos a las celdas de la tabla, las coordenadas de las celdas es  [i][j]
+		tabla.setStyle(TableStyle(
+			[
+				# Toda la tabla va a estar centrada
+				('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+				# Los bordes de todas las celdas serán de color negro y con un grosor de 1
+				('GRID', (0, 0), (-1, -1), 1, colors.black),
+				# El tamaño de las letras de cada una de las celdas será de 12
+				('FONTSIZE', (0, 0), (-1, -1), 12),
+				('BACKGROUND', (0, -1), (1, -1), colors.orange),
+			]
+		))
+
+		return tabla
+
+
+class GraficaBarra:
+	"""
+	Crea una grafica a partir de una lista de tuplas contenida en la variable datos.
+
+	To initialize:
+	:param labels: Una lista de los nombre que cotendra cada barra. Lista=['Name_bar_1','Name_bar_2']
+	:param data: Una lista de tupla que cotendra dato de la grafica. Lista=[(value_bar_1,value_bar_2)]
+	:param coordenadas: Una lista de coordenada para centrar el grafico. Lista=[x,y]
+	:param alto_ancho: Una lista de coordenada para centrar el alto y ancho del grafico. Lista=[alto,ancho]
+	:param drawing_cord: Una lista de coordenadas para empezar a dibujar el grafico. Lista=[x,y], definida por defecto.
+
+	USAGE:
+	>>>grafica = GraficaBarra(labels=['Name_bar_1','Name_bar_2', data=[(value_bar_1,value_bar_2)], coordenadas:[65,20], alto_ancho:[100,200])
+	>>>grafica_mantenimiento = grafica.crear_grafica_barra()
+
+	return drawing
+	"""
+
+	def __init__(self, labels:list, data:list, coordenadas:list, alto_ancho:list,drawing_cord=[400,320]):
+		self._coordenadas: List[x,y] = coordenadas
+		self._alto_ancho: Lista[alto,ancho] = alto_ancho
+		self._data: Lista[(value_bar_1,value_bar_2)] = data
+		self._labels: Lista['name_bar_1','name_bar_2'] = labels
+		self.chart_colors = [HexColor("#0000e5"), HexColor("#246de3"), HexColor(
+		"#9898fa"), HexColor("#fa7f7f"), HexColor("#f54545"), HexColor("#f20f0f"), ] #Colores para las barras
+		self._drawing = Drawing(drawing_cord[0], drawing_cord[1])# Coordenadas para empezar a dibujar el grafico
+		self._bc = VerticalBarChart()
+
+
+	def _set_colors_bars(self):
+		""" 
+		Colorea todas las barras de diferentes colores (colores definidos en la variable de clase chart_colors).
+		Puede usarse para distinto atributos de la barra.
+		Si solo son dos barras o menos colorea sin degradado. Si no, colorea con degradado
+
+		parameter:
+		:parametro len_bars: Cantidad de barras a colorear
+		:parametro bars: grafica de barra de reportlab
+		:parametro attr: atributo de la barra a cambiar
+		:parametro colors: Una lista de colores
+
+		USAGE:
+		>>> self._set_colors_bars()
+
+		return None
+		"""
+		len_bars = len(self._bc.data[0])  # Cantidad de barras en el indice '0' o de la tupla del indice '0'
+		if len_bars <= 2:
+			for j in range(len_bars):
+				index_color = j * 3
+				self._bc.bars[0, j].fillColor = self.chart_colors[index_color]# Setea el atributo 'fillColor' al obtejo bars que es "bc.bars"
+		else:
+			len_colors = len(self.chart_colors)  # Calcula el largo del arreglo chart_colors
+			for j in range(len_bars):
+				index_color = j % len_colors
+				self._bc.bars[0, j].fillColor=self.chart_colors[index_color]# Setea el atributo 'fillColor' al obtejo bars que es "bc.bars"
+
+	def _centrar_grafica(self):
+		# Centrar el grafico
+		self._bc.x = self._coordenadas[0]
+		self._bc.y = self._coordenadas[1]
+
+	def _size_grafica(self):
+		# Tamaño del grafico
+		self._bc.height = self._alto_ancho[0]
+		self._bc.width = self._alto_ancho[1]
+
+	def _settings_etiquetas(self):
+		# Tipo de letra para la etiqueta o valor que estara arriba de cada barra
+		self._bc.barLabels.fontName = "Helvetica-Bold"
+		self._bc.barLabels.fontSize = 8  # Tamaño de letra para la etiqueta o valor que estara arriba de cada barra
+		# Color de letra para la etiqueta o valor que estara arriba de cada barra
+		# los colores van de 0 a 256 en RGB, sin embargo, en la libreria hay que pasarlo en numeros del 0 al 1
+		self._bc.barLabels.fillColor = colors.Color(31 / 256, 54 / 256, 138 / 256)
+		self._bc.barLabelFormat = '%.3f hrs'  # Dar formato de 3 decimales al valor o etiqueta que estara arriba de cada barra
+		self._bc.barLabels.nudge = 7  # Dar espacio entre la barra y la etiqueta o valor que estara arriba de cada barra
+
+	def _settings_grafico(self):
+		if len(self._bc.data[0]) < 5: # si es menos de 5 barras, ancho de barra 2
+			self._bc.barWidth=2
+		# self._bc.barWidth=7 # Ancho de la barra
+		# self_.bc.strokeColor = colors.black # Dibuja un borde alrededor del grafico
+		# self._bc.fillColor = colors.green # Fondo del grafico
+		# self._bc.groupSpacing = 10  # Espaciado entre grupos de barras
+
+	def _settings_ejes(self):
+		self._bc.valueAxis.valueMin = 0  # Valor minimo del eje Y
+		self._bc.valueAxis.rangeRound = 'both'  # Darle un valor rendondeado o cercado al valor mas alto al eje 'Y'
+		self._bc.valueAxis.valueMax = None  # Valor maximo del eje Y
+		# self._bc.valueAxis.valueStep = 5 # Divisiones del eje
+		self._bc.categoryAxis.labels.boxAnchor = 'ne'
+		self._bc.categoryAxis.labels.dx = 8  # Posición de la etiqueta en el sentido X (Horizontal)
+		self._bc.categoryAxis.labels.dy = -3  # Posicion de la etiqueta en el snetido Y (Vertical)
+		self._bc.categoryAxis.labels.angle = 45  # Angulo de laetiqueta
+		# Nombre de la etiqueta de cada barra
+		self._bc.categoryAxis.categoryNames = self._labels
+		# self._bc.categoryAxis.strokeColor=colors.Color(36/256,41/256,35/256) # Cambiar color eje x
+
+	def crear_grafica_barra(self):
+		"""
+		Crea la grafica a partir de las variables inicializadas por la clase
+
+		>>> return drawing
+		"""
+		self._bc.data = self._data  # Datos para graficar
+		self._centrar_grafica()
+		self._size_grafica()
+		self._settings_grafico()
+		self._settings_etiquetas()
+		self._settings_ejes()
+		self._set_colors_bars()
+		self._drawing.add(self._bc)  # le paso el objeto a drwaing, definido a inicio de la función
+		return self._drawing
+
+
+class GraficaBarraPromedio(GraficaBarra):
+	"""
+	Crea una grafica a partir de una lista de tuplas contenida en la variable data.
+
+	To initialize:
+	:param labels: Una lista de los nombre que cotendra cada barra. Lista=['Name_bar_1','Name_bar_2']
+	:param data: Una lista de tupla que cotendra dato de la grafica. Lista=[(value_bar_1,value_bar_2)]
+	:param coordenadas: Una lista de coordenada para centrar el grafico. Lista=[x,y]
+	:param alto_ancho: Una lista de coordenada para centrar el alto y ancho del grafico. Lista=[alto,ancho]
+	:param drawing_cord: Una lista de coordenadas para empezar a dibujar el grafico. Lista=[x,y], definida por defecto.
+
+	USAGE:
+	>>>grafica = GraficaBarraPromedio(labels=['Name_bar_1','Name_bar_2', data=[(value_bar_1,value_bar_2)], 
+					coordenadas:[65,20], alto_ancho:[100,200])
+	>>>grafica_mantenimiento = grafica.crear_grafica_barra(primedio=80)
+
+	return drawing
+	"""
+	
+	def crear_grafica_barra(self,promedio:int):
+		self._bc.data = self._data  # Datos para graficar
+		self._centrar_grafica()
+		self._size_grafica()
+		self._settings_grafico()
+		self._settings_etiquetas()
+		self._settings_ejes()
+		self._set_colors_bar(promedio)
+		self._drawing.add(self._bc)  # le paso el objeto a drwaing, definido a inicio de la función
+		return self._drawing
+
+	def _set_colors_bar(self,promedio:int) ->str:
+		""" 
+		Colorea la barra de improductivo total con respecto al promedio.
+		Menor a 70 verde, entre 70 y 99 naranja y mayor a 100 rojo.
+
+		parameters:
+		:parametro promedio: Promedio para comparar y colorear la barra
+
+		return color		
+		"""
+		color=''
+		self._bc.bars[0, 1].fillColor = colors.Color(66 / 256, 99 / 256, 245 / 256)
+		if promedio < 70:
+			color = '#32a836'
+			self._bc.bars[0, 0].fillColor = HexColor(color)
+		elif promedio > 69 and promedio < 100:
+			color = '#ff7f24'
+			self._bc.bars[0, 0].fillColor = HexColor(color)
+		else:
+			color = '#ff0000'
+			self._bc.bars[0, 0].fillColor = HexColor(color)
+
 
 class ImproductivoReportPDF:
 	"""
@@ -33,67 +244,13 @@ class ImproductivoReportPDF:
 
 	return pdf
 	"""
-
-	# Colores para las barras de los graficos
-	chart_colors = [HexColor("#0000e5"), HexColor("#246de3"), HexColor(
-		"#9898fa"), HexColor("#fa7f7f"), HexColor("#f54545"), HexColor("#f20f0f"), ]
-
-	def __init__(self, op:str,fecha_gte:str,fecha_lte:str,usuario:str):
-		self.op = op
-		self.fecha_gte = fecha_gte
-		self.fecha_lte = fecha_lte
-		self.usuario = usuario
 	
-	def _set_colors_bars(self,len_bars:int, bars: object, attr:str, colors:list):
-		""" 
-		Colorea todas las barras de diferentes colores (colores definidos en la variable de clase chart_colors).
-		Puede usarse para distinto atributos de la barra.
-		Si solo son dos barras o menos colorea sin degradado. Si no, colorea con degradado
-
-		parameter:
-		:parametro len_bars: Cantidad de barras a colorear
-		:parametro bars: grafica de barra de reportlab
-		:parametro attr: atributo de la barra a cambiar
-		:parametro colors: Una lista de colores
-
-		USAGE:
-		>>> _set_colors_bars(len_bars=10,bars=bc.bars,attr='fillcolor')
-
-		return None
-		"""
-				
-		if len_bars <= 2:
-			for j in range(len_bars):
-				index_color = j * 3
-				setattr(bars[0, j], attr, colors[index_color])# Setea el atributo 'fillColor' al obtejo bars que es "bc.bars"
-		else:
-			len_colors = len(colors)  # Calcula el largo del arreglo chart_colors
-			for j in range(len_bars):
-				index_color = j % len_colors
-				setattr(bars[0, j], attr, colors[index_color])# Setea el atributo 'fillColor' al obtejo bars que es "bc.bars"
-
-	def _color_bar_imp_total(self,promedio: float):
-		""" 
-		Colorea la barra de improductivo total con respecto al promedio.
-		Menor a 70 verde, entre 70 y 99 naranja y mayor a 100 rojo.
-
-		parameters:
-		:parametro promedio: Promedio para comparar y colorear la barra
-
-		return color		
-		"""
-
-		color=''
-		if promedio < 70:
-			color = '#32a836'
-			return color
-
-		elif promedio > 69 and promedio < 100:
-			color = '#ff7f24'
-			return color
-		else:
-			color = '#ff0000'
-			return color
+	def __init__(self, op:str,fecha_gte:str,fecha_lte:str,usuario:str):
+		self._op = op
+		self._fecha_gte = fecha_gte
+		self._fecha_lte = fecha_lte
+		self._usuario = usuario
+		
 
 	#-------------------------------------- Metodos parar generar el PDF --------------------------------#
 
@@ -134,10 +291,10 @@ class ImproductivoReportPDF:
 		canvas.drawString(40, 730, u"Hora: ")
 		canvas.drawString(40, 715, u"Orden de producción: ")
 		canvas.setFont("Helvetica", 10)
-		canvas.drawString(105, 760, str(self.usuario))
+		canvas.drawString(105, 760, str(self._usuario))
 		canvas.drawString(75, 745, str(fecha))
 		canvas.drawString(75, 730, str(time))
-		canvas.drawString(145, 715, str(self.op))
+		canvas.drawString(145, 715, str(self._op))
 		canvas.line(40, 700, 555, 700)
 		#return canvas
 
@@ -173,7 +330,7 @@ class ImproductivoReportPDF:
 		canvas.setFont("Helvetica", 10)
 		canvas.drawString(75, 790, str(fecha))
 		canvas.drawString(75, 775, str(time))
-		canvas.drawString(145, 760, str(self.op))
+		canvas.drawString(145, 760, str(self._op))
 		canvas.line(40, 750, 555, 750)
 		#return canvas
 
@@ -194,7 +351,6 @@ class ImproductivoReportPDF:
 
 		return None
 		"""
-
 		canvas.setFont("Helvetica-Bold", 8)
 		canvas.line(40, 40, 555, 40)
 		canvas.drawString(280, 20, u"Página %d" % doc.page)
@@ -219,21 +375,10 @@ class ImproductivoReportPDF:
 		# Creamos una lista de tuplas que van a contener los improductivos
 		datos = [["Ruedas", improductivo_ruedas], ["Goteros", improductivo_goteros], ["Troquelado", improductivo_troquelado],
 				 ["Film", improductivo_film], ["Regulaciones", improductivo_regulaciones], ["TOTAL", improductivo_total]]
-		# Establecemos el tamaño de cada una de las columnas de la tabla alto y ancho
-		tabla = Table(datos, colWidths=[7 * cm, 6 * cm])
-		# Aplicamos estilos a las celdas de la tabla, las cordenadas de las celdas es  [i][j]
-		tabla.setStyle(TableStyle(
-			[
-				# Toda la tabla va a estar centrada
-				('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-				# Los bordes de todas las celdas serán de color negro y con un grosor de 1
-				('GRID', (0, 0), (-1, -1), 1, colors.black),
-				# El tamaño de las letras de cada una de las celdas será de 12
-				('FONTSIZE', (0, 0), (-1, -1), 12),
-				('BACKGROUND', (0, -1), (1, -1), colors.orange),
-			]
-		))
-		return tabla
+		
+		tabla = Tabla(datos)
+		tabla_produccion = tabla.crear_tabla()
+		return tabla_produccion
 
 	def _tabla_mantenimiento(self):
 		"""
@@ -249,82 +394,39 @@ class ImproductivoReportPDF:
 		# Creamos una lista que van a contener los improductivos
 		datos = [["Mecánico", improductivo_mecanico], 
 				["Eléctrico", improductivo_electrico], ["TOTAL", improductivo_total]]
-		# Establecemos el tamaño de cada una de las columnas de la tabla alto y ancho
-		tabla = Table(datos, colWidths=[7 * cm, 6 * cm])
-		# Aplicamos estilos a las celdas de la tabla, las cordenadas de las celdas
-		# es  [i][j] ->[columna][fila]
-		tabla.setStyle(TableStyle(
-			[
-				# Toda la tabla va a estar centrada
-				('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-				# Los bordes de todas las celdas serán de color negro y con un grosor de 1
-				('GRID', (0, 0), (-1, -1), 1, colors.black),
-				# El tamaño de las letras de cada una de las celdas será de 12
-				('FONTSIZE', (0, 0), (-1, -1), 12),
-				('BACKGROUND', (0, -1), (1, -1), colors.orange),
-			]
-		))
-		return tabla
+
+		tabla = Tabla(datos)
+		tabla_mantenimiento = tabla.crear_tabla()
+		return tabla_mantenimiento
+		
 
 	def _grafica_produccion(self):
 		"""
 		Genera grafica de los improductivos de producción
 
-		return drawing
+		return grafica_produccion
 		"""
 		ruedas = self._get_improductivo(self.query_imp_ruedas, False)
 		goteros = self._get_improductivo(self.query_imp_goteros, False)
 		troquelado = self._get_improductivo(self.query_imp_troquelado, False)
 		film = self._get_improductivo(self.query_imp_film, False)
 		regulaciones = self._get_improductivo(self.query_imp_regulaciones, False)
-		drawing = Drawing(400, 320)# Coordenadas para empezar a dibujar el grafico
 		# Data para graficar, es una lista de tuplas, cada tupla es un grupo de barras
-		data = [
-			(ruedas, goteros, troquelado, film, regulaciones),
+		data = [(ruedas, goteros, troquelado, film, regulaciones),]
+		# labels para cada barra de la grafica.
+		labels = ['Ruedas', 'Goteros', 'Troquelado', 'Film', 'Regulaciones', ]
+		coordenadas = [35,50] # coordenadas para centrar el grafico, [x,y]
+		alto_ancho = [250,365] # Alto y ancho del grafico
+		grafica = GraficaBarra(labels=labels,data=data,coordenadas=coordenadas,alto_ancho=alto_ancho)
+		grafica_produccion = grafica.crear_grafica_barra()
 
-		]
-		bc = VerticalBarChart()
-		# Centrar el grafico
-		bc.x = 35
-		bc.y = 50
-		# Tamaño del grafico
-		bc.height = 250
-		bc.width = 365
-		bc.data = data  # Datos para graficar
-		# Tipo de letra para la etiqueta o valor que estara arriba de cada barra
-		bc.barLabels.fontName = "Helvetica-Bold"
-		bc.barLabels.fontSize = 8  # Tamaño de letra para la etiqueta o valor que estara arriba de cada barra
-		# Color de letra para la etiqueta o valor que estara arriba de cada barra
-		# los colores van de 0 a 256 en RGB, sin embargo, en la libreria hay que pasarlo en numeros del 0 al 1
-		bc.barLabels.fillColor = colors.Color(31 / 256, 54 / 256, 138 / 256)
-		bc.barLabelFormat = '%.3f hrs'  # Dar formato de 3 decimales al valor o etiqueta que estara arriba de cada barra
-		bc.barLabels.nudge = 7  # Dar espacio entre la barra y la etiqueta o valor que estara arriba de cada barra
-		# bc.barWidth=7 # Ancho de la barra
-		# bc.strokeColor = colors.black # Dibuja un borde alrededor del grafico
-		# bc.fillColor = colors.green # Fondo del grafico
-		# bc.groupSpacing = 10  # Espaciado entre grupos de barras
-		bc.valueAxis.valueMin = 0  # Valor minimo del eje Y
-		bc.valueAxis.rangeRound = 'both'  # Darle un valor rendondeado o cercado al valor mas alto al eje 'Y'
-		bc.valueAxis.valueMax = None  # Valor maximo del eje Y
-		# bc.valueAxis.valueStep = 5 # Divisiones del eje
-		bc.categoryAxis.labels.boxAnchor = 'ne'
-		bc.categoryAxis.labels.dx = 8  # Posición de la etiqueta en el sentido X (Horizontal)
-		bc.categoryAxis.labels.dy = -3  # Posicion de la etiqueta en el snetido Y (Vertical)
-		bc.categoryAxis.labels.angle = 45  # Angulo de laetiqueta
-		# Nombre de la etiqueta de cada barra
-		bc.categoryAxis.categoryNames = ['Ruedas', 'Goteros', 'Troquelado',
-										 'Film', 'Regulaciones', ]
-		n = len(bc.data[0])  # Cantidad de barras en el indice '0' o de la tupla del indice '0'
-		self._set_colors_bars(n, bc.bars, 'fillColor', self.chart_colors)
-		# bc.categoryAxis.strokeColor=colors.Color(36/256,41/256,35/256) # Cambiar color eje x
-		drawing.add(bc)  # le paso el objeto a drwaing, definido a inicio de la función
-		return drawing
+		return grafica_produccion
 
 	def _grafica_produccion_total(self):
 		"""
 		Genera la grafica del total de improductivos de producción.
 
-		return drawing
+		return grafica_produccion_total
 		"""
 		ruedas = self._get_improductivo(self.query_imp_ruedas, False) # Datos
 		goteros = self._get_improductivo(self.query_imp_goteros, False)
@@ -333,152 +435,58 @@ class ImproductivoReportPDF:
 		regulaciones = self._get_improductivo(self.query_imp_regulaciones, False)
 		improductivo_total = ruedas + goteros + troquelado + film + regulaciones
 		tope_improductivo = Producciones.objects.get(
-			orden_produccion=self.op).tope_improductivo_produccion  # Query meta improductivo_produccion
+			orden_produccion=self._op).tope_improductivo_produccion  # Query meta improductivo_produccion
 		promedio_improductivo = (improductivo_total * 100) / tope_improductivo
-		drawing = Drawing(400, 320)#Coordenadas para empezar a dibujar el grafico
-		data = [
-			(improductivo_total, tope_improductivo),
+		data = [(improductivo_total, tope_improductivo),]
+		# labels para cada barra de la grafica.
+		labels = ['Improductivo', 'Tope Improductivo']
+		coordenadas = [60,100] # coordenadas para centrar el grafico, [x,y]
+		alto_ancho = [190,300] # Alto y ancho del grafico
+		grafica = GraficaBarraPromedio(labels=labels,data=data,coordenadas=coordenadas,
+					alto_ancho=alto_ancho)
+		grafica_produccion_total = grafica.crear_grafica_barra(promedio=promedio_improductivo)
 
-		]
-		bc = VerticalBarChart()
-		# Centrar el grafico
-		bc.x = 60
-		bc.y = 100
-		# Tamaño del grafico
-		bc.height = 190
-		bc.width = 300
-		bc.data = data  # Datos para graficar
-		# Tipo de letra para la etiqueta o valor que estara arriba de cada barra
-		bc.barLabels.fontName = "Helvetica-Bold"
-		bc.barLabels.fontSize = 8  # Tamaño de letra para la etiqueta o valor que estara arriba de cada barra
-		# Color de letra para la etiqueta o valor que estara arriba de cada barra
-		bc.barLabels.fillColor = colors.Color(31 / 256, 54 / 256, 138 / 256)
-		bc.barLabelFormat = '%.3f hrs'  # Dar formato de 3 decimales al valor o etiqueta que estara arriba de cada barra
-		bc.barLabels.nudge = 7  # Dar espacio entre la barra y la etiqueta o valor que estara arriba de cada barra
-		bc.barWidth = 1  # Ancho de la barra
-		# Color de fondo de la segunda. el indice [i,j], el indice 'i' indica el
-		# grupo de barras y el indice 'j' la barra de grupo
-		bc.bars[0, 1].fillColor = colors.Color(66 / 256, 99 / 256, 245 / 256)
-		bc.bars[0, 0].fillColor = HexColor(self._color_bar_imp_total(promedio_improductivo))
-		# bc.strokeColor = colors.black # Dibuja un borde alrededor del grafico
-		# bc.fillColor = colors.green # Fondo del grafico
-		# bc.barSpacing =2.5 # Espacio entre barras
-		# bc.groupSpacing = 10  # Espaciado entre grupos de barras
-		bc.valueAxis.valueMin = 0
-		bc.valueAxis.rangeRound = 'both'  # Darle un valor rendondeado o cercado al valor mas alto al eje 'Y'
-		bc.valueAxis.valueMax = None  # Valor maximo del eje
-		#bc.valueAxis.valueStep = 5
-		bc.categoryAxis.labels.boxAnchor = 'ne'
-		bc.categoryAxis.labels.dx = 8
-		bc.categoryAxis.labels.dy = -3
-		bc.categoryAxis.labels.angle = 45
-		bc.categoryAxis.categoryNames = ['Improductivo', 'Tope Improductivo']
-		# bc.categoryAxis.strokeColor=colors.Color(36/256,41/256,35/256) # Cambiar color eje x
-		drawing.add(bc)
-		return drawing
+		return grafica_produccion_total
 
 	def _grafica_mantenimiento(self):
 		"""
 		Genera la grafica de improductivo de mantenimiento.
 
-		return drawing
+		return grafica_mantenimiento
 		"""
 		mecanico = self._get_improductivo(self.query_imp_mecanico, False)
 		electrico = self._get_improductivo(self.query_imp_electrico, False)
-		# Coordenadas para empezar a dibujar el grafico
-		drawing = Drawing(400, 300)
-		data = [
-			(mecanico, electrico),
-
-		]
-		bc = VerticalBarChart()
-		# Centrar el grafico
-		bc.x = 80
-		bc.y = 90
-		# Tamaño del grafico
-		bc.height = 200
-		bc.width = 315
-		bc.data = data  # Datos para graficar
-		# Tipo de letra para la etiqueta o valor que estara arriba de cada barra
-		bc.barLabels.fontName = "Helvetica-Bold"
-		bc.barLabels.fontSize = 8  # Tamaño de letra para la etiqueta o valor que estara arriba de cada barra
-		# Color de letra para la etiqueta o valor que estara arriba de cada barra
-		bc.barLabels.fillColor = colors.Color(31 / 256, 54 / 256, 138 / 256)
-		bc.barLabelFormat = '%.3f hrs'  # Dar formato de 3 decimales al valor o etiqueta que estara arriba de cada barra
-		bc.barLabels.nudge = 7  # Dar espacio entre la barra y la etiqueta o valor que estara arriba de cada barra
-		bc.barWidth = 2  # Ancho de la barra
-		# bc.strokeColor = colors.black # Dibuja un borde alrededor del grafico
-		# bc.fillColor = colors.green # Fondo del grafico
-		# bc.groupSpacing = 10  # Espaciado entre grupos de barras
-		bc.valueAxis.valueMin = 0
-		bc.valueAxis.rangeRound = 'both'  # Darle un valor rendondeado o cercado al valor mas alto al eje 'Y'
-		bc.valueAxis.valueMax = None  # Valor maximo del eje
-		#bc.valueAxis.valueStep = 5
-		# bc.valueAxis.tickRight=5 # Grid hacia la derecha
-		bc.categoryAxis.labels.boxAnchor = 'ne'
-		bc.categoryAxis.labels.dx = 8
-		bc.categoryAxis.labels.dy = -3
-		bc.categoryAxis.labels.angle = 45
-		bc.categoryAxis.categoryNames = ['Mecánico', 'Eléctrico', ]
-		n = len(bc.data[0])  # Cantidad de barras en el indice '0' o de la tupla del indice '0'
-		self._set_colors_bars(n, bc.bars, 'fillColor', self.chart_colors)
-		# bc.categoryAxis.strokeColor=colors.Color(36/256,41/256,35/256) # Cambiar color eje x
-		drawing.add(bc)
-		return drawing
+		data = [(mecanico, electrico),]
+		# labels para cada barra de la grafica.
+		labels = ['Mecánico', 'Eléctrico', ]
+		coordenadas = [80,90] # coordenadas para centrar el grafico, [x,y]
+		alto_ancho = [200,315] # Alto y ancho del grafico
+		grafica = GraficaBarra(labels=labels,data=data,coordenadas=coordenadas,alto_ancho=alto_ancho,drawing_cord=[400,300])
+		grafica_mantenimiento = grafica.crear_grafica_barra()
+	
+		return grafica_mantenimiento
 
 	def _grafica_mantenimiento_total(self):
 		"""
 		Genera la grafica del total de improductivo de mantenimiento.
 
-		return drawing
+		return grafica_mantenimiento_total
 		"""
 		mecanico = self._get_improductivo(self.query_imp_mecanico, False)
 		electrico = self._get_improductivo(self.query_imp_electrico, False)
 		improductivo_total = mecanico + electrico
-		tope_improductivo = Producciones.objects.get(orden_produccion=self.op).tope_improductivo_mantenimiento
+		tope_improductivo = Producciones.objects.get(orden_produccion=self._op).tope_improductivo_mantenimiento
 		promedio_improductivo = (improductivo_total * 100) / (tope_improductivo)
-		# Coordenadas para empezar a dibujar el grafico
-		drawing = Drawing(400, 200)
-		data = [
-			(improductivo_total, tope_improductivo),
+		data = [(improductivo_total, tope_improductivo),]
+		# labels para cada barra de la grafica.
+		labels = ['Improductivo', 'Tope Improductivo']
+		coordenadas = [80,10] # coordenadas para centrar el grafico, [x,y]
+		alto_ancho = [190,300] # Alto y ancho del grafico
+		grafica = GraficaBarraPromedio(labels=labels,data=data,coordenadas=coordenadas,
+					alto_ancho=alto_ancho,drawing_cord=[400,200])
+		grafica_mantenimiento_total = grafica.crear_grafica_barra(promedio=promedio_improductivo)
 
-		]
-		bc = VerticalBarChart()
-		# Centrar el grafico
-		bc.x = 80
-		bc.y = 10
-		# Tamaño del grafico
-		bc.height = 190
-		bc.width = 300
-		bc.data = data  # Datos para graficar
-		# Tipo de letra para la etiqueta o valor que estara arriba de cada barra
-		bc.barLabels.fontName = "Helvetica-Bold"
-		bc.barLabels.fontSize = 8  # Tamaño de letra para la etiqueta o valor que estara arriba de cada barra
-		# Color de letra para la etiqueta o valor que estara arriba de cada barra
-		bc.barLabels.fillColor = colors.Color(31 / 256, 54 / 256, 138 / 256)
-		bc.barLabelFormat = '%.3f hrs'  # Dar formato de 3 decimales al valor o etiqueta que estara arriba de cada barra
-		bc.barLabels.nudge = 7  # Dar espacio entre la barra y la etiqueta o valor que estara arriba de cada barra
-		bc.barWidth = 1  # Ancho de la barra
-		# Color de fondo de la segunda. el indice [i,j], el indice 'i' indica el
-		# grupo de barras y el indice 'j' la barra de grupo
-		bc.bars[0, 1].fillColor = colors.Color(66 / 256, 99 / 256, 245 / 256)
-		bc.bars[0, 0].fillColor = HexColor(self._color_bar_imp_total(promedio_improductivo))
-		# bc.strokeColor = colors.black # Dibuja un borde alrededor del grafico
-		# bc.fillColor = colors.green # Fondo del grafico
-		# bc.groupSpacing = 10  # Espaciado entre grupos de barras
-		bc.valueAxis.valueMin = 0
-		bc.valueAxis.rangeRound = 'both'  # Darle un valor rendondeado o cercado al valor mas alto al eje 'Y'
-		bc.valueAxis.valueMax = None  # Valor maximo del eje
-		#bc.valueAxis.valueStep = 5
-		bc.categoryAxis.labels.boxAnchor = 'ne'
-		bc.categoryAxis.labels.dx = 8
-		bc.categoryAxis.labels.dy = -3
-		bc.categoryAxis.labels.angle = 45
-		bc.categoryAxis.categoryNames = ['Improductivo', 'Tope Improductivo']
-		# bc.categoryAxis.strokeColor=colors.Color(36/256,41/256,35/256) # Cambiar color eje x
-		drawing.add(bc)
-		return drawing
-
+		return grafica_mantenimiento_total
 
 	def _get_improductivo(self,query_imp:object, hms:bool) -> str or float:
 		"""
@@ -575,12 +583,12 @@ class ImproductivoReportPDF:
 		kargs: Dictionary = dict()
 		# Texto, tabla y graficas de produccion
 		texto_tabla_produccion = Paragraph(
-			u"En la siguiente tabla se presentan los improductivos de producción asociados a la orden de producción " + str(self.op) + ":", estilo['texto'])
+			u"En la siguiente tabla se presentan los improductivos de producción asociados a la orden de producción " + str(self._op) + ":", estilo['texto'])
 		titulo_tabla_produccion = Paragraph(
 			u"Improductivos de Producción", estilo['titulo_tablas_graficas'])
 		tabla_produccion = self._tabla_produccion()
 		texto_grafica_produccion = Paragraph(
-		u"En la siguientes graficas se presentan los improductivos de producción asociados a la orden de producción " + str(self.op) + ":", estilo['texto'])
+		u"En la siguientes graficas se presentan los improductivos de producción asociados a la orden de producción " + str(self._op) + ":", estilo['texto'])
 		titulo_grafica_produccion = Paragraph(
 			u"Grafica de Improductivos de Producción", estilo['titulo_tablas_graficas'])
 		grafica_produccion = self._grafica_produccion()
@@ -589,12 +597,12 @@ class ImproductivoReportPDF:
 		grafica_produccion_total = self._grafica_produccion_total()
 		# Texto, tabla y graficas de mantenimiento
 		texto_tabla_mantenimiento = Paragraph(
-			u"En la siguiente tabla se presentan los improductivos de mantenimiento asociados de la orden de producción " + str(self.op) + ":", estilo['texto'])
+			u"En la siguiente tabla se presentan los improductivos de mantenimiento asociados de la orden de producción " + str(self._op) + ":", estilo['texto'])
 		titulo_tabla_mantenimiento = Paragraph(
 			u"Improductivos de Mantenimiento", estilo['titulo_tablas_graficas'])
 		tabla_mantenimiento = self._tabla_mantenimiento()
 		texto_grafica_mantenimiento = Paragraph(
-			u"En la siguientes graficas se presentan los improductivos de mantenimiento asociados a la orden de producción " + str(self.op) + ":", estilo['texto'])
+			u"En la siguientes graficas se presentan los improductivos de mantenimiento asociados a la orden de producción " + str(self._op) + ":", estilo['texto'])
 		titulo_grafica_mantenimiento = Paragraph(
 			u"Grafica de Improductivos de Mantenimiento", estilo['titulo_tablas_graficas'])
 		grafica_mantenimiento = self._grafica_mantenimiento()
@@ -676,32 +684,37 @@ class ImproductivoReportPDF:
 		return story
 
 
-	def make_report(self) -> bytes:
-			"""
-			Crea el pdf a partir de story. Ademas inicializa el doc con los estilo de las hojas y el tamaño de la hoja.
+	def _make_pdf(self)-> bytes:
+		"""
+		Crea el pdf a partir de story. Ademas inicializa el doc con los estilo de las hojas y el tamaño.
 
-			return pdf
-			"""
-			
-			self._query_data(op=self.op,fecha_gte=self.fecha_gte,fecha_lte=self.fecha_lte)# Ejecuando el query para obtener los datos.
-			# La clase io.BytesIO permite tratar un array de bytes como un fichero binario,
-			# se utiliza como almacenamiento temporal dentro de python, para luego ser descargado todo el dato como pdf
-			pdf_buffer = BytesIO()
-			#c = canvas.Canvas(buffer)
-			doc = BaseDocTemplate(pdf_buffer, pagesize=A4) # Se pasa el pdf_buffer al BaseDocTemplate
-			frame0 = Frame(doc.leftMargin, doc.bottomMargin,doc.width, doc.height, showBoundary=0, id='normalBorde') # Frames o marcos de la pagina
-			# Plantillas de las hojas, cabecera, pie de pagina, marco de la pagina. Se
-			# puede tener varias plantillas. Siempre partira de la primera plantilla
-			doc.addPageTemplates([PageTemplate(id='primera_hoja', frames=frame0,onPage=self._cabecera_1, onPageEnd=self._pie_pagina),
+		return pdf
+		"""
+		# La clase io.BytesIO permite tratar un array de bytes como un fichero binario,
+		# se utiliza como almacenamiento temporal dentro de python, para luego ser descargado todo el dato como pdf
+		pdf_buffer = BytesIO()
+		#c = canvas.Canvas(buffer)
+		doc = BaseDocTemplate(pdf_buffer, pagesize=A4) # Se pasa el pdf_buffer al BaseDocTemplate
+		frame0 = Frame(doc.leftMargin, doc.bottomMargin,doc.width, doc.height, showBoundary=0, id='normalBorde') # Frames o marcos de la pagina
+		# Plantillas de las hojas, cabecera, pie de pagina, marco de la pagina. Se
+		# puede tener varias plantillas. Siempre partira de la primera plantilla
+		doc.addPageTemplates([PageTemplate(id='primera_hoja', frames=frame0,onPage=self._cabecera_1, onPageEnd=self._pie_pagina),
 							  PageTemplate(id='contenido', frames=frame0, onPage=self._cabecera_contenido, onPageEnd=self._pie_pagina)])
-			estilo = getSampleStyleSheet() # Creamos las hojas de Estilos
-			estilo.add(ParagraphStyle(name="titulo_tablas_graficas",  alignment=TA_CENTER, fontSize=15,
+		# Creamos las hojas de Estilos
+		estilo = getSampleStyleSheet()
+		estilo.add(ParagraphStyle(name="titulo_tablas_graficas",  alignment=TA_CENTER, fontSize=15,
 								  fontName="Helvetica-Bold", textColor=colors.Color(0.0390625, 0.4921875, 0.69140625)))
-			estilo.add(ParagraphStyle(name="texto",  alignment=TA_LEFT, fontSize=12, fontName="Helvetica", textColor=colors.Color(0, 0, 0)))
-			kargs = self._make_table_graphics(estilo) # Dicionario con las tablas y graficas para el story
-			story=self._make_story(**kargs)
-			doc.build(story) # Se construye el pdf con el array story
-			pdf = pdf_buffer.getvalue() # Descargando todo el buffer
-			pdf_buffer.close()
-			return pdf
-				
+		estilo.add(ParagraphStyle(name="texto",  alignment=TA_LEFT, fontSize=12, fontName="Helvetica", textColor=colors.Color(0, 0, 0)))
+		kargs = self._make_table_graphics(estilo) # Dicionario con las tablas y graficas para el story
+		story=self._make_story(**kargs)
+		doc.build(story) # Se construye el pdf con el array story
+		#Descargando todo el buffer
+		pdf = pdf_buffer.getvalue()
+		pdf_buffer.close()
+		return pdf
+
+	def make_report(self) -> bytes:
+			# ejecuando el query para obtener los datos.
+			self._query_data(op=self._op,fecha_gte=self._fecha_gte,fecha_lte=self._fecha_lte)
+			report = self._make_pdf()
+			return report
