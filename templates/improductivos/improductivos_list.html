@@ -1,158 +1,169 @@
 {% extends "base/base.html" %}
 {% block content %}
-{% block title_page %}
-Lista de Improductivos
-{% endblock title_page %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-9 lemon text-center">
-            <table class="" style="width: 100%">
-                <thead class="">
-                    <tr>
-                        <th>ID</th>
-                        <th>Problema</th>
-                        <th>Tipo de Problema</th>
-                        <th>Comentario</th>
-                        <th>Numero Manto</th>
-                        <th>Lineas</th>
-                        <th>Fecha</th>
-                        <th>Hora Del Problema</th>
-                        <th>Hora De Solución</th>
-                        <th>Tiempo Improductivo</th>
-                        <th>Producción</th>
-                        {% if user.is_staff %}
-                        <th>Acciones</th>
-                        {% endif %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if object_list %}
-                    <!--si fuera vista basada en función se pasa en el if el contexto "improductivos", el cual se recibe de las vistas-->
-                    {% for imp in object_list %}
-                    <!--si fuera vista basada en función se pasa en el if el contexto improductivos, el cual se recibe de las vistas-->
-                    <tr>
-                        <td>{{imp.id}}</td>
-                        <td>{{imp.problema | title}}</td>
-                        <td>{{imp.tipo_problema | title}}</td>
-                        <td>{{imp.comentario}}</td>
-                        <td>{{imp.numero_manto}}</td>
-                        <td>{% for lineas in imp.numero_linea.all %}
-                            {{ lineas.linea|add:","}}
-                            {% endfor %}
-                        </td>
-                        <td>{{imp.fecha}}</td>
-                        <td>{{imp.hora_problema|time:"H:i:s"}}</td>
-                        <td>{{imp.hora_solucion|time:"H:i:s"}}</td>
-                        <td>{{imp.tiempo_improductivo|time:"H:i:s"}}</td>
-                        <td>{{imp.produccion}}</td>
-                        {% if user.is_staff %}
-                        <td>
-                            <a class="btn btn-primary margin-btn" href="{% url 'improductivos:improductivos_edit' imp.id %}" title="Editar">
-                                Editar
-                            </a>
-                            <a class="btn btn-danger" href="{% url 'improductivos:improductivos_delete' imp.id %}" title="Eliminar">
-                                Eliminar
-                            </a>
-                        </td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                    {% else %}
-                    <h4>
-                        No hay registro de improductivos
-                    </h4>
-                    {% endif %}
-                </tbody>
-            </table>
-            <ul class="pager">
-                <li>
-                    {% if page_obj.has_previous %}
-                    <a class="" href="?page={{ page_obj.previous_page_number }}">Atras</a>
-                    {% endif %}
-                </li>
-                <li>
-                    {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
-                    {% endif %}
-                </li>
-            </ul>
-        </div>
-        <div class="col-md-3">
-            <div class="panel panel-primary ">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                        Filtro
-                    </h3>
-                </div>
-                <div class="panel-body">
-                    <p>
-                        Por fecha
-                    </p>
-                    <form method="get" action="{% url 'improductivos:improductivos_list' %}" id="filtro_fecha">
-                        <div class="form-row">
-                            <div class="form-group ">
-                                <label class="" for="date_since">
-                                    Desde
-                                </label>
-                                <input class="form-control" type="date" value="{{context_fecha_gte}}" name="fecha__gte" id="date_since">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group ">
-                                <label class="" for="date_until">
-                                    Hasta
-                                </label>
-                                <input class="form-control" type="date" value="{{context_fecha_lte}}" name="fecha__lte" id="date_until">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group ">
-                                <input type="hidden" value="?{{filtro_fecha_query_string}}" id="fecha-query-string">
-                            </div>
-                        </div>
-                        <div class="submit-row">
-                            <div class="form-group">
-                                <input class="btn btn-primary btn-block" type="submit" onclick="datefilter_apply(event, 'fecha-query-string', 'filtro_fecha')" value="Buscar">
-                            </div>
-                        </div>
-                    </form>
-                    <hr>
-                    <p>Por tipo de problema</p>
-                    <ul>
-                        <li class="selected"><a href="?" title="Todo">Todo</a></li>
-                        {% for tipo_problema in context_tipo_problema %}
-                        <li><a href="?{{filtro_tipo_problema}}&amp;tipo_problema={{ tipo_problema.tipo_problema }}">{{ tipo_problema.tipo_problema | title}}</a></li>
-                        {% endfor %}
-                    </ul>
-                    <p>Por problema</p>
-                    <ul>
-                        <li class="selected"><a href="?" title="Todo">Todo</a></li>
-                        {% for problemas in context_problema %}
-                        <li><a href="?{{filtro_problema}}&amp;problema={{ problemas.problema }}">{{problemas.problema | title}}</a></li>
-                        {% endfor %}
-                    </ul>
-                    <p>Por orden producción</p>
-                    <ul>
-                        <li class="selected"><a href="?" title="Todo">Todo</a></li>
-                        {% for producciones in context_produccion %}
-                        <li><a href="?{{filtro_produccion}}&amp;produccion={{ producciones.produccion_id }}">{{producciones.produccion}}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="container-fluid" style="font-size:12px">
+	<div class="table-wrapper col-md-10 lemon text-center">
+			<div class="table-title">
+				<div class="row">
+					<div class="col-md-12 text-center">
+						<h2>Lista de <b>Improductivos</b></h2>
+					</div>                
+				</div>
+			</div>
+			<div style="overflow-x:auto;">
+			<table class="table table-striped table-hover" style="">
+				<thead class="">
+					<tr>
+						<th>ID</th>
+						<th>Problema</th>
+						<th>Tipo de Problema</th>
+						<th>Comentario</th>
+						<th>Numero Manto</th>
+						<th>Lineas</th>
+						<th>Fecha</th>
+						<th>Hora Del Problema</th>
+						<th>Hora De Solución</th>
+						<th>Tiempo Improductivo</th>
+						<th>Producción</th>
+						{% if user.is_staff %}
+						<th>Acciones</th>
+						{% endif %}
+					</tr>
+				</thead>
+				<tbody>
+					{% if object_list %}
+					<!--si fuera vista basada en función se pasa en el if el contexto "improductivos", el cual se recibe de las vistas-->
+					{% for imp in object_list %}
+					<!--si fuera vista basada en función se pasa en el if el contexto improductivos, el cual se recibe de las vistas-->
+					<tr>
+						<td>{{imp.id}}</td>
+						<td>{{imp.problema|title|default:"-"}}</td>
+						<td>{{imp.tipo_problema|title|default:"-"}}</td>
+						<td>{{imp.comentario|default:"-"}}</td>
+						<td>{{imp.numero_manto}}</td>
+						<td>{% for lineas in imp.numero_linea.all %}
+							{{ lineas.linea|add:","|default:"-"}}
+							{% endfor %}
+						</td>
+						<td>{{imp.fecha|default:"-"}}</td>
+						<td>{{imp.hora_problema|time:"H:i:s"|default:"-"}}</td>
+						<td>{{imp.hora_solucion|time:"H:i:s"|default:"-"}}</td>
+						<td>{{imp.tiempo_improductivo|time:"H:i:s"|default:"-"}}</td>
+						<td>{{imp.produccion|default:"-"}}</td>
+						{% if user.is_staff %}
+						<td>
+							<div class="display-flex">
+								<a class="link-blue" href="{% url 'improductivos:improductivos_edit' imp.id %}" data-toggle="tooltip"  title="Editar">
+									<i class="fas fa-edit"></i>
+								</a>
+								<a class="link-red" href="{% url 'improductivos:improductivos_delete' imp.id %}" data-toggle="tooltip" title="Eliminar">
+								<i class="far fa-trash-alt fa-xs"></i>
+								</a>
+							</div>
+						</td>
+						{% endif %}
+					</tr>
+					{% endfor %}
+					{% else %}
+					<h4>
+						No hay registro de improductivos
+					</h4>
+					{% endif %}
+				</tbody>
+			</table>
+		</div>
+			<ul class="pager">
+				<li>
+					{% if page_obj.has_previous %}
+					<a class="" href="?page={{ page_obj.previous_page_number }}">Atras</a>
+					{% endif %}
+				</li>
+				<li>
+					{% if page_obj.has_next %}
+					<a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+					{% endif %}
+				</li>
+			</ul>
+	 </div> 
+	<div class="col-md-2" style="margin-top: 30px">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Filtro
+					</h3>
+				</div>
+				<div class="panel-body">
+					<p>
+						Por fecha
+					</p>
+					<form method="get" action="{% url 'improductivos:improductivos_list' %}" id="filtro_fecha">
+						<div class="form-row">
+							<div class="form-group ">
+								<label class="" for="date_since">
+									Desde
+								</label>
+								<input class="form-control" type="date" value="{{context_fecha_gte}}" name="fecha__gte" id="date_since">
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group ">
+								<label class="" for="date_until">
+									Hasta
+								</label>
+								<input class="form-control" type="date" value="{{context_fecha_lte}}" name="fecha__lte" id="date_until">
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group ">
+								<input type="hidden" value="?{{filtro_fecha_query_string}}" id="fecha-query-string">
+							</div>
+						</div>
+						<div class="submit-row">
+							<div class="form-group">
+								<input class="btn btn-primary btn-block" type="submit" onclick="datefilter_apply(event, 'fecha-query-string', 'filtro_fecha')" value="Buscar">
+							</div>
+						</div>
+					</form>
+					<hr>
+					<p>Por tipo de problema</p>
+					<ul>
+						<li class="selected"><a href="?" title="Todo">Todo</a></li>
+						{% for tipo_problema in context_tipo_problema %}
+						<li><a href="?{{filtro_tipo_problema}}&amp;tipo_problema={{ tipo_problema.tipo_problema }}">{{ tipo_problema.tipo_problema | title}}</a></li>
+						{% endfor %}
+					</ul>
+					<p>Por problema</p>
+					<ul>
+						<li class="selected"><a href="?" title="Todo">Todo</a></li>
+						{% for problemas in context_problema %}
+						<li><a href="?{{filtro_problema}}&amp;problema={{ problemas.problema }}">{{problemas.problema | title}}</a></li>
+						{% endfor %}
+					</ul>
+					<p>Por orden producción</p>
+					<ul>
+						<li class="selected"><a href="?" title="Todo">Todo</a></li>
+						{% for producciones in context_produccion %}
+						<li><a href="?{{filtro_produccion}}&amp;produccion={{ producciones.produccion_id }}">{{producciones.produccion}}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
 </div>
 {% endblock content %}
 {% block extrajs %}
 <script type="text/javascript">
 // script para unir la petición del filtro
 function datefilter_apply(event, qs_name, form_name) {
-    event.preventDefault();
-    var query_string = $('#' + qs_name).val();
-    var form_data = $('#' + form_name).serialize();
-    window.location = window.location.pathname + query_string + '&' + form_data;
+	event.preventDefault();
+	var query_string = $('#' + qs_name).val();
+	var form_data = $('#' + form_name).serialize();
+	window.location = window.location.pathname + query_string + '&' + form_data;
 
 }
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
+	});
 </script>
 {% endblock extrajs %}

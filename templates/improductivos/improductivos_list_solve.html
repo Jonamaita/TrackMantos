@@ -1,18 +1,21 @@
 {% extends "base/base.html" %}
 {% block content %}
 <div class="container">
-    <div>
-        <h2 class="text-center lemon">
-            Improductivos
-        </h2>
-    </div>
-    <div class="lemon text-center">
-        <table class="" style="width: 100%">
+    <div class="table-wrapper lemon" style="">
+        <div class="table-title">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h2>Resolver <b>Improductivos</b></h2>
+                    </div>                
+                </div>
+        </div>
+        <div style="overflow-x:auto;">
+        <table class="table table-striped table-hover" style="width: 100%">
             <thead class="">
                 <tr>
                     <th>ID</th>
                     <th>Problema</th>
-                    <th>comentario</th>
+                    <th>Comentario</th>
                     <th>Numero de Manto</th>
                     <th>Lineas</th>
                     <th>Fecha</th>
@@ -39,23 +42,24 @@
                     </td>
                     <td>{{imp.fecha}}</td>
                     <td>{{imp.hora_problema|time:"H:i:s"}}</td>
-                    <td>{{imp.hora_solucion|time:"H:i:s"}}</td>
-                    <td>{{imp.tiempo_improductivo|time:"H:i:s"}}</td>
+                    <td>{{imp.hora_solucion|time:"H:i:s" |default:"-"}}</td>
+                    <td>{{imp.tiempo_improductivo|time:"H:i:s"|default:"-"}}</td>
                     <td>{{imp.produccion}}</td>
                     <td>
-                        <a class="btn btn-success margin-btn" href="{% url 'improductivos:improductivo_solve' imp.id %}" title="Resolver">
+                        <a class="btn btn-success margin-btn" href="{% url 'improductivos:improductivo_solve' imp.id %}" title="Resolver" data-toggle="tooltip" style="color:white">
                             Resolver
                         </a>
                     </td>
                 </tr>
                 {% endfor %}
                 {% else %}
-                <h3 style="color:orange">
+                <h5 class="text-center" style="color:orange">
                     No hay problemas por resolver
-                </h3>
+                </h5>
                 {% endif %}
             </tbody>
         </table>
+    </div>
         <ul class="pager">
             <li>
                 {% if page_obj.has_previous %}
@@ -71,3 +75,10 @@
     </div>
 </div>
 {% endblock content %}
+{% block extrajs %}
+<script type="text/javascript">
+    $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+{% endblock extrajs %}

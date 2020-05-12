@@ -1,12 +1,16 @@
 {% extends "base/base.html" %}
 {% block content %}
-{% block title_page %}
-Lista de ordenes de producción
-{% endblock title_page %}
-<div class="container">
-	<div class="row">
-		<div class="col-md-9 lemon text-center">
-			<table class="" style="width: 100%">
+<div class="container-fluid" style="font-size:12px">
+	<div class="table-wrapper col-md-10 lemon text-center">
+		 <div class="table-title">
+				<div class="row">
+					<div class="col-md-12 text-center">
+						<h2>Lista de <b>Producciones</b></h2>
+					</div>                
+				</div>
+			</div>
+			<div style="overflow-x:auto;">
+			<table class="table table-striped table-hover" style="width: 100%">
 				<thead class="">
 					<tr>
 						<th>
@@ -39,6 +43,9 @@ Lista de ordenes de producción
 						<th>
 							Comentario
 						</th>
+						<th>
+							Estado
+						</th>
 						{% if user.is_staff %}
 						<th>
 							Acciones
@@ -51,40 +58,60 @@ Lista de ordenes de producción
 					{% for producciones in object_list %}
 					<tr>
 						<td>
-							{{producciones.orden_produccion}}
+							{{producciones.orden_produccion|default:"-"}}
 						</td>
 						<td>
-							{{producciones.minera | title}}
+							{{producciones.minera|title|default:"-"}}
 						</td>
 						<td>
-							{{producciones.cantidad_mantos}}
+							{{producciones.cantidad_mantos|default:"-"}}
 						</td>
 						<td>
-							{{producciones.fecha_inicio}}
+							{{producciones.fecha_inicio|default:"-"}}
 						</td>
 						<td>
-							{{producciones.hora_inicio|time:"H:i:s"}}
+							{{producciones.hora_inicio|time:"H:i:s"|default:"-"}}
 						</td>
 						<td>
-							{{producciones.fecha_finalizacion}}
+							{{producciones.fecha_finalizacion|default:"-"}}
 						</td>
 						<td>
-							{{producciones.hora_finalizacion|time:"H:i:s"}}
+							{{producciones.hora_finalizacion|time:"H:i:s"|default:"-"}}
 						</td>
 						<td>
-							{{producciones.tope_improductivo_produccion}}
+							{{producciones.tope_improductivo_produccion|default:"-"}}
 						</td>
 						<td>
-							{{producciones.tope_improductivo_mantenimiento}}
+							{{producciones.tope_improductivo_mantenimiento|default:"-"}}
 						</td>
 						<td>
-							{{producciones.comentario}}
+							{{producciones.comentario|default:"-"}}
+						</td>
+						<td>
+							<div class="display-flex">
+							{% if producciones.hora_inicio and not producciones.hora_finalizacion %}
+							
+							<span class="status text-success">&bull;</span>
+							Abierta
+							
+							{% elif producciones.hora_inicio and producciones.hora_finalizacion %}
+							
+							<span class="status text-danger">&bull;</span>
+							Cerrada
+							
+							{% else %}
+							
+							<span class="status text-warning">&bull;</span>
+							Sin iniciar
+							
+							{% endif %}
+							</div>
+							
 						</td>
 						{% if user.is_staff %}
 						<td>
-							<a class="btn btn-primary margin-btn" href="{% url 'producciones:producciones_edit' producciones.id %}" title="Editar">
-								Editar
-							</a>
+							<a class="link-blue" href="{% url 'producciones:producciones_edit' producciones.id %}" data-toggle="tooltip" title="Editar">
+								<i class="fas fa-edit"></i></a>
 							<!-- <a class="btn btn-danger" href="{}" title="Eliminar">
 								Eliminar
 							</a>-->
@@ -99,6 +126,7 @@ Lista de ordenes de producción
 					{% endif %}
 				</tbody>
 			</table>
+		</div>
 			<ul class="pager">
 				<li>
 					{% if page_obj.has_previous %}
@@ -116,69 +144,65 @@ Lista de ordenes de producción
 				</li>
 			</ul>
 		</div>
-		<div class="col-md-3">
-			<div class="panel panel-primary ">
-				<div class="panel-heading">
-					<h3 class="panel-title">
-						Filtro
-					</h3>
-				</div>
-				<div class="panel-body">
+	
+	<div class="col-md-2" style="margin-top: 30px">
+		<div class="panel panel-info ">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					Filtro
+				</h3>
+			</div>
+			<div class="panel-body">
+				<p>
+					Por fecha
+				</p>
+				<form action="{% url 'producciones:producciones_list' %}" id="filtro_fecha_producciones" method="get">
+					<div class="form-row">
+						<div class="form-group ">
+							<label class="" for="date_since">
+								Desde
+							</label>
+							<input class="form-control" id="date_since_producciones" name="fecha_inicio__gte" type="date" value="{{context_fecha_gte}}">                        
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group ">
+							<label class="" for="date_until">
+								Hasta
+							</label>
+							<input class="form-control" id="date_until_producciones" name="fecha_inicio__lte" type="date" value="{{context_fecha_lte}}">
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group ">
+							<input id="fecha_query_string_producciones" type="hidden" value="?{{filtro_fecha_query_string}}">
+						</div>
+					</div>
+					<div class="submit-row">
+						<div class="form-group">
+							<input class="btn btn-primary btn-block" onclick="datefilter_apply(event, 'fecha_query_string_producciones', 'filtro_fecha_producciones')" type="submit" value="Buscar">
+						</div>
+					</div>
+				</form>
+				<hr>
 					<p>
-						Por fecha
+						Por mineras
 					</p>
-					<form action="{% url 'producciones:producciones_list' %}" id="filtro_fecha_producciones" method="get">
-						<div class="form-row">
-							<div class="form-group ">
-								<label class="" for="date_since">
-									Desde
-								</label>
-								<input class="form-control" id="date_since_producciones" name="fecha_inicio__gte" type="date" value="{{context_fecha_gte}}">
-								</input>
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="form-group ">
-								<label class="" for="date_until">
-									Hasta
-								</label>
-								<input class="form-control" id="date_until_producciones" name="fecha_inicio__lte" type="date" value="{{context_fecha_lte}}">
-								</input>
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="form-group ">
-								<input id="fecha_query_string_producciones" type="hidden" value="?{{filtro_fecha_query_string}}">
-								</input>
-							</div>
-						</div>
-						<div class="submit-row">
-							<div class="form-group">
-								<input class="btn btn-primary btn-block" onclick="datefilter_apply(event, 'fecha_query_string_producciones', 'filtro_fecha_producciones')" type="submit" value="Buscar">
-								</input>
-							</div>
-						</div>
-					</form>
-					<hr>
-						<p>
-							Por mineras
-						</p>
-						<ul>
-							<li class="selected">
-								<a href="?" title="Todo">
-									Todos
-								</a>
-							</li>
-							{% for minera in context_minera %}
-							<li>
-								<a href="?{{filtro_minera}}minera={{ minera.minera }}">
-									{{minera.minera}}
-								</a>
-							</li>
-							{% endfor %}
-						</ul>
-					</hr>
-				</div>
+					<ul>
+						<li class="selected">
+							<a href="?" title="Todo">
+								Todos
+							</a>
+						</li>
+						{% for minera in context_minera %}
+						<li>
+							<a href="?{{filtro_minera}}minera={{ minera.minera }}">
+								{{minera.minera}}
+							</a>
+						</li>
+						{% endfor %}
+					</ul>
+				<hr>
 			</div>
 		</div>
 	</div>
@@ -194,5 +218,11 @@ function datefilter_apply(event, qs_name, form_name) {
 	window.location = window.location.pathname + query_string + '&' + form_data;
 
 }
+</script>
+<script type="text/javascript">
+	//Script para que title salga como burbuja en los link
+	$(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
+	});
 </script>
 {% endblock extrajs %}

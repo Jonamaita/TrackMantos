@@ -1,18 +1,18 @@
 {% extends "base/base.html" %}
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="lemon text-center col-md-12 con-sm-12 col-xs-12" id="">
-            <h3>
-                ¿Desea eliminar el siguiente improductivo?
-            </h3>
-        </div>
-    </div>
-    <div class="row ">
-        <form method="post" class=" lemon " id="form_3">
+     <form method="post" class="lemon" id="form_3">
             {% csrf_token %}
-            <div class="text-center form-group col-md-12 con-sm-12 col-xs-12" id="table_improductivos_delete">
-                <table style="width: 100%">
+            <div class="table-wrapper text-center form-group col-md-12 con-sm-12 col-xs-12" id="table_improductivos_delete">
+                 <div class="table-title">
+                     <div class="row">
+                        <div class="col-md-12 text-center">
+                            <h2>¿Desea Eliminar Este <b>Improductivo?</b></h2>
+                        </div>                
+                    </div>
+                 </div>
+                <div style="overflow-x:auto;">
+                <table class="table table-striped table-hover" style="width: 100%">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -48,11 +48,11 @@
                     </tbody>
                 </table>
             </div>
+            </div>
             <div class="text-center col-md-12 con-sm-12 col-xs-12">
                 <button type="submit" class="btn btn-danger" title="Eliminar">Si, Eliminar</button>
                 <a href="{%url 'improductivos:improductivos_list'%}" class="btn btn-primary" title="Cancelar">Cancelar</a>
             </div>
         </form>
-    </div>
 </div>
 {% endblock content %}
