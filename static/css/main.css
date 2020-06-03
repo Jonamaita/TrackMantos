@@ -211,7 +211,19 @@ hr {
 	transition: max-height 1s, opacity 0.3s, visibility 0.3s linear;
 }
 
+/*filter*/
+.filter{
+	background: #F5FAFF;
+	padding: 10px 0px 0px 0px;
+	color: #01678F;
+	font-size: 13px;
+}
+@media only screen and (max-width: 765px) {
+        .margin-xs{
+        	margin-left: 0px !important;
 
+        }
+}
 /* Tablas*/
 
 .table-wrapper {

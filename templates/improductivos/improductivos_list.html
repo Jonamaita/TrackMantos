@@ -1,13 +1,59 @@
 {% extends "base/base.html" %}
 {% block content %}
 <div class="container-fluid" style="font-size:12px">
-	<div class="table-wrapper col-md-10 lemon text-center">
+	<div class="table-wrapper col-md-12 lemon text-center">
 			<div class="table-title">
 				<div class="row">
 					<div class="col-md-12 text-center">
 						<h2>Lista de <b>Improductivos</b></h2>
 					</div>                
 				</div>
+
+			</div>
+			<div class="filter">
+			<div class='row'>
+					<form class="form-inline col-xs-12" method="get" action="{% url 'improductivos:improductivos_list' %}" id="filtro_fecha">
+						{{ myFilter.form.non_field_errors }}
+                            <div class='form-group margin-xs'  style="margin-bottom: 5px;">
+                            	<label class="" for="{{myFilter.form.produccion.id_for_label}}">
+                                    Orden de Producción
+                                </label>
+                                {{ myFilter.form.produccion.error }}
+                            	<span style="margin-left: 3px;">{{myFilter.form.produccion}}</span>
+                            </div>
+                            <div class='form-group margin-xs' style="margin-left: 10px;margin-bottom: 5px; overflow: auto;">
+                               	    <label class="" for="{{myFilter.form.problema.id_for_label}}">
+                                   		Problema
+                               		</label>
+                               	<span style="margin-left: 3px">{{myFilter.form.problema}}</span>                       		
+                            </div>
+                            <div class='form-group margin-xs' style="margin-left: 10px;margin-bottom: 5px">
+                            	<label class="" for="{{myFilter.form.tipo_problema.id_for_label}}">
+                                    Tipo de Problema
+                                </label>
+                                	<span style="margin-left: 3px">{{myFilter.form.tipo_problema}}</span>                        	
+                            </div>
+                            <div class='form-group margin-xs' style="margin-left: 10px;margin-bottom: 5px">
+                            	<label class="" for="{{myFilter.form.start_date.id_for_label}}">
+                                	Desde
+                                </label>
+                                	<span style="margin-left: 3px">{{myFilter.form.start_date}}</span>
+                                <label class="" for="{{myFilter.form.end_date.id_for_label}}" style="margin-left: 3px">
+                                    Hasta
+                                </label>
+                                	<span style="margin-left: 3px">{{myFilter.form.end_date}}</span>                
+                            </div>
+                            <div class='form-group' style="margin-left: 10px;margin-bottom: 5px">
+                                <button type="submit" class="btn btn-primary" style="font-size: 12px; padding: 8px 8px;">
+        							<i class="fas fa-search"></i> Buscar
+      							</button>
+                                <button type="button"onclick='window.location.href ="{% url 'improductivos:improductivos_list' %}"' class="btn btn-primary" style="font-size: 12px; padding: 8px 8px; margin-bottom: 0px">
+        							<i class="fas fa-backspace"></i> Reset
+      							</button>
+                            	
+                            </div>
+					</form>
+			</div>
 			</div>
 			<div style="overflow-x:auto;">
 			<table class="table table-striped table-hover" style="">
@@ -74,93 +120,19 @@
 			<ul class="pager">
 				<li>
 					{% if page_obj.has_previous %}
-					<a class="" href="?page={{ page_obj.previous_page_number }}">Atras</a>
+					<a class="" href="?page={{ page_obj.previous_page_number }}{% if request.GET %}&{{ page }}{% endif %}">Atras</a>
 					{% endif %}
 				</li>
 				<li>
 					{% if page_obj.has_next %}
-					<a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+					<a href="?page={{ page_obj.next_page_number }}{% if request.GET %}&{{ page }}{% endif %}">Siguiente</a>
 					{% endif %}
 				</li>
 			</ul>
 	 </div> 
-	<div class="col-md-2" style="margin-top: 30px">
-			<div class="panel panel-info">
-				<div class="panel-heading">
-					<h3 class="panel-title">
-						Filtro
-					</h3>
-				</div>
-				<div class="panel-body">
-					<p>
-						Por fecha
-					</p>
-					<form method="get" action="{% url 'improductivos:improductivos_list' %}" id="filtro_fecha">
-						<div class="form-row">
-							<div class="form-group ">
-								<label class="" for="date_since">
-									Desde
-								</label>
-								<input class="form-control" type="date" value="{{context_fecha_gte}}" name="fecha__gte" id="date_since">
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="form-group ">
-								<label class="" for="date_until">
-									Hasta
-								</label>
-								<input class="form-control" type="date" value="{{context_fecha_lte}}" name="fecha__lte" id="date_until">
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="form-group ">
-								<input type="hidden" value="?{{filtro_fecha_query_string}}" id="fecha-query-string">
-							</div>
-						</div>
-						<div class="submit-row">
-							<div class="form-group">
-								<input class="btn btn-primary btn-block" type="submit" onclick="datefilter_apply(event, 'fecha-query-string', 'filtro_fecha')" value="Buscar">
-							</div>
-						</div>
-					</form>
-					<hr>
-					<p>Por tipo de problema</p>
-					<ul>
-						<li class="selected"><a href="?" title="Todo">Todo</a></li>
-						{% for tipo_problema in context_tipo_problema %}
-						<li><a href="?{{filtro_tipo_problema}}&amp;tipo_problema={{ tipo_problema.tipo_problema }}">{{ tipo_problema.tipo_problema | title}}</a></li>
-						{% endfor %}
-					</ul>
-					<p>Por problema</p>
-					<ul>
-						<li class="selected"><a href="?" title="Todo">Todo</a></li>
-						{% for problemas in context_problema %}
-						<li><a href="?{{filtro_problema}}&amp;problema={{ problemas.problema }}">{{problemas.problema | title}}</a></li>
-						{% endfor %}
-					</ul>
-					<p>Por orden producción</p>
-					<ul>
-						<li class="selected"><a href="?" title="Todo">Todo</a></li>
-						{% for producciones in context_produccion %}
-						<li><a href="?{{filtro_produccion}}&amp;produccion={{ producciones.produccion_id }}">{{producciones.produccion}}</a></li>
-						{% endfor %}
-					</ul>
-				</div>
-			</div>
-		</div>
 </div>
 {% endblock content %}
 {% block extrajs %}
-<script type="text/javascript">
-// script para unir la petición del filtro
-function datefilter_apply(event, qs_name, form_name) {
-	event.preventDefault();
-	var query_string = $('#' + qs_name).val();
-	var form_data = $('#' + form_name).serialize();
-	window.location = window.location.pathname + query_string + '&' + form_data;
-
-}
-</script>
 <script type="text/javascript">
 	$(document).ready(function(){
 	$('[data-toggle="tooltip"]').tooltip();

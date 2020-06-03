@@ -25,7 +25,7 @@ class MantosImp(models.Model):  # Declaro modelo de la base de datos
     produccion = models.ForeignKey(Producciones, null=True, blank=True,
                                    on_delete=models.CASCADE)  # Relationship Fields
 
-    # def __str__(self):
+    #def __str__(self):
     # return 'Problema: {},Comentario: {},Fecha: {},Hora del Problema: {},Hora
     # de Solución: {}'.format(self.problema,self.comentario, self.fecha,
     # self.hora_problema, self.hora_solucion)

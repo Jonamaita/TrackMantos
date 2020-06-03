@@ -8,6 +8,7 @@ from apps.improductivos.models import MantosImp
 from apps.producciones.models import Producciones
 from .report import ImproductivoReportPDF
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
+from .filter import OrderFilter
 # from noob.utils import render_to_pdf  # imp
 import datetime as tiempo
 import urllib.parse
@@ -119,98 +120,31 @@ def improductivo_solve(request, id_imp):
 
 
 class ImproductivosList(ListView):
-	model = MantosImp  # le paso el modelo
 	ordering = ['-fecha']
 	template_name = 'improductivos/improductivos_list.html'  # plantilla a utilizar
-	paginate_by = 10  # paginar la base de datos o objetos
+	paginate_by = 20  # paginar la base de datos o objetos
 	context_url = False
 	# Sobreescribir el query_set
 
 	def get_queryset(self):
 		now = datetime.now()
 		fecha = now.strftime("%Y-%m-%d")
-		queryset = MantosImp.objects.all().order_by('-fecha', '-hora_problema')
-
-		if self.request.GET:  # Si hay una petición request GET intentar realizar un queryset
-			a = self.request.GET
-			try:
-				# Desempacar el el diccionario enviado por el GET y hacer el
-				# queryset
-				queryset = MantosImp.objects.filter(
-					**a.dict()).order_by('-fecha', '-hora_problema')
-				# Bandera para indicar que la petición enviada por el url es
-				# correcta y utilizarla en los filtros
-				self.context_url = True
-			except Exception as err:
-				print(err)
-				self.context_url = False  # Bandera para indicar que la petición realizada por el url no es correcta y no reliza el self request para enviar el contexto a los filtros
-
+		self.myFilter = OrderFilter(self.request.GET,queryset=MantosImp.objects.all().order_by('-fecha', '-hora_problema'))
+		queryset = self.myFilter.qs
 		return queryset
 
 	# Enviarle el contexto al html
 	def get_context_data(self, **kwargs):
-		now = datetime.now()
-		fecha_1 = tiempo.timedelta(days=1)
-		delta = now - fecha_1
-		delta = delta.strftime("%Y-%m-%d")  # Fecha anterior a la actual
-		fecha = now.strftime("%Y-%m-%d")  # Fecha actual
-		context = super(ImproductivosList, self).get_context_data(**kwargs)
-		# toma el valor fecha__gte en ese momento (si hay un request con
-		# fecha__gte) si no lo tiene le asigna el valor delta
-		context['context_fecha_gte'] = self.request.GET.get('fecha__gte', delta)
-		context['context_fecha_lte'] = self.request.GET.get('fecha__lte', fecha)
-		# Enviar en el contexto todos los problemas que estan en la base de
-		# datos
-		context['context_problema'] = MantosImp.objects.values('problema').distinct()
-		# Enviar en el contexto todas las producciones que estan en la base de datos
-		context['context_produccion'] = MantosImp.objects.all().distinct('produccion')
-		# Enviar en el contexto los tipos de problemas que estan en la base de datos
-		context['context_tipo_problema'] = MantosImp.objects.values('tipo_problema').distinct()
-		# Al metodo se le pasa  la url como diccionario y los elementos a quitar
-		# del diccionario y devuelve el contexto de forma de url con las claves
-		# eliminadas
-
-		def get_context_url(*args):
-			# El primer argumentoe es la url que se pasa como diccionario
-			dic_url = args[0]
-			# El segundo argumento son las claves que se dese elimiar de la
-			# url, para luego enviarlo como contexto
-			del_key = args[1::]
-			for x in del_key:
-				# Si existe la clave a eliminar en dic_url se elimina, si no
-				# esta la palabra a eliminar devuelve el contexto (url)
-				# original
-				if x in dic_url:
-					try:
-						del dic_url[x]
-					except Exception as err:
-						print(err)
-					# Construye el contexto como una url a partir del
-					# diccionario final
-					context = urllib.parse.urlencode(dic_url)
-				else:
-					context = urllib.parse.urlencode(dic_url)
-			return context
-
-		# Si hay un request y que sea valida la petición solicitada se envia en
-		# el contexto los filtros correspondientes
-		if self.request.GET and self.context_url:
-			# Contexto filtro_fecha_query_string, para filtrar por fecha y
-			# problema,producción,etc. # Nota: En el html se realiza un append
-			# en javascript de toda la petición del form
-			context['filtro_fecha_query_string'] = get_context_url(
-				self.request.GET.dict(), 'fecha__gte', 'fecha__lte')
-			# Llama al metodo para eliminar de la url tipo_problema y enviarlo como contexto como filtro al HTML
-			# si la url es "tipo_problema=produccion&problema=goteros", el metodo elimina de la URL tipo_problema, para que cuando el usuario vaya a filtrar por tipo_problema tambien filtre por problema
-			# en este caso quedaria problema=goteros&tipo_problema="lo que el usuario elija".
-			# Se tiene que eliminar de la URL tipo_problema, ya que, se
-			# repetiria por la combinación de las variables en el HTML.
-			context['filtro_tipo_problema'] = get_context_url(
-				self.request.GET.dict(), 'tipo_problema')
-			context['filtro_problema'] = get_context_url(
-				self.request.GET.dict(), 'problema')
-			context['filtro_produccion'] = get_context_url(
-				self.request.GET.dict(), 'produccion')
+		context = super().get_context_data(**kwargs)
+		context['myFilter'] = self.myFilter
+		if self.request.GET: # Enviar contexto para cambiar de pagina
+			q = self.request.GET
+			if 'page' in q:
+				a = q.copy()
+				del a['page']
+				context['page'] = a.urlencode()
+			else:
+				context['page'] = q.urlencode()
 
 		return context
 

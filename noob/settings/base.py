@@ -47,8 +47,8 @@ INSTALLED_APPS = [
     'apps.improductivos',
     'apps.usuario',
     'apps.producciones',
+    'django_filters'
     #'apps.sync_google_sheet',
-    #'django_filters',
 ]
 
 MIDDLEWARE = [
