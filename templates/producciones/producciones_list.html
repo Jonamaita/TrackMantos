@@ -1,13 +1,46 @@
 {% extends "base/base.html" %}
 {% block content %}
 <div class="container-fluid" style="font-size:12px">
-	<div class="table-wrapper col-md-10 lemon text-center">
+	<div class="table-wrapper col-md-12 lemon text-center">
 		 <div class="table-title">
 				<div class="row">
 					<div class="col-md-12 text-center">
 						<h2>Lista de <b>Producciones</b></h2>
 					</div>                
 				</div>
+			</div>
+			<div class="filter">
+			<div class='row'>
+					<form class="form-inline col-xs-12" method="get" action="{% url 'producciones:producciones_list' %}" id="filtro_fecha">
+						{{ filter.form.non_field_errors }}
+                            <div class='form-group margin-xs'  style="margin-bottom: 5px;">
+                            	<label class="" for="{{filter.form.minera.id_for_label}}">
+                                    Minera
+                                </label>
+                                {{ filter.form.minera.error }}
+                            	<span style="margin-left: 3px;">{{filter.form.minera}}</span>
+                            </div>
+                            <div class='form-group margin-xs' style="margin-left: 10px;margin-bottom: 5px">
+                            	<label class="" for="{{filter.form.start_date.id_for_label}}">
+                                	Desde
+                                </label>
+                                	<span style="margin-left: 3px">{{filter.form.start_date}}</span>
+                                <label class="" for="{{filter.form.end_date.id_for_label}}" style="margin-left: 3px">
+                                    Hasta
+                                </label>
+                                	<span style="margin-left: 3px">{{filter.form.end_date}}</span>                
+                            </div>
+                            <div class='form-group' style="margin-left: 10px;margin-bottom: 5px">
+                                <button type="submit" class="btn btn-primary" style="font-size: 12px; padding: 8px 8px;">
+        							<i class="fas fa-search"></i> Buscar
+      							</button>
+                                <button type="button"onclick='window.location.href ="{% url 'producciones:producciones_list' %}"' class="btn btn-primary" style="font-size: 12px; padding: 8px 8px; margin-bottom: 0px">
+        							<i class="fas fa-backspace"></i> Reset
+      							</button>
+                            	
+                            </div>
+					</form>
+			</div>
 			</div>
 			<div style="overflow-x:auto;">
 			<table class="table table-striped table-hover" style="width: 100%">
@@ -130,14 +163,14 @@
 			<ul class="pager">
 				<li>
 					{% if page_obj.has_previous %}
-					<a class="" href="?page={{ page_obj.previous_page_number }}">
+					<a class="" href="?page={{ page_obj.previous_page_number }}{% if request.GET %}&{{ page }}{% endif %}">
 						Atras
 					</a>
 					{% endif %}
 				</li>
 				<li>
 					{% if page_obj.has_next %}
-					<a href="?page={{ page_obj.next_page_number }}">
+					<a href="?page={{ page_obj.next_page_number }}{% if request.GET %}&{{ page }}{% endif %}">
 						Siguiente
 					</a>
 					{% endif %}
@@ -145,67 +178,6 @@
 			</ul>
 		</div>
 	
-	<div class="col-md-2" style="margin-top: 30px">
-		<div class="panel panel-info ">
-			<div class="panel-heading">
-				<h3 class="panel-title">
-					Filtro
-				</h3>
-			</div>
-			<div class="panel-body">
-				<p>
-					Por fecha
-				</p>
-				<form action="{% url 'producciones:producciones_list' %}" id="filtro_fecha_producciones" method="get">
-					<div class="form-row">
-						<div class="form-group ">
-							<label class="" for="date_since">
-								Desde
-							</label>
-							<input class="form-control" id="date_since_producciones" name="fecha_inicio__gte" type="date" value="{{context_fecha_gte}}">                        
-						</div>
-					</div>
-					<div class="form-row">
-						<div class="form-group ">
-							<label class="" for="date_until">
-								Hasta
-							</label>
-							<input class="form-control" id="date_until_producciones" name="fecha_inicio__lte" type="date" value="{{context_fecha_lte}}">
-						</div>
-					</div>
-					<div class="form-row">
-						<div class="form-group ">
-							<input id="fecha_query_string_producciones" type="hidden" value="?{{filtro_fecha_query_string}}">
-						</div>
-					</div>
-					<div class="submit-row">
-						<div class="form-group">
-							<input class="btn btn-primary btn-block" onclick="datefilter_apply(event, 'fecha_query_string_producciones', 'filtro_fecha_producciones')" type="submit" value="Buscar">
-						</div>
-					</div>
-				</form>
-				<hr>
-					<p>
-						Por mineras
-					</p>
-					<ul>
-						<li class="selected">
-							<a href="?" title="Todo">
-								Todos
-							</a>
-						</li>
-						{% for minera in context_minera %}
-						<li>
-							<a href="?{{filtro_minera}}minera={{ minera.minera }}">
-								{{minera.minera}}
-							</a>
-						</li>
-						{% endfor %}
-					</ul>
-				<hr>
-			</div>
-		</div>
-	</div>
 </div>
 {% endblock content %}
 {% block extrajs %}

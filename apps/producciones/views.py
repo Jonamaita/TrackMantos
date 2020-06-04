@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate
 from datetime import datetime, timedelta  # importar time
 from django.views.generic import ListView, UpdateView, DeleteView
 from apps.producciones.models import Producciones
+from .filter import OrderFilter
 import urllib.parse
 
 
@@ -55,22 +56,16 @@ def produccion_form(request):
 
 class ProduccionesList(ListView):
     model = Producciones
-    ordering = ['-fecha_inicio']
     template_name = 'producciones/producciones_list.html'
-    paginate_by = 10
+    paginate_by = 20
     context_url = False
     # Sobre escribir queryset
 
     def get_queryset(self):
-        queryset = Producciones.objects.all().order_by('-fecha_inicio')
-        if self.request.GET:
-            try:
-                a = self.request.GET
-                queryset = Producciones.objects.filter(**a.dict()).order_by('-fecha_inicio')
-                self.context_url = True
-            except Exception as err:
-                print(err)
-                self.context_url = False
+        now = datetime.now()
+        fecha = now.strftime("%Y-%m-%d")
+        self.filter = OrderFilter(self.request.GET,queryset=Producciones.objects.all().order_by('-fecha_inicio'))
+        queryset = self.filter.qs
         return queryset
 
     # Enviar contexto html
@@ -80,31 +75,19 @@ class ProduccionesList(ListView):
         delta = now - fecha_1
         delta = delta.strftime("%Y-%m-%d")
         fecha = now.strftime("%Y-%m-%d")
-        context = super(ProduccionesList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # toma el valor date__gte en ese momento, si no lo tiene le asigna el valor delta
-        context['context_fecha_gte'] = self.request.GET.get('fecha__gte', delta)
-        context['context_fecha_lte'] = self.request.GET.get('fecha__lte', fecha)
-        context['context_minera'] = Producciones.objects.values('minera').distinct()
+        context['filter'] = self.filter
+        if self.request.GET: # Enviar contexto para cambiar de pagina
+            q = self.request.GET
+            if 'page' in q:
+                a = q.copy()
+                del a['page']
+                context['page'] = a.urlencode()
+            else:
+                context['page'] = q.urlencode()
 
-        def get_context_url(*args):
-            dic = args[0]
-            del_key = args[1::]
-            for x in del_key:
-                if x in dic:
-                    try:
-                        del dic[x]
-                    except Exception as err:
-                        print(err)
-                    context = urllib.parse.urlencode(dic)
-                else:
-                    context = urllib.parse.urlencode(dic)
 
-            return context
-
-        if self.request.GET and self.context_url == True:
-            context['filtro_fecha_query_string'] = get_context_url(
-                self.request.GET.dict(), 'fecha_inicio__gte', 'fecha_inicio__lte')
-            context['filtro_minera'] = get_context_url(self.request.GET.dict(), 'minera') + "&"
 
         return context
 
