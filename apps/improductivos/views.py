@@ -120,6 +120,7 @@ def improductivo_solve(request, id_imp):
 
 
 class ImproductivosList(ListView):
+	model = MantosImp  # le paso el modelo
 	ordering = ['-fecha']
 	template_name = 'improductivos/improductivos_list.html'  # plantilla a utilizar
 	paginate_by = 20  # paginar la base de datos o objetos
@@ -129,14 +130,14 @@ class ImproductivosList(ListView):
 	def get_queryset(self):
 		now = datetime.now()
 		fecha = now.strftime("%Y-%m-%d")
-		self.myFilter = OrderFilter(self.request.GET,queryset=MantosImp.objects.all().order_by('-fecha', '-hora_problema'))
-		queryset = self.myFilter.qs
+		self.filter = OrderFilter(self.request.GET,queryset=MantosImp.objects.all().order_by('-fecha', '-hora_problema'))
+		queryset = self.filter.qs
 		return queryset
 
 	# Enviarle el contexto al html
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['myFilter'] = self.myFilter
+		context['filter'] = self.filter
 		if self.request.GET: # Enviar contexto para cambiar de pagina
 			q = self.request.GET
 			if 'page' in q:

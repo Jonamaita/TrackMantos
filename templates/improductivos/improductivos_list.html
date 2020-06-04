@@ -13,35 +13,35 @@
 			<div class="filter">
 			<div class='row'>
 					<form class="form-inline col-xs-12" method="get" action="{% url 'improductivos:improductivos_list' %}" id="filtro_fecha">
-						{{ myFilter.form.non_field_errors }}
+						{{ filter.form.non_field_errors }}
                             <div class='form-group margin-xs'  style="margin-bottom: 5px;">
-                            	<label class="" for="{{myFilter.form.produccion.id_for_label}}">
+                            	<label class="" for="{{filter.form.produccion.id_for_label}}">
                                     Orden de Producción
                                 </label>
-                                {{ myFilter.form.produccion.error }}
-                            	<span style="margin-left: 3px;">{{myFilter.form.produccion}}</span>
+                                {{ filter.form.produccion.error }}
+                            	<span style="margin-left: 3px;">{{filter.form.produccion}}</span>
                             </div>
                             <div class='form-group margin-xs' style="margin-left: 10px;margin-bottom: 5px; overflow: auto;">
-                               	    <label class="" for="{{myFilter.form.problema.id_for_label}}">
+                               	    <label class="" for="{{filter.form.problema.id_for_label}}">
                                    		Problema
                                		</label>
-                               	<span style="margin-left: 3px">{{myFilter.form.problema}}</span>                       		
+                               	<span style="margin-left: 3px">{{filter.form.problema}}</span>                       		
                             </div>
                             <div class='form-group margin-xs' style="margin-left: 10px;margin-bottom: 5px">
-                            	<label class="" for="{{myFilter.form.tipo_problema.id_for_label}}">
+                            	<label class="" for="{{filter.form.tipo_problema.id_for_label}}">
                                     Tipo de Problema
                                 </label>
-                                	<span style="margin-left: 3px">{{myFilter.form.tipo_problema}}</span>                        	
+                                	<span style="margin-left: 3px">{{filter.form.tipo_problema}}</span>                        	
                             </div>
                             <div class='form-group margin-xs' style="margin-left: 10px;margin-bottom: 5px">
-                            	<label class="" for="{{myFilter.form.start_date.id_for_label}}">
+                            	<label class="" for="{{filter.form.start_date.id_for_label}}">
                                 	Desde
                                 </label>
-                                	<span style="margin-left: 3px">{{myFilter.form.start_date}}</span>
-                                <label class="" for="{{myFilter.form.end_date.id_for_label}}" style="margin-left: 3px">
+                                	<span style="margin-left: 3px">{{filter.form.start_date}}</span>
+                                <label class="" for="{{filter.form.end_date.id_for_label}}" style="margin-left: 3px">
                                     Hasta
                                 </label>
-                                	<span style="margin-left: 3px">{{myFilter.form.end_date}}</span>                
+                                	<span style="margin-left: 3px">{{filter.form.end_date}}</span>                
                             </div>
                             <div class='form-group' style="margin-left: 10px;margin-bottom: 5px">
                                 <button type="submit" class="btn btn-primary" style="font-size: 12px; padding: 8px 8px;">
