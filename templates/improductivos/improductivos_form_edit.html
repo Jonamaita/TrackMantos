@@ -1,183 +1,207 @@
 {% extends "base/base.html" %}
-{% load static %}
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="lemon text-center col-md-12 con-sm-12 col-xs-12" id="">
-            <h3>
-                Editar Formulario Para Trazabilidad
-            </h3>
-        </div>
-    </div>
     <div class="row ">
-        <form class=" lemon " id="form_2" method="post">
-            {% csrf_token %}
-            {{ form.non_field_errors }}
-            <div class="form-row">
-                <div class="text-center col-md-8 col-md-offset-2" id="select_box">
-                    <div class="form-group">
-                        <label>
-                            <h4>
-                                Seleccione el Problema
-                            </h4>
-                        </label>
-                        <div>
-                            {{form.problema}}
+            <div class=" col-sm-12 col-lg-12">
+                <div class="panel panel-info" style="margin-top:50px;">
+                    <div class="text-center panel-heading">
+                        <h3>
+                            Editar Improductivo
+                        </h3>
+                    </div>
+                        <div class="panel-body">
+                            <form class="lemon" id="form_2" method="post" style="color:black !important">
+                                {% csrf_token %}
+                                {{ form.non_field_errors }}
+                                <div class="form-row">
+                                    <div class="col-md-8 col-md-offset-2 text-center">
+                                        <div class="form-group">
+                                            <label for="{{form.tipo_problema.id_for_label}}">
+                                                <h4 class="required">
+                                                    Seleccione el tipo de problema
+                                                </h4>
+                                                <div style="color:red; padding:0px 30px 0px 0px"> {{form.tipo_problema.errors}}
+                                                </div>
+                                            </label>
+                                            <div>
+                                                {{form.tipo_problema}}
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <hr>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">                   
+                                        <div class="col-md-8 col-md-offset-2 text-center" id="select_box">
+                                            <div class="form-group">
+                                                <label class="" for="{{form.problema.id_for_label}}">
+                                                    <h4 class="required">
+                                                        Seleccione el Problema
+                                                    </h4>
+                                                    <div style="color:red; padding:0px 30px 0px 0px"> {{form.problema.errors}}
+                                                    </div>
+                                                </label>
+                                                <div>
+                                                    {{form.problema}}
+                                                </div>
+                                            </div>
+                                            <hr>
+                                       </div>                           
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
+                                        <div class="form-group">
+                                            <label for="{{form.comentario.id_for_label}}">
+                                                <h4 class="required">
+                                                    Escriba un comentario sobre el problema
+                                                </h4>
+                                                <div style="color:red; padding:0px 30px 0px 0px"> {{form.comentario.errors}}
+                                                </div>
+                                            </label>
+                                            <div>
+                                                {{form.comentario}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="text-center col-md-8 col-md-offset-2" id="div_numero_manto">
+                                        <div class="form-group">
+                                            <label for="{{form.numero_manto.id_for_label}}">
+                                                <h4>
+                                                    Indique el numero de manto
+                                                </h4>
+                                                <div style="color:red; padding:0px 30px 0px 0px"> {{form.numero_manto.errors}}
+                                                </div>
+                                            </label>
+                                            <div>
+                                                {{form.numero_manto}}
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <hr>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="text-center col-md-8 col-md-offset-2" id="select_lineas">
+                                        <div class="form-group">
+                                            <label>
+                                                <h4>
+                                                    Seleccione lineas afectadas
+                                                </h4>
+                                                <div style="color:red; padding:0px 30px 0px 0px"> {{form.numero_linea.errors}}
+                                                </div>
+                                            </label>
+                                                <div>
+                                                    {% for linea in form.numero_linea %}
+                                                    <label for="{{ linea.id_for_label }}" class="checkbox">
+                                                        {{ linea.tag }}
+                                                        <span>{{ linea.choice_label }}</span>
+                                                    </label>
+                                                    {% endfor %}
+                                                </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
+                                        <div class="form-group">
+                                            <label for="{{form.fecha.id_for_label}}">
+                                                <h4>
+                                                    Fecha del problema
+                                                </h4>
+                                                <div style="color:red; padding:0px 30px 0px 0px">
+                                                    {{form.fecha.errors}}
+                                                </div>
+                                            </label>
+                                            {{form.fecha}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
+                                        <div class="form-group">
+                                            <label for="{{form.hora_problema.id_for_label}}">
+                                                <h4>
+                                                    Hora del problema
+                                                </h4>
+                                                <span>(HH:MM:SS)</span>
+                                                <div style="color:red; padding:0px 30px 0px 0px">
+                                                    {{form.hora_problema.errors}}
+                                                </div>
+                                            </label>
+                                            {{form.hora_problema}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
+                                        <div class="form-group">
+                                            <label for="{{form.hora_solucion.id_for_label}}">
+                                                <h4>
+                                                    Hora de la solución
+                                                </h4>
+                                                <span>(HH:MM:SS)</span>
+                                                <div style="color:red; padding:0px 30px 0px 0px">
+                                                    {{form.hora_solucion.errors}}
+                                                </div>
+                                            </label>
+                                            {{form.hora_solucion}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
+                                        <div class="form-group">
+                                            <label for="{{form.tiempo_improductivo.id_for_label}}">
+                                                <h4>
+                                                    Tiempo Improductivo
+                                                </h4>
+                                                <span>(HH:MM:SS)</span>
+                                                <div style="color:red; padding:0px 30px 0px 0px">
+                                                    {{form.tiempo_improductivo.errors}}
+                                                </div>
+                                            </label>
+                                            {{form.tiempo_improductivo}}
+                                        </div>
+                                        <br>
+                                        <hr>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
+                                        <div class="form-group">
+                                            <label for="{{form.produccion.id_for_label}}">
+                                                <h4>
+                                                    Orden de producción asociado
+                                                </h4>
+                                                <div style="color:red; padding:0px 30px 0px 0px">
+                                                    {{form.produccion.errors}}
+                                                </div>
+                                            </label>
+                                            {{form.produccion}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submit-row">
+                                    <div class="text-center col-md-8 col-md-offset-2">
+                                        <div class="form-group">
+                                            <button class="btn btn-success margin-btn" type="submit">
+                                                Guardar
+                                            </button>
+                                            <a class="btn btn-info margin-btn" href="{% url 'improductivos:improductivos_list' %}" title="volver">
+                                                Volver
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                    </div>
                 </div>
             </div>
-            <div class="form-row">
-                <div class="text-center col-md-8 col-md-offset-2" id="select_box">
-                    <div class="form-group">
-                        <label>
-                            <h4>
-                                Seleccione el tipo de problema
-                            </h4>
-                        </label>
-                        <div>
-                            {{form.tipo_problema}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
-                    <div class="form-group">
-                        <label for="{{form.comentario.name}}">
-                            <h4>
-                                Escriba un comentario sobre el problema
-                            </h4>
-                        </label>
-                        <div>
-                            {{form.comentario}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="text-center col-md-8 col-md-offset-2" id="div_numero_manto">
-                    <div class="form-group">
-                        <label for="{{form.numero_manto.name}}">
-                            <h4>
-                                Indique el numero de manto
-                            </h4>
-                        </label>
-                        <div>
-                            {{form.numero_manto}}
-                        </div>
-                    </div>
-                    <br>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="text-center col-md-8 col-md-offset-2" id="select_lineas">
-                    <div class="form-group">
-                        <label>
-                            <h4>
-                                Seleccione lineas afectadas
-                            </h4>
-                            <small style="color:red;"> {{form.numero_linea.errors}}</small>
-                        </label>
-                        <div>
-                            {% for linea in form.numero_linea %}
-                            <label for="{{ linea.id_for_label }}" class="checkbox">
-                                {{ linea.tag }}
-                                <span>{{ linea.choice_label }}</span>
-                            </label>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
-                    <div class="form-group">
-                        <label for="">
-                            <h4>
-                                Fecha del problema
-                            </h4>
-                        </label>
-                        {{form.fecha}}
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
-                    <div class="form-group">
-                        <label for="{{form.hora_problema.name}}">
-                            <h4>
-                                Hora del problema
-                            </h4>
-                            <span>(HH:MM:SS)</span>
-                            <div style="color:red;">
-                                {{form.hora_problema.errors}}
-                            </div>
-                        </label>
-                        {{form.hora_problema}}
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
-                    <div class="form-group">
-                        <label for="{{form.hora_solucion.name}}">
-                            <h4>
-                                Hora de la solución
-                            </h4>
-                            <span>(HH:MM:SS)</span>
-                            <div style="color:red;">
-                                {{form.hora_solucion.errors}}
-                            </div>
-                        </label>
-                        {{form.hora_solucion}}
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
-                    <div class="form-group">
-                        <label for="{{form.tiempo_improductivo.name}}">
-                            <h4>
-                                Tiempo Improductivo
-                            </h4>
-                            <span>(HH:MM:SS)</span>
-                            <div style="color:red;">
-                                {{form.tiempo_improductivo.errors}}
-                            </div>
-                        </label>
-                        {{form.tiempo_improductivo}}
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="text-center col-md-8 col-md-offset-2" id="text_comentario">
-                    <div class="form-group">
-                        <label for="{{form.tiempo_improductivo.name}}">
-                            <h4>
-                                Orden de producción asociado
-                            </h4>
-                            <div style="color:red;">
-                                {{form.produccion.errors}}
-                            </div>
-                        </label>
-                        {{form.produccion}}
-                    </div>
-                </div>
-            </div>
-            <div class="submit-row">
-                <div class="text-center col-md-8 col-md-offset-2">
-                    <div class="form-group">
-                        <button class="btn btn-success margin-btn" type="submit">
-                            Guardar
-                        </button>
-                        <a class="btn btn-info margin-btn" href="{% url 'improductivos:improductivos_list' %}" title="volver">
-                            Volver
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </form>
     </div>
 </div>
 {% endblock content %}
